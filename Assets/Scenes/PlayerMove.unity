@@ -119,40 +119,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &24196483 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 740516520639309913, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1545961887}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &24196484 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 168702940067339205, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
     type: 3}
   m_PrefabInstance: {fileID: 1545961887}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &24196486
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 24196483}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &279810003
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,12 +304,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoves
   speed: 5
-  mouseSensitivity: 0.5
+  mouseSensitivity: 0.3
   playerCamera: {fileID: 2099716980}
   fireRange: 100
+  fireInterval: 0.1
   shootableLayer:
     serializedVersion: 2
     m_Bits: 4294967295
+  muzzleFlash: {fileID: 1714057697}
+  weaponAnimator: {fileID: 1418539554}
+  wpRoot: {fileID: 1418539553}
+  wpBlockDist: 1.5
+  blockedWpOffset: {x: 0, y: -0.2, z: -0.25}
+  wpSwaySpeed: 12
 --- !u!114 &654239780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,7 +408,19 @@ MonoBehaviour:
     m_ActionId: 852140f2-7766-474d-8707-702459ba45f3
     m_ActionName: 'Player/Interact[/Keyboard/e]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 654239779}
+        m_TargetAssemblyTypeName: PlayerMoves, Assembly-CSharp
+        m_MethodName: OnReload
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 27c5f898-bc57-4ee1-8800-db469aca5fe3
     m_ActionName: 'Player/Crouch[/Keyboard/c]'
   - m_PersistentCalls:
@@ -488,6 +479,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 074202dd-87d8-43f0-8e35-890b36b8a2b8
+    m_ActionName: 'Player/Reload[/Keyboard/r]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -741,12 +736,40 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &1418539552 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4484158918520316832, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1545961887}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1418539553 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3850927788420626714, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
     type: 3}
   m_PrefabInstance: {fileID: 1545961887}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1418539554
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1418539552}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 470abbaa7e530a640aeb9c855a6471e6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1545961887
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -755,6 +778,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2099716983}
     m_Modifications:
+    - target: {fileID: 725454641039531204, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.24630569
+      objectReference: {fileID: 0}
+    - target: {fileID: 725454641039531204, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.03381797
+      objectReference: {fileID: 0}
     - target: {fileID: 3850927788420626714, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -818,43 +851,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1714057695}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 740516520639309913, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
+    - targetCorrespondingSourceObject: {fileID: 4484158918520316832, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 24196486}
-    - targetCorrespondingSourceObject: {fileID: 3392963924896277010, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1618267427}
+      addedObject: {fileID: 1418539554}
   m_SourcePrefab: {fileID: 100100000, guid: fb816b0183c1b0647ae50c5bfe1dff7f, type: 3}
---- !u!1 &1618267424 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3392963924896277010, guid: fb816b0183c1b0647ae50c5bfe1dff7f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1545961887}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1618267427
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1618267424}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1714057694
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,7 +915,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: f2b70daa9b1a64645abe9061abddbe8f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -976,16 +977,16 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1714057694}
   serializedVersion: 8
-  lengthInSec: 50.83
+  lengthInSec: 0.06
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
-  looping: 1
+  looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -1051,7 +1052,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 0.04
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -1104,7 +1105,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 0
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -1222,7 +1223,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.28
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -1539,7 +1540,7 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     gravitySource: 0
-    maxNumParticles: 1000
+    maxNumParticles: 8
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -1598,7 +1599,7 @@ ParticleSystem:
         m_RotationOrder: 4
   ShapeModule:
     serializedVersion: 6
-    enabled: 1
+    enabled: 0
     type: 4
     angle: 25
     length: 5
@@ -1805,7 +1806,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 0
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1908,8 +1909,66 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-    m_BurstCount: 0
-    m_Bursts: []
+    m_BurstCount: 1
+    m_Bursts:
+    - serializedVersion: 2
+      time: 0
+      countCurve:
+        serializedVersion: 2
+        minMaxState: 0
+        scalar: 1
+        minScalar: 30
+        maxCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+        minCurve:
+          serializedVersion: 2
+          m_Curve:
+          - serializedVersion: 3
+            time: 0
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: 1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          m_PreInfinity: 2
+          m_PostInfinity: 2
+          m_RotationOrder: 4
+      cycleCount: 1
+      repeatInterval: 0.01
+      probability: 1
   SizeModule:
     enabled: 0
     curve:
@@ -5999,7 +6058,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64823
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
