@@ -19,6 +19,13 @@ public class PlayerMoves : MonoBehaviour
      [SerializeField]private ParticleSystem muzzleFlash;
      [SerializeField]private Animator weaponAnimator;
 
+     [SerializeField] private Transform wpRoot;
+    [SerializeField] private float wpBlockDist = 0.8f;
+    [SerializeField] private Vector3 blockedWpOffset = new Vector3(0f, -0.2f, -0.25f);
+    [SerializeField] private float wpSwaySpeed = 12f;
+
+    private Vector3 originWpLocalPosition;
+
      private bool isFiring = false;
      private bool isSprinting = false;
      private float nextFireTime;//발사 간격
@@ -43,6 +50,11 @@ public class PlayerMoves : MonoBehaviour
         if (weaponAnimator == null)
             weaponAnimator = GetComponentInChildren<Animator>(true);
 
+        if (wpRoot == null && weaponAnimator != null)
+            wpRoot = weaponAnimator.transform;
+
+        if (wpRoot != null)
+            originWpLocalPosition = wpRoot.localPosition;
         animator = weaponAnimator;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -58,6 +70,7 @@ public class PlayerMoves : MonoBehaviour
          HandleMove();
          HandleFire();  
          HandleReload();
+         HandleWeaponCollision();   
     }
     
     public void OnMove(InputAction.CallbackContext context)
@@ -161,6 +174,23 @@ public class PlayerMoves : MonoBehaviour
                 if (animator != null)
                     animator.SetTrigger("Reload");
                 Debug.Log("Reloading...");
+            }
+        }
+       
+        private void HandleWeaponCollision()
+        {
+            if (wpRoot == null)
+                return;
+
+            Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+            if (Physics.Raycast(ray, out RaycastHit hit, wpBlockDist))
+            {
+                Vector3 targetPos = originWpLocalPosition + blockedWpOffset;
+                wpRoot.localPosition = Vector3.Lerp(wpRoot.localPosition, targetPos, Time.deltaTime * wpSwaySpeed);
+            }
+            else
+            {
+                wpRoot.localPosition = Vector3.Lerp(wpRoot.localPosition, originWpLocalPosition, Time.deltaTime * wpSwaySpeed);
             }
         }
     
