@@ -14,6 +14,7 @@ public class CharacterMoves : MonoBehaviour
 
     private bool isSprinting = false;
     private bool isJumping = false;
+    private bool canMove = true;
     private CharacterController controller;
     private CharacterHealth health;
     private Vector2 lookInput;
@@ -31,12 +32,24 @@ public class CharacterMoves : MonoBehaviour
 
     private void Update()
     {
-        if(health.State == CharacterHealth.CharacterState.Dead)
-            return;
+        if (health.State == CharacterHealth.CharacterState.Dead) return;
         HandleLook();
         HandleSprint();
         HandleMove();
         HandleJump();
+    }
+
+    public void SetMovable(bool movable)
+    {
+        canMove = movable;
+    }
+
+    public void Teleport(Vector3 position)
+    {
+        velocity.y = 0f;
+        controller.enabled = false;
+        transform.position = position;
+        controller.enabled = true;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -59,15 +72,20 @@ public class CharacterMoves : MonoBehaviour
 
     private void HandleMove()
     {
-        Vector3 moveDir = transform.right * moveInput.x + transform.forward * moveInput.y;
-        float currentSpeed = isSprinting ? speed * 2f : speed;
-        controller.Move(moveDir * currentSpeed * Time.deltaTime);
+        if (canMove)
+        {
+            Vector3 moveDir = transform.right * moveInput.x + transform.forward * moveInput.y;
+            float currentSpeed = isSprinting ? speed * 2f : speed;
+
+            controller.Move(moveDir * currentSpeed * Time.deltaTime);
+        }
 
         if (controller.isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
         velocity.y += Physics.gravity.y * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+        
     }
 
     private void HandleLook()

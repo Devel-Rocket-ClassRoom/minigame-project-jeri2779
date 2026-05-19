@@ -20,6 +20,9 @@ public class CharacterShooter : MonoBehaviour
     private Vector3 originWpLocalPosition;
     private bool isFiring;
     private float nextFireTime;
+    private int currentAmmo;
+    private bool isReloading;
+    private float reloadEndTime;
 
     private void Awake()
     {
@@ -34,6 +37,7 @@ public class CharacterShooter : MonoBehaviour
             originWpLocalPosition = wpRoot.localPosition;
         if (muzzleFlash != null)
             muzzleFlash.Stop();
+        currentAmmo = weaponData.magazineSize;
     }
 
     private void Update()
@@ -41,6 +45,7 @@ public class CharacterShooter : MonoBehaviour
         if (health.State == CharacterHealth.CharacterState.Dead)
             return;
 
+        HandleReloadComplete();
         HandleFire();
         HandleWeaponCollision();
     }
@@ -56,9 +61,12 @@ public class CharacterShooter : MonoBehaviour
     private void HandleFire()
     {
         if (!isFiring) return;
+        if (isReloading) return;
+        if (currentAmmo <= 0) return;
         if (Time.time < nextFireTime) return;
 
         nextFireTime = Time.time + weaponData.fireRate;
+        currentAmmo--;
 
         if (weaponAnimator != null)
             weaponAnimator.SetTrigger("Fire");
@@ -73,7 +81,7 @@ public class CharacterShooter : MonoBehaviour
         Debug.DrawRay(ray.origin, ray.direction * weaponData.range, Color.red, 1f);
         if (Physics.Raycast(ray, out RaycastHit hit, weaponData.range, shootableLayer))
         {
-            Debug.Log($"[Raycast Hit] {hit.collider.name} / layer:{LayerMask.LayerToName(hit.collider.gameObject.layer)} / dist:{hit.distance:F2}");
+            
             damageable = hit.collider.GetComponent<IDamageable>();
             if (damageable != null)
             {
@@ -81,31 +89,36 @@ public class CharacterShooter : MonoBehaviour
                 damageable.TakeDamage(damage);
                 Debug.Log($"Hit {hit.collider.name} for {damage} damage.");
             }
-            else
-            {
-                Debug.Log($"[No IDamageable] {hit.collider.name}");
-            }
+            
         }
-        else
-        {
-            Debug.Log("[Raycast Miss] 아무것도 맞지 않음");
-        }
+        
     }
 
     public void OnReload(InputAction.CallbackContext context)
     {
-        if (context.started)
+        if (context.performed)
             HandleReload();
     }
 
     private void HandleReload()
     {
-        if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
-        {
-            if (weaponAnimator != null)
-                weaponAnimator.SetTrigger("Reload");
-            Debug.Log("Reloading...");
-        }
+        if (isReloading) return;
+        if (currentAmmo == weaponData.magazineSize) return;
+
+        isReloading = true;
+        reloadEndTime = Time.time + weaponData.reloadTime;
+
+        if (weaponAnimator != null)
+            weaponAnimator.SetTrigger("Reload");
+    }
+
+    private void HandleReloadComplete()
+    {
+        if (!isReloading) return;
+        if (Time.time < reloadEndTime) return;
+
+        isReloading = false;
+        currentAmmo = weaponData.magazineSize;
     }
 
     private void HandleWeaponCollision()

@@ -16,4 +16,4 @@ MonoBehaviour:
   fireRate: 0.1
   range: 100
   magazineSize: 30
-  reloadTime: 3
+  reloadTime: 2
