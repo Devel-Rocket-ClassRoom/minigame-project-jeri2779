@@ -158,6 +158,7 @@ GameObject:
   - component: {fileID: 7583854797034819372}
   - component: {fileID: 6689299391647682818}
   - component: {fileID: 6942270118528583853}
+  - component: {fileID: 7100589176570233417}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -481,7 +482,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3453d84e9fa26c14a967253c0d62200c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoves
-  speed: 5
   mouseSensitivity: 0.3
   jumpHeight: 1.2
   playerCamera: {fileID: 1723378065241621120}
@@ -521,9 +521,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ff4e48d5cc92d14ab012441fe4b34a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStats
-  maxHealth: 1000
+  maxHealth: 100
   moveSpeed: 5
   maxStamina: 100
+  staminaDrainRate: 10
+  staminaRegenRate: 10
   attackMultiplier: 1
 --- !u!114 &6942270118528583853
 MonoBehaviour:
@@ -537,6 +539,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd5af19cd6f142c4d9863b84b83f3527, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterHealth
+--- !u!114 &7100589176570233417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3108896317051391690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61de37c65c15b624db27166b247b70e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterDead
+  characterHealth: {fileID: 6942270118528583853}
+  characterMoves: {fileID: 1312475001738301151}
+  hud: {fileID: 0}
+  weaponModel: {fileID: 2484935617198693706}
+  gameOverUI: {fileID: 0}
+  tiltDuration: 1.5
 --- !u!1 &4246655837181786872
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,6 +26,8 @@ public class CharacterShooter : MonoBehaviour
     private int currentAmmo;
     private bool isReloading;
     private float reloadEndTime;
+    private bool isHeadshot;
+    private string headLayerName = "Head";
 
     private void Awake()
     {
@@ -85,12 +87,14 @@ public class CharacterShooter : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, weaponData.range, shootableLayer))
         {
             
-            damageable = hit.collider.GetComponent<IDamageable>();
+            damageable = hit.collider.GetComponentInParent<IDamageable>();
             if (damageable != null)
             {
+                isHeadshot = hit.collider.gameObject.layer == LayerMask.NameToLayer(headLayerName);
                 float damage = weaponData.damage * characterStats.AttackMultiplier;
+                if (isHeadshot) damage *= 2f;
                 damageable.TakeDamage(damage);
-                Debug.Log($"Hit {hit.collider.name} for {damage} damage.");
+                Debug.Log($"Hit {hit.collider.name} for {damage} damage.{(isHeadshot ? " [HEADSHOT]" : "")}");
             }
             
         }

@@ -76,6 +76,12 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    public void StopGame()
+    {
+        isRoundActive = false;
+        StopAllCoroutines();
+    }
+
     private void StartRound()
     {
         currentRound++;
