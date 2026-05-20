@@ -1,4 +1,4 @@
-using InfimaGames.LowPolyShooterPack;
+ using InfimaGames.LowPolyShooterPack;
 using UnityEngine;
 
 public class CharacterHealth : MonoBehaviour, IDamageable
@@ -20,6 +20,12 @@ public class CharacterHealth : MonoBehaviour, IDamageable
     }
 
  
+    public void ResetHealth()
+    {
+        State = CharacterState.Alive;
+        currentHealth = characterStats.MaxHealth;
+    }
+
     public void TakeDamage(float damage)
     {
         if (State == CharacterState.Dead) return;

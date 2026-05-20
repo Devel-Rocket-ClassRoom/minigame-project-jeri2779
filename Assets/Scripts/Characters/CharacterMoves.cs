@@ -4,10 +4,10 @@ using UnityEngine.InputSystem;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
+using NUnit.Framework;
 
 public class CharacterMoves : MonoBehaviour
 {
-    [SerializeField] private float speed = 5f;
     [SerializeField] private float mouseSensitivity = 1f;
     [SerializeField] private float jumpHeight = 1.2f;
     [SerializeField] private Camera playerCamera;
@@ -25,6 +25,11 @@ public class CharacterMoves : MonoBehaviour
     private float xRotation;
 
     public float CurrentStamina => currentStamina;
+
+    public void ResetStamina()
+    {
+        currentStamina = stats.MaxStamina;
+    }
 
     private void Awake()
     {
@@ -81,7 +86,15 @@ public class CharacterMoves : MonoBehaviour
         if (canMove)
         {
             Vector3 moveDir = transform.right * moveInput.x + transform.forward * moveInput.y;
-            float currentSpeed = isSprinting ? speed * 2f : speed;
+            float currentSpeed;
+            if(isSprinting)
+            {
+                currentSpeed= stats.MoveSpeed * 2f;
+            }
+            else
+            {
+                currentSpeed = stats.MoveSpeed;
+            }
 
             controller.Move(moveDir * currentSpeed * Time.deltaTime);
         }
@@ -119,8 +132,12 @@ public class CharacterMoves : MonoBehaviour
         else
         {
             isSprinting = false;
-            currentStamina += stats.StaminaRegenRate * Time.deltaTime;
-            if (currentStamina > stats.MaxStamina) currentStamina = stats.MaxStamina;
+            if (!sprinting)
+            {
+                currentStamina += stats.StaminaRegenRate * Time.deltaTime;
+                if (currentStamina > stats.MaxStamina)
+                    currentStamina = stats.MaxStamina;
+            }
         }
     }
 

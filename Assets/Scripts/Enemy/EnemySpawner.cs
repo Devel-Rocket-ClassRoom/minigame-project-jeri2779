@@ -177,6 +177,8 @@ public class EnemySpawner : MonoBehaviour
         yield return new WaitForSeconds(roundEndDelay);
         characterMoves.SetMovable(false);
         characterMoves.Teleport(playerSpawnPoint.position);
+        player.GetComponent<CharacterHealth>().ResetHealth();
+        characterMoves.ResetStamina();
         yield return new WaitForSeconds(timeBetweenRounds);
         StartRound();
     }
