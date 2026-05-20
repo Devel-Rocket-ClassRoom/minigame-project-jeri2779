@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
@@ -29,6 +30,32 @@ public class CharacterMoves : MonoBehaviour
     public void ResetStamina()
     {
         currentStamina = stats.MaxStamina;
+    }
+
+    public IEnumerator DeathCameraRotate(float duration)
+    {
+        float elapsed = 0f;
+        float startY = playerCamera.transform.position.y;
+        float targetY = transform.position.y - 0.5f;
+        float startZ = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            float curved = t * t;
+
+            float zRotation = Mathf.Lerp(startZ, 90f, curved);
+            playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, zRotation);
+
+            float newY = Mathf.Lerp(startY, targetY, curved);
+            playerCamera.transform.position = new Vector3(
+                playerCamera.transform.position.x,
+                newY,
+                playerCamera.transform.position.z
+            );
+            yield return null;
+        }
     }
 
     private void Awake()
