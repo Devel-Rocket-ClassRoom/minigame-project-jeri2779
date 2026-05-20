@@ -74,7 +74,12 @@ public class CharacterHUD : MonoBehaviour
         if (timerText != null)
         {
             if (enemySpawner.IsRoundActive)
-                timerText.text = $"남은 시간\n{Mathf.CeilToInt(enemySpawner.RoundTimer)}s";
+            {
+                int total = Mathf.FloorToInt(enemySpawner.RoundTimer);
+                int min = total / 60;
+                int sec = total % 60;
+                timerText.text = $"남은 시간\n{min:00}:{sec:00}";
+            }
             else
                 timerText.text = "남은 시간\n준비 중";
         }
