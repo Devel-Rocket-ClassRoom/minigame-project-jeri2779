@@ -8,4 +8,6 @@ public class EnemyData : ScriptableObject
     public float attackRange = 1.5f;
     public float attackDamage = 10f;
     public float attackInterval = 1f;
+    public int moneyReward = 30;
+    public int scoreReward = 100;
 }

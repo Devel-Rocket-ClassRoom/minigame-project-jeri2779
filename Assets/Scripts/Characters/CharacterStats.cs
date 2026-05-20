@@ -5,11 +5,15 @@ public class CharacterStats : MonoBehaviour
     [SerializeField] float maxHealth = 1000f;
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float maxStamina = 100f;
+    [SerializeField] float staminaDrainRate = 20f;
+    [SerializeField] float staminaRegenRate = 10f;
     [SerializeField] float attackMultiplier = 1f;
 
     public float MaxHealth => maxHealth;
     public float MoveSpeed => moveSpeed;
     public float MaxStamina => maxStamina;
+    public float StaminaDrainRate => staminaDrainRate;
+    public float StaminaRegenRate => staminaRegenRate;
     public float AttackMultiplier => attackMultiplier;
     public int UpgradeAtkLevel => upgradeAtkLevel;
     public int UpgradeHpLevel => upgradeHpLevel;

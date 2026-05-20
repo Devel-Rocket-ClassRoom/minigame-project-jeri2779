@@ -3,14 +3,15 @@ using UnityEngine;
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
     //enemy는 enemydata값 받아옴
-    [SerializeField]private EnemyData enemyData;
+    [SerializeField] private EnemyData enemyData;
 
     private float currentHealth;
-   
+    private RewardController rewardController;
 
     private void Start()
-    { 
+    {
         currentHealth = enemyData.maxHealth;
+        rewardController = FindFirstObjectByType<RewardController>();
     }
     public void TakeDamage(float damage)
     {
@@ -26,6 +27,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         // Handle enemy death (e.g., play animation, disable controls, etc.)
         Debug.Log($"{gameObject.name} died.");
+        if (rewardController != null)
+        {
+            rewardController.AddMoney(enemyData.moneyReward);
+            rewardController.AddScore(enemyData.scoreReward);
+        }
         //적 컨트롤러 비활성화 처리
         EnemyController controller = GetComponent<EnemyController>();
         if (controller != null)

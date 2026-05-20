@@ -15,17 +15,23 @@ public class CharacterMoves : MonoBehaviour
     private bool isSprinting = false;
     private bool isJumping = false;
     private bool canMove = true;
+    private float currentStamina;
     private CharacterController controller;
     private CharacterHealth health;
+    private CharacterStats stats;
     private Vector2 lookInput;
     private Vector2 moveInput;
     private Vector3 velocity;
     private float xRotation;
 
+    public float CurrentStamina => currentStamina;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         health = GetComponent<CharacterHealth>();
+        stats = GetComponent<CharacterStats>();
+        currentStamina = stats.MaxStamina;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -102,7 +108,20 @@ public class CharacterMoves : MonoBehaviour
 
     private void HandleSprint()
     {
-        isSprinting = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
+        bool sprinting = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
+
+        if (sprinting && currentStamina > 0f && moveInput != Vector2.zero && canMove)
+        {
+            isSprinting = true;
+            currentStamina -= stats.StaminaDrainRate * Time.deltaTime;
+            if (currentStamina < 0f) currentStamina = 0f;
+        }
+        else
+        {
+            isSprinting = false;
+            currentStamina += stats.StaminaRegenRate * Time.deltaTime;
+            if (currentStamina > stats.MaxStamina) currentStamina = stats.MaxStamina;
+        }
     }
 
     public void OnJump(InputAction.CallbackContext context)

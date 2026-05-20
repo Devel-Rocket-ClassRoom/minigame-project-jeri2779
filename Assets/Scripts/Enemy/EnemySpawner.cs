@@ -1,7 +1,7 @@
  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//추후 스크립트 역할 분리 리팩토링 필요
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private WaveData waveData;
@@ -25,12 +25,13 @@ public class EnemySpawner : MonoBehaviour
     public int TotalRounds => totalRounds;
     public float RoundTimer => roundTimer;
     public bool IsRoundActive => isRoundActive;
-    public int KilledCount => killedEnemiesThisRound;
+    public int KilledCount => totalKilledCount;
     private int currentRound = 0;
     private float roundTimer;
     private float spawnTimer;
     private int totalEnemiesThisRound;
     private int killedEnemiesThisRound;
+    private int totalKilledCount;
     private readonly List<GameObject> aliveEnemies = new List<GameObject>();
     private List<EnemySpawnEntry> pendingSpawns = new List<EnemySpawnEntry>();
     private bool isRoundActive = false;
@@ -51,6 +52,7 @@ public class EnemySpawner : MonoBehaviour
         aliveEnemies.RemoveAll(enemy => enemy == null || !enemy.activeInHierarchy);
         int killed = beforeCount - aliveEnemies.Count;
         killedEnemiesThisRound += killed;
+        totalKilledCount += killed;
 
         roundTimer -= Time.deltaTime;
 
@@ -94,7 +96,7 @@ public class EnemySpawner : MonoBehaviour
         totalEnemiesThisRound = 0;
         foreach (var e in pendingSpawns) totalEnemiesThisRound += e.count;
 
-        Debug.Log($"===== Round {currentRound}/{totalRounds} 시작 =====");
+        Debug.Log($"Round {currentRound}/{totalRounds} 시작 ");
         Debug.Log($"  적 {totalEnemiesThisRound}마리 예정 | 제한시간 {roundDuration}초");
     }
 
@@ -105,6 +107,7 @@ public class EnemySpawner : MonoBehaviour
 
         for (int i = pendingSpawns.Count - 1; i >= 0 && count > 0; i--)
         {
+            
             Transform sp = spawnPoints[Random.Range(0, spawnPoints.Length)];
             GameObject enemy = Instantiate(pendingSpawns[i].prefab, sp.position, sp.rotation);
             enemy.GetComponent<EnemyController>().Initialize(player);
@@ -134,27 +137,27 @@ public class EnemySpawner : MonoBehaviour
         }
         aliveEnemies.Clear();
         pendingSpawns.Clear();
-        Debug.Log($"===== Round {currentRound}/{totalRounds} 클리어 =====");
+        Debug.Log($" Round {currentRound}/{totalRounds} 클리어  ");
         Debug.Log($"  조건: {clearType} | 처치: {killedEnemiesThisRound}/{totalEnemiesThisRound} | 경과: {elapsed:F1}초");
 
         if (currentRound >= totalRounds)
         {
-            Debug.Log("========================================");
-            Debug.Log("  전체 라운드 클리어! 게임 종료");
-            Debug.Log("========================================");
+             
+            Debug.Log("전체 라운드 클리어");
+          
             return;
         }
 
-        Debug.Log($"  종료 대기 {roundEndDelay}초 → 다음 라운드 대기 {timeBetweenRounds}초");
+ 
         StartCoroutine(NextRoundRoutine());
     }
 
     private List<EnemySpawnEntry> GetEntriesForRound(int round)
     {
-        foreach (var o in waveData.overrides)
+        foreach (var obj in waveData.overrides)
         {
-            if (o.round == round)
-                return new List<EnemySpawnEntry>(o.enemies);
+            if (obj.round == round)
+                return new List<EnemySpawnEntry>(obj.enemies);
         }
 
         var entries = new List<EnemySpawnEntry>();

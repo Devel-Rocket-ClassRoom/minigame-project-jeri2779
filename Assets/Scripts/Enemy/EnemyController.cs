@@ -45,11 +45,15 @@ public class EnemyController : MonoBehaviour
                 // Handle idle behavior
                 break;
             case EnemyState.Chasing:
-                agent.isStopped = false;
-                agent.SetDestination(character.position);
+                if (agent.isOnNavMesh)
+                {
+                    agent.isStopped = false;
+                    agent.SetDestination(character.position);
+                }
                 break;
             case EnemyState.Attacking:
-                agent.isStopped = true;
+                if (agent.isOnNavMesh)
+                    agent.isStopped = true;
                 HandleAttack();
                 break;
             case EnemyState.Dead:
@@ -96,7 +100,8 @@ public class EnemyController : MonoBehaviour
     public void SetDead()
     {
         currentState = EnemyState.Dead;
-        agent.isStopped = true;
+        if (agent.isOnNavMesh)
+            agent.isStopped = true;
     }
     
 
