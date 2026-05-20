@@ -21,6 +21,11 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnStartDelay = 3f;
     [SerializeField] private float spawnInterval = 3f;
 
+    public int CurrentRound => currentRound;
+    public int TotalRounds => totalRounds;
+    public float RoundTimer => roundTimer;
+    public bool IsRoundActive => isRoundActive;
+    public int KilledCount => killedEnemiesThisRound;
     private int currentRound = 0;
     private float roundTimer;
     private float spawnTimer;

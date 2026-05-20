@@ -18,6 +18,9 @@ public class CharacterShooter : MonoBehaviour
     private CharacterHealth health;
 
     private Vector3 originWpLocalPosition;
+    public int CurrentAmmo => currentAmmo;
+    public bool IsReloading => isReloading;
+    public int MagazineSize => weaponData.magazineSize;
     private bool isFiring;
     private float nextFireTime;
     private int currentAmmo;

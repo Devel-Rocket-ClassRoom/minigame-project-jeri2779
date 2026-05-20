@@ -9,6 +9,7 @@ public class CharacterHealth : MonoBehaviour, IDamageable
         Dead
     }
     public CharacterState State { get; private set; } = CharacterState.Alive;
+    public float CurrentHealth => currentHealth;
     private CharacterStats characterStats;
     private float currentHealth;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
