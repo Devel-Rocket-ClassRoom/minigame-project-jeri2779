@@ -41,7 +41,7 @@ public class EnemySpawner : MonoBehaviour
     {
         characterMoves = player.GetComponent<CharacterMoves>();
         characterMoves.SetMovable(false);
-        StartCoroutine(NextRoundRoutine());
+        
     }
 
     private void Update()
@@ -74,6 +74,10 @@ public class EnemySpawner : MonoBehaviour
                 spawnTimer = spawnInterval;
             }
         }
+    }
+    public void StartGame()
+    {
+        StartCoroutine(NextRoundRoutine());
     }
 
     public void StopGame()
