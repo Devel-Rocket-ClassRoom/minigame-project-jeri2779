@@ -10,4 +10,9 @@ public class WeaponData : ScriptableObject
     public int magazineSize = 30;
 
     public float reloadTime = 1.5f;
+
+    public GameObject weaponModelPrefab;
+    public int price;
+    public float verticalRecoil;
+    public int maxReserveAmmo;
 }

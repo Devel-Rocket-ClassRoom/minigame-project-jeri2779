@@ -4,8 +4,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 {
     //enemy는 enemydata값 받아옴
     [SerializeField] private EnemyData enemyData;
+    [SerializeField] private Renderer hitRenderer;
+    [SerializeField] private Color hitColor = Color.red;
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private float hitFlashDuration = 0.1f;
 
     private float currentHealth;
+    private float hitFlashTimer;
     private RewardController rewardController;
 
     private void Start()
@@ -13,10 +18,23 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         currentHealth = enemyData.maxHealth;
         rewardController = FindFirstObjectByType<RewardController>();
     }
+
+    private void Update()
+    {
+        if (hitFlashTimer > 0f)
+        {
+            hitFlashTimer -= Time.deltaTime;
+            if (hitFlashTimer <= 0f)
+                hitRenderer.material.color = normalColor;
+        }
+    }
+
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
-        Debug.Log($"{gameObject.name} took {damage} damage. Current health: {currentHealth}");
+        Debug.Log($"{damage} damage.health: {currentHealth}");
+        hitRenderer.material.color = hitColor;
+        hitFlashTimer = hitFlashDuration;
 
         if (currentHealth <= 0)
         {

@@ -1,5 +1,6 @@
- using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 //추후 스크립트 역할 분리 리팩토링 필요
 public class EnemySpawner : MonoBehaviour
@@ -8,6 +9,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private Transform player;
     [SerializeField] private Transform playerSpawnPoint;
+    [SerializeField] private GameClearUI gameClearUI;
+    [SerializeField] private GameObject roundClearPanel;
+    [SerializeField] private TextMeshProUGUI finalClearText;
 
     [Header("라운드 설정")]
     [SerializeField] private int totalRounds = 10;
@@ -24,10 +28,13 @@ public class EnemySpawner : MonoBehaviour
     public int CurrentRound => currentRound;
     public int TotalRounds => totalRounds;
     public float RoundTimer => roundTimer;
+    public float ShopTimer => shopTimer;
     public bool IsRoundActive => isRoundActive;
+    public bool IsShopPhase => isShopPhase;
     public int KilledCount => totalKilledCount;
     private int currentRound = 0;
     private float roundTimer;
+    private float shopTimer;
     private float spawnTimer;
     private int totalEnemiesThisRound;
     private int killedEnemiesThisRound;
@@ -35,6 +42,7 @@ public class EnemySpawner : MonoBehaviour
     private readonly List<GameObject> aliveEnemies = new List<GameObject>();
     private List<EnemySpawnEntry> pendingSpawns = new List<EnemySpawnEntry>();
     private bool isRoundActive = false;
+    private bool isShopPhase = false;
     private CharacterMoves characterMoves;
 
     private void Start()
@@ -75,9 +83,33 @@ public class EnemySpawner : MonoBehaviour
             }
         }
     }
+    public void BeginIntro()
+    {
+        characterMoves.Teleport(playerSpawnPoint.position);
+        characterMoves.SetMovable(true);
+    }
+
     public void StartGame()
     {
-        StartCoroutine(NextRoundRoutine());
+        StartCoroutine(FirstRoundRoutine());
+    }
+
+    private IEnumerator FirstRoundRoutine()
+    {
+        characterMoves.SetMovable(false);
+        characterMoves.Teleport(playerSpawnPoint.position);
+        player.GetComponent<CharacterHealth>().ResetHealth();
+        player.GetComponent<CharacterShooter>().ResetAmmo();
+        characterMoves.ResetStamina();
+        isShopPhase = true;
+        currentRound++;
+        shopTimer = timeBetweenRounds;
+        while (shopTimer > 0f)
+        {
+            shopTimer -= Time.deltaTime;
+            yield return null;
+        }
+        StartRound();
     }
 
     public void StopGame()
@@ -88,7 +120,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void StartRound()
     {
-        currentRound++;
+        isShopPhase = false;
         if (currentRound > totalRounds)
         {
             Debug.Log("전체 라운드 클리어!");
@@ -152,13 +184,11 @@ public class EnemySpawner : MonoBehaviour
 
         if (currentRound >= totalRounds)
         {
-             
-            Debug.Log("전체 라운드 클리어");
-          
+            StartCoroutine(FinalClearSequence());
             return;
         }
 
- 
+        if (roundClearPanel != null) roundClearPanel.SetActive(true);
         StartCoroutine(NextRoundRoutine());
     }
 
@@ -182,14 +212,34 @@ public class EnemySpawner : MonoBehaviour
         return entries;
     }
 
+    private IEnumerator FinalClearSequence()
+    {
+        if (roundClearPanel != null) roundClearPanel.SetActive(true);
+        if (finalClearText != null) finalClearText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(roundEndDelay);
+        if (roundClearPanel != null) roundClearPanel.SetActive(false);
+        if (finalClearText != null) finalClearText.gameObject.SetActive(false);
+        characterMoves.SetMovable(false);
+        if (gameClearUI != null) gameClearUI.Show();
+    }
+
     private IEnumerator NextRoundRoutine()
     {
         yield return new WaitForSeconds(roundEndDelay);
+        if (roundClearPanel != null) roundClearPanel.SetActive(false);
         characterMoves.SetMovable(false);
         characterMoves.Teleport(playerSpawnPoint.position);
         player.GetComponent<CharacterHealth>().ResetHealth();
+        player.GetComponent<CharacterShooter>().ResetAmmo();
         characterMoves.ResetStamina();
-        yield return new WaitForSeconds(timeBetweenRounds);
+        isShopPhase = true;
+        currentRound++;
+        shopTimer = timeBetweenRounds;
+        while (shopTimer > 0f)
+        {
+            shopTimer -= Time.deltaTime;
+            yield return null;
+        }
         StartRound();
     }
 }

@@ -26,6 +26,8 @@ public class CharacterMoves : MonoBehaviour
     private float xRotation;
 
     public float CurrentStamina => currentStamina;
+    public bool CanMove => canMove;
+    public float RecoilPitch { get; set; }
 
     public void ResetStamina()
     {
@@ -64,8 +66,6 @@ public class CharacterMoves : MonoBehaviour
         health = GetComponent<CharacterHealth>();
         stats = GetComponent<CharacterStats>();
         currentStamina = stats.MaxStamina;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void Update()
@@ -136,13 +136,14 @@ public class CharacterMoves : MonoBehaviour
 
     private void HandleLook()
     {
+        if (Cursor.lockState != CursorLockMode.Locked) return;
         float mouseX = lookInput.x * mouseSensitivity;
         float mouseY = lookInput.y * mouseSensitivity;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        playerCamera.transform.localRotation = Quaternion.Euler(xRotation - RecoilPitch, 0f, 0f);
         transform.Rotate(Vector3.up * mouseX);
     }
 

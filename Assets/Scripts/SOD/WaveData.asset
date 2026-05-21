@@ -16,6 +16,6 @@ MonoBehaviour:
   - prefab: {fileID: 1301038958784751183, guid: 3399f0c8ee7871d4e9d70ac5adcf2c7c,
       type: 3}
     startRound: 1
-    baseCount: 10
-    countPerRound: 2
+    baseCount: 100
+    countPerRound: 5
   overrides: []

@@ -75,7 +75,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 64823
+    m_Bits: 64887
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -159,6 +159,7 @@ GameObject:
   - component: {fileID: 6689299391647682818}
   - component: {fileID: 6942270118528583853}
   - component: {fileID: 7100589176570233417}
+  - component: {fileID: 5846927657280771525}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -482,7 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3453d84e9fa26c14a967253c0d62200c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoves
-  mouseSensitivity: 0.3
+  mouseSensitivity: 0.1
   jumpHeight: 1.2
   playerCamera: {fileID: 1723378065241621120}
 --- !u!114 &7583854797034819372
@@ -509,6 +510,8 @@ MonoBehaviour:
   wpBlockDist: 0.8
   blockedWpOffset: {x: 0, y: -0.2, z: -0.25}
   wpSwaySpeed: 12
+  recoilAmount: 1.5
+  recoilReturnSpeed: 3
 --- !u!114 &6689299391647682818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,7 +529,7 @@ MonoBehaviour:
   maxStamina: 100
   staminaDrainRate: 10
   staminaRegenRate: 10
-  attackMultiplier: 1
+  attackMultiplier: 1.2
 --- !u!114 &6942270118528583853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -555,8 +558,27 @@ MonoBehaviour:
   characterMoves: {fileID: 1312475001738301151}
   hud: {fileID: 0}
   weaponModel: {fileID: 2484935617198693706}
+  crosshair: {fileID: 0}
   gameOverUI: {fileID: 0}
+  enemySpawner: {fileID: 0}
   tiltDuration: 1.5
+--- !u!114 &5846927657280771525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3108896317051391690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e91c4b523a035e447888ab3c15a538f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
+  characterStats: {fileID: 6689299391647682818}
+  characterHealth: {fileID: 6942270118528583853}
+  characterShooter: {fileID: 7583854797034819372}
+  atkUpgradePercent: 0.2
+  hpUpgradeAmount: 100
 --- !u!1 &4246655837181786872
 GameObject:
   m_ObjectHideFlags: 0

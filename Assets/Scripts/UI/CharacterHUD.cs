@@ -17,6 +17,7 @@ public class CharacterHUD : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI waveText;
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI shopCountdownText;
     [SerializeField] private TextMeshProUGUI killText;
     [SerializeField] private TextMeshProUGUI moneyText;
     [SerializeField] private TextMeshProUGUI scoreText;
@@ -42,7 +43,7 @@ public class CharacterHUD : MonoBehaviour
     private void UpdateAmmo()
     {
         if (ammoText == null) return;
-        ammoText.text = $"{characterShooter.CurrentAmmo} / {characterShooter.MagazineSize}";
+        ammoText.text = $"{characterShooter.CurrentAmmo} / {characterShooter.ReserveAmmo}";
     }
 
     private void UpdateKill()
@@ -81,7 +82,15 @@ public class CharacterHUD : MonoBehaviour
                 timerText.text = $"남은 시간\n{min:00}:{sec:00}";
             }
             else
-                timerText.text = "남은 시간\n준비 중";
+                timerText.text = $"남은 시간\n00:00";
+        }
+
+        if (shopCountdownText != null)
+        {
+            if (enemySpawner.IsShopPhase)
+                shopCountdownText.text = $"라운드 시작까지\n{Mathf.FloorToInt(enemySpawner.ShopTimer)}초";
+            else
+                shopCountdownText.text = string.Empty;
         }
     }
 }

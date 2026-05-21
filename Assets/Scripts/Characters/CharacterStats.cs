@@ -9,41 +9,21 @@ public class CharacterStats : MonoBehaviour
     [SerializeField] float staminaRegenRate = 10f;
     [SerializeField] float attackMultiplier = 1f;
 
-    public float MaxHealth => maxHealth;
-    public float MoveSpeed => moveSpeed;
-    public float MaxStamina => maxStamina;
+    private float hpBonus = 0f;
+    private float atkBonus = 0f;
+    private float mspBonus = 0f;
+    private float staminaBonus = 0f;
+
+    public float MaxHealth => maxHealth + hpBonus;
+    public float MoveSpeed => moveSpeed + mspBonus;
+    public float MaxStamina => maxStamina + staminaBonus;
     public float StaminaDrainRate => staminaDrainRate;
     public float StaminaRegenRate => staminaRegenRate;
-    public float AttackMultiplier => attackMultiplier;
-    public int UpgradeAtkLevel => upgradeAtkLevel;
-    public int UpgradeHpLevel => upgradeHpLevel;
-    public int UpgradeMspLevel => upgradeMspLevel;
-    public int UpgradeStaminaLevel => upgradeStmLevel;
-    private int upgradeAtkLevel = 0;
-    private int upgradeHpLevel = 0;
-    private int upgradeMspLevel = 0;
-    private int upgradeStmLevel = 0;
+    public float AttackMultiplier => attackMultiplier + atkBonus;
+    public float BaseAttackMultiplier => attackMultiplier;
 
-    public void UpgradeHp(float amount)
-    {
-        maxHealth += amount;
-        upgradeHpLevel++;
-    
-    }
-    public void UpgradeMoveSpeed(float amount)
-    {
-        moveSpeed += amount;
-        upgradeMspLevel++;
-      
-    }
-    public void UpgradeStamina(float amount)
-    {
-        maxStamina += amount;
-        upgradeStmLevel++;
-    }
-    public void UpgradeAttack( )
-    {
-        attackMultiplier *= 1.2f;
-        upgradeAtkLevel++;
-    }
+    public void ApplyAtkBonus(float amount) => atkBonus += amount;
+    public void ApplyHpBonus(float amount) => hpBonus += amount;
+    public void ApplyMspBonus(float amount) => mspBonus += amount;
+    public void ApplyStaminaBonus(float amount) => staminaBonus += amount;
 }

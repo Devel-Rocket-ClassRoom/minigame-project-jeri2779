@@ -26,15 +26,15 @@ public class CharacterDead : MonoBehaviour
 
     private IEnumerator DeathMoment()
     {
-        if (enemySpawner != null) enemySpawner.StopGame();
-        if (hud != null) hud.SetActive(false);
-        if (weaponModel != null) weaponModel.SetActive(false);
-        if (crosshair != null) crosshair.SetActive(false);
+        enemySpawner.StopGame();
+        weaponModel.SetActive(false);
+        crosshair.SetActive(false);
+        hud.SetActive(false);
 
         yield return StartCoroutine(characterMoves.DeathCameraRotate(tiltDuration));
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        if (gameOverUI != null) gameOverUI.Show();
+        gameOverUI.Show();
     }
 }
