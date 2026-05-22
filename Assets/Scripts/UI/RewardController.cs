@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class RewardController : MonoBehaviour
 {
+    [SerializeField] private int startingMoney = 7500;
+
     public int Money => money;
     public int Score => score;
 
     private int money;
     private int score;
+
+    private void Awake()
+    {
+        money = startingMoney;
+    }
 
     public void AddMoney(int amount)
     {

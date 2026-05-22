@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f04d3ea5668e9d247af9d401db9f05f3, type: 3}
-  m_Name: AR_Data
+  m_Name: MeleeDefault
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  damage: 31
-  fireRate: 0.1
-  range: 100
-  magazineSize: 30
-  reloadTime: 2
-  weaponModelPrefab: {fileID: 4484158918520316832, guid: ab34f41808ca7d346a9a945d7d0e40fb,
+  damage: 25
+  fireRate: 1
+  range: 10
+  magazineSize: 0
+  reloadTime: 1.5
+  weaponModelPrefab: {fileID: 4088691994292692110, guid: 633fc386a8e7379448fcc5dea4add651,
     type: 3}
-  price: 2500
-  verticalRecoil: 3
-  maxReserveAmmo: 90
-  category: 0
+  price: 0
+  verticalRecoil: 0
+  maxReserveAmmo: 0
+  category: 2
   isAutomatic: 1
   pelletCount: 1
   spreadAngle: 0
-  viewModelPosition: {x: 0, y: -0.5, z: 0}
-  viewModelRotation: {x: 0, y: 0, z: 0}
-  drawDuration: 1
+  viewModelPosition: {x: 0.23, y: -0.27, z: 0.37}
+  viewModelRotation: {x: -90, y: 0, z: 0}
+  drawDuration: 0

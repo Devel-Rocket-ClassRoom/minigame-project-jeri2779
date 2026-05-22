@@ -9,6 +9,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private Transform player;
     [SerializeField] private Transform playerSpawnPoint;
+    [SerializeField] private WeaponInventoryNew weaponInventory;
     [SerializeField] private GameClearUI gameClearUI;
     [SerializeField] private GameObject roundClearPanel;
     [SerializeField] private TextMeshProUGUI finalClearText;
@@ -99,7 +100,7 @@ public class EnemySpawner : MonoBehaviour
         characterMoves.SetMovable(false);
         characterMoves.Teleport(playerSpawnPoint.position);
         player.GetComponent<CharacterHealth>().ResetHealth();
-        player.GetComponent<CharacterShooter>().ResetAmmo();
+        weaponInventory?.ResetAmmo();
         characterMoves.ResetStamina();
         isShopPhase = true;
         currentRound++;
@@ -230,7 +231,7 @@ public class EnemySpawner : MonoBehaviour
         characterMoves.SetMovable(false);
         characterMoves.Teleport(playerSpawnPoint.position);
         player.GetComponent<CharacterHealth>().ResetHealth();
-        player.GetComponent<CharacterShooter>().ResetAmmo();
+        weaponInventory?.ResetAmmo();
         characterMoves.ResetStamina();
         isShopPhase = true;
         currentRound++;

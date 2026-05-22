@@ -6,7 +6,7 @@ public class CharacterHUD : MonoBehaviour
    
     [SerializeField] private CharacterHealth characterHealth;
     [SerializeField] private CharacterStats characterStats;
-    [SerializeField] private CharacterShooter characterShooter;
+    [SerializeField] private WeaponInventoryNew weaponInventory;
     [SerializeField] private CharacterMoves characterMoves;
     [SerializeField] private EnemySpawner enemySpawner;
     [SerializeField] private RewardController rewardController;
@@ -43,7 +43,11 @@ public class CharacterHUD : MonoBehaviour
     private void UpdateAmmo()
     {
         if (ammoText == null) return;
-        ammoText.text = $"{characterShooter.CurrentAmmo} / {characterShooter.ReserveAmmo}";
+        var w = weaponInventory?.CurrentWeapon;
+        if (w == null || w.CurrentAmmo == -1)
+            ammoText.text = "— / —";
+        else
+            ammoText.text = $"{w.CurrentAmmo} / {w.ReserveAmmo}";
     }
 
     private void UpdateKill()
