@@ -11,6 +11,7 @@ public interface IWeapon
 
     void Init(CharacterStats stats);
     bool Use(FireContext ctx);
+    void Tick(FireContext ctx);
     void TryReload();
     void CancelAction();
     void ResetAmmo();

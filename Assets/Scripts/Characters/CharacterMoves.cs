@@ -5,7 +5,6 @@ using System.Collections;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
-using NUnit.Framework;
 
 public class CharacterMoves : MonoBehaviour
 {
@@ -27,6 +26,8 @@ public class CharacterMoves : MonoBehaviour
 
     public float CurrentStamina => currentStamina;
     public bool CanMove => canMove;
+    public bool IsMoving => canMove && moveInput.sqrMagnitude > 0.01f;
+    public bool IsSprinting => isSprinting;
     public float RecoilPitch { get; set; }
 
     public void ResetStamina()

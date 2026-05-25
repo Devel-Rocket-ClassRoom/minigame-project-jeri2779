@@ -95,13 +95,10 @@ public class WeaponInventoryNew : MonoBehaviour
 
     private void SwitchToFirstAvailable()
     {
-        for (int i = 0; i < slots.Length; i++)
+        int[] priority = { (int)WeaponCategory.Primary, (int)WeaponCategory.Secondary, (int)WeaponCategory.Melee };
+        foreach (int i in priority)
         {
-            if (slots[i] != null)
-            {
-                SwitchSlot(i);
-                return;
-            }
+            if (slots[i] != null) { SwitchSlot(i); return; }
         }
     }
 }

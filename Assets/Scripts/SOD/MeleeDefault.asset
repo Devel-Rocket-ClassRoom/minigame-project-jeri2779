@@ -9,23 +9,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f04d3ea5668e9d247af9d401db9f05f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 6ec0c06d001ab2b4e907ece5119c0852, type: 3}
   m_Name: MeleeDefault
-  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponData
   damage: 25
   fireRate: 1
   range: 10
-  magazineSize: 0
-  reloadTime: 1.5
   weaponModelPrefab: {fileID: 4088691994292692110, guid: 633fc386a8e7379448fcc5dea4add651,
     type: 3}
   price: 0
   verticalRecoil: 0
-  maxReserveAmmo: 0
   category: 2
   isAutomatic: 1
-  pelletCount: 1
-  spreadAngle: 0
   viewModelPosition: {x: 0.23, y: -0.27, z: 0.37}
   viewModelRotation: {x: -90, y: 0, z: 0}
   drawDuration: 0
+  swingWindup: 0
+  maxTargets: 5
+  halfAngleX: 90
+  halfAngleY: 90
+  sphereRadius: 3

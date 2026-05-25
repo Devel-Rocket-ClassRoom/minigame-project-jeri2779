@@ -1,4 +1,3 @@
- using InfimaGames.LowPolyShooterPack;
 using UnityEngine;
 
 public class CharacterHealth : MonoBehaviour, IDamageable

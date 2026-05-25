@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class RangedWeapon : MonoBehaviour, IWeapon
 {
-    [SerializeField] private WeaponData data;
+    [SerializeField] private RangedWeaponData data;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private Animator weaponAnimator;
 
@@ -13,6 +13,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     private float reloadEndTime;
     private float nextFireTime;
     private int headLayer;
+    private bool isAiming;
 
     public WeaponData Data => data;
     public int CurrentAmmo => currentAmmo;
@@ -72,6 +73,15 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         this.stats = stats;
     }
 
+    public void Tick(FireContext ctx)
+    {
+        isAiming = ctx.isAiming;
+        if (weaponAnimator == null) return;
+        weaponAnimator.SetBool("IsAiming", isAiming);
+        weaponAnimator.SetBool("IsMoving", ctx.isMoving);
+        weaponAnimator.SetBool("IsSprinting", ctx.isSprinting);
+    }
+
     public bool Use(FireContext ctx)
     {
         if (isReloading) return false;
@@ -128,7 +138,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             muzzleFlash.Play();
         }
-        weaponAnimator?.SetTrigger("Fire");
+        weaponAnimator?.SetTrigger(isAiming ? "AimShoot" : "Fire");
     }
 
     private Vector3 ApplySpread(Vector3 direction)

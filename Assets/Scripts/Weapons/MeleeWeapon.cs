@@ -1,13 +1,16 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MeleeWeapon : MonoBehaviour, IWeapon
 {
-    [SerializeField] private WeaponData data;
-    [SerializeField] private Vector3 hitBoxHalfExtents = new Vector3(0.5f, 0.5f, 0.5f);
+    [SerializeField] private MeleeWeaponData data;
+    [SerializeField] private Animator weaponAnimator;
 
     private CharacterStats stats;
-    private Transform playerRoot;
     private float nextSwingTime;
+    private float pendingHitTime = -1f;
+    private FireContext pendingCtx;
+    private int headLayer;
 
     public WeaponData Data => data;
     public int CurrentAmmo => -1;
@@ -16,10 +19,14 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
     public Transform Root => transform;
     public GameObject GameObject => gameObject;
 
+    private void Awake()
+    {
+        headLayer = LayerMask.NameToLayer("Head");
+    }
+
     public void Init(CharacterStats stats)
     {
         this.stats = stats;
-        playerRoot = stats.transform;
     }
 
     public bool Use(FireContext ctx)
@@ -27,22 +34,92 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
         if (Time.time < nextSwingTime) return false;
         nextSwingTime = Time.time + data.fireRate;
 
-        Vector3 center = ctx.ray.origin + ctx.ray.direction * (data.range * 0.5f);
-        Vector3 halfExtents = new Vector3(hitBoxHalfExtents.x, hitBoxHalfExtents.y, data.range * 0.5f);
-        Quaternion orientation = Quaternion.LookRotation(ctx.ray.direction);
+        if (weaponAnimator != null) weaponAnimator.SetTrigger("Fire");
 
-        Collider[] hits = Physics.OverlapBox(center, halfExtents, orientation, ctx.layer);
-        foreach (Collider col in hits)
+        if (ctx.isAiming)
         {
-            if (playerRoot != null && col.transform.IsChildOf(playerRoot)) continue;
-            col.GetComponentInParent<IDamageable>()?.TakeDamage(data.damage * stats.AttackMultiplier);
+            DoJudgment(ctx, data.altDamageMultiplier, data.altHalfAngleX, data.altHalfAngleY, 1);
+            return true;
         }
+
+        if (data.swingWindup <= 0f)
+        {
+            DoJudgment(ctx, 1f, data.halfAngleX, data.halfAngleY, data.maxTargets);
+            return true;
+        }
+
+        pendingHitTime = Time.time + data.swingWindup;
+        pendingCtx = ctx;
         return true;
+    }
+
+    public void Tick(FireContext ctx)
+    {
+        if (pendingHitTime < 0f) return;
+        pendingCtx = ctx;
+        if (Time.time >= pendingHitTime)
+        {
+            DoJudgment(pendingCtx, 1f, data.halfAngleX, data.halfAngleY, data.maxTargets);
+            pendingHitTime = -1f;
+        }
     }
 
     public void TryReload() { }
 
-    public void CancelAction() { }
+    public void CancelAction()
+    {
+        pendingHitTime = -1f;
+    }
 
     public void ResetAmmo() { }
+
+    private void DoJudgment(FireContext ctx, float dmgMult, float angleX, float angleY, int maxHits)
+    {
+        var hitSet = new HashSet<IDamageable>();
+        float dmgBase = data.damage * stats.AttackMultiplier * dmgMult;
+
+        // Stage 1: Raycast — center precision + headshot
+        if (Physics.Raycast(ctx.ray.origin, ctx.ray.direction, out RaycastHit hit, data.range, ctx.layer))
+        {
+            bool isHead = hit.collider.gameObject.layer == headLayer;
+            var target = hit.collider.GetComponentInParent<IDamageable>();
+            if (target != null)
+            {
+                target.TakeDamage(dmgBase * (isHead ? 2f : 1f));
+                hitSet.Add(target);
+            }
+        }
+
+        if (hitSet.Count >= maxHits) return;
+
+        // Stage 2: OverlapSphere + angle filter
+        Collider[] cols = Physics.OverlapSphere(ctx.ray.origin, data.sphereRadius, ctx.layer);
+
+        Quaternion rot = Quaternion.LookRotation(ctx.ray.direction);
+        foreach (Collider col in cols)
+        {
+            if (hitSet.Count >= maxHits) break;
+
+            if (col.transform.IsChildOf(stats.transform)) continue;
+            var target = col.GetComponentInParent<IDamageable>();
+            if (target == null || hitSet.Contains(target)) continue;
+
+            Vector3 local = Quaternion.Inverse(rot) * (col.transform.position - ctx.ray.origin);
+            float horizAngle = Mathf.Abs(Mathf.Atan2(local.x, local.z) * Mathf.Rad2Deg);
+            float vertAngle = Mathf.Abs(Mathf.Atan2(local.y, local.z) * Mathf.Rad2Deg);
+            if (horizAngle > angleX || vertAngle > angleY) continue;
+
+            target.TakeDamage(dmgBase);
+            hitSet.Add(target);
+        }
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        if (data == null) return;
+        Gizmos.color = new Color(1f, 0.5f, 0f, 0.4f);
+        Gizmos.DrawWireSphere(transform.position, data.sphereRadius);
+    }
+#endif
 }
