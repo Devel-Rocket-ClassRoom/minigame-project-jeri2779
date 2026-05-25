@@ -29,6 +29,11 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         SyncAnimationSpeed();
     }
 
+    private void OnEnable()
+    {
+        weaponAnimator?.SetTrigger("Draw");
+    }
+
     private void SyncAnimationSpeed()
     {
         if (weaponAnimator == null) return;
