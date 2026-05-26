@@ -167,8 +167,17 @@ public class PlayerShooter : MonoBehaviour
             ? originWpLocalPosition + blockedWpOffset + recoilOffset
             : originWpLocalPosition + recoilOffset;
 
-        wpRoot.localPosition = Vector3.Lerp(wpRoot.localPosition, targetPos, Time.deltaTime * wpSwaySpeed);
-        wpRoot.localRotation = Quaternion.Euler(weapon.Data.viewModelRotation);
+        if (weapon is MeleeWeapon melee)
+        {
+            targetPos += melee.SwingPositionOffset;
+            wpRoot.localPosition = Vector3.Lerp(wpRoot.localPosition, targetPos, Time.deltaTime * wpSwaySpeed);
+            wpRoot.localRotation = Quaternion.Euler(weapon.Data.viewModelRotation + melee.SwingEulerOffset);
+        }
+        else
+        {
+            wpRoot.localPosition = Vector3.Lerp(wpRoot.localPosition, targetPos, Time.deltaTime * wpSwaySpeed);
+            wpRoot.localRotation = Quaternion.Euler(weapon.Data.viewModelRotation);
+        }
     }
 
     private Ray BuildAimRay()

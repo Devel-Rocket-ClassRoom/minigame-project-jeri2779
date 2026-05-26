@@ -490,6 +490,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: a1b2c3d4-e5f6-7890-abcd-ef1234567890
     m_ActionName: 'Player/Shop[/Keyboard/b]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7762152083946084812}
+        m_TargetAssemblyTypeName: PlayerShooter, Assembly-CSharp
+        m_MethodName: OnRightClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 9313c35a-9595-4b97-9279-d347290fc54d
+    m_ActionName: 'Player/RightClick[/Mouse/rightButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -616,6 +632,9 @@ MonoBehaviour:
   wpBlockDist: 0.8
   blockedWpOffset: {x: 0, y: -0.2, z: -0.25}
   wpSwaySpeed: 12
+  defaultFOV: 60
+  adsFOV: 40
+  adsSpeed: 10
 --- !u!1 &8163671235254392355
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,11 +21,19 @@ MonoBehaviour:
   verticalRecoil: 0
   category: 2
   isAutomatic: 1
-  viewModelPosition: {x: 0.23, y: -0.27, z: 0.37}
-  viewModelRotation: {x: -90, y: 0, z: 0}
+  viewModelPosition: {x: 0.23, y: -0.3, z: 0.34}
+  viewModelRotation: {x: 0, y: 0, z: 60}
   drawDuration: 0
   swingWindup: 0
   maxTargets: 5
   halfAngleX: 90
   halfAngleY: 90
   sphereRadius: 3
+  altDamageMultiplier: 2
+  altHalfAngleX: 10
+  altHalfAngleY: 10
+  swingEulerAxis: {x: 0, y: 1, z: 0}
+  swingAngle: 90
+  thrustDistance: 0.5
+  thrustPoseRotation: {x: 75, y: 10, z: 15}
+  thrustRotationRatio: 0.1
