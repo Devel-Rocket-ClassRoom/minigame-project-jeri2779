@@ -9,4 +9,5 @@ public class ThrowableWeaponData : WeaponData
     public GameObject grenadePrefab;
     public float throwForce = 10f;
     public int maxCount = 2;
+    public GameObject explosionVFX;
 }

@@ -32,7 +32,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
 
     private void OnEnable()
     {
-        weaponAnimator?.SetTrigger("Draw");
+        weaponAnimator.SetTrigger("Draw");
     }
 
     private void SyncAnimationSpeed()
@@ -116,7 +116,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
 
         isReloading = true;
         reloadEndTime = Time.time + data.reloadTime;
-        weaponAnimator?.SetTrigger("Reload");
+        weaponAnimator.SetTrigger("Reload");
     }
 
     public void CancelAction()
@@ -138,7 +138,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             muzzleFlash.Play();
         }
-        weaponAnimator?.SetTrigger(isAiming ? "AimShoot" : "Fire");
+        weaponAnimator.SetTrigger(isAiming ? "AimShoot" : "Fire");
     }
 
     private Vector3 ApplySpread(Vector3 direction)

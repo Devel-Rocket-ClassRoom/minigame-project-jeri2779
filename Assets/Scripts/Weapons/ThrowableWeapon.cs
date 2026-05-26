@@ -20,7 +20,7 @@ public class ThrowableWeapon : MonoBehaviour, IWeapon
     public void Init(CharacterStats stats)
     {
         this.stats = stats;
-        playerCamera = Camera.main;
+        playerCamera = stats.GetComponentInChildren<Camera>();
         currentCount = data.maxCount;
     }
 
@@ -61,6 +61,11 @@ public class ThrowableWeapon : MonoBehaviour, IWeapon
 
         Vector3 spawnPos = playerCamera.transform.position + playerCamera.transform.forward * 0.5f;
         var go = Instantiate(data.grenadePrefab, spawnPos, playerCamera.transform.rotation);
+
+        var grenadeCol = go.GetComponent<Collider>();
+        if (grenadeCol != null)
+            foreach (var c in stats.GetComponentsInChildren<Collider>())
+                Physics.IgnoreCollision(grenadeCol, c);
 
         var rb = go.GetComponent<Rigidbody>();
         if (rb != null)

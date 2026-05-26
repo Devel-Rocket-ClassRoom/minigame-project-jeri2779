@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
@@ -11,12 +12,15 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private float currentHealth;
     private float hitFlashTimer;
+    private Material hitMaterial;
     private RewardController rewardController;
 
     private void Start()
     {
         currentHealth = enemyData.maxHealth;
         rewardController = FindFirstObjectByType<RewardController>();
+        hitMaterial = hitRenderer.material;
+        hitMaterial.color = normalColor;
     }
 
     private void Update()
@@ -25,7 +29,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         {
             hitFlashTimer -= Time.deltaTime;
             if (hitFlashTimer <= 0f)
-                hitRenderer.material.color = normalColor;
+                hitMaterial.color = normalColor;
         }
     }
 
@@ -33,7 +37,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         currentHealth -= damage;
         Debug.Log($"{damage} damage.health: {currentHealth}");
-        hitRenderer.material.color = hitColor;
+        hitMaterial.color = hitColor;
         hitFlashTimer = hitFlashDuration;
 
         if (currentHealth <= 0)
@@ -43,20 +47,24 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     }
     private void Die()
     {
-        // Handle enemy death (e.g., play animation, disable controls, etc.)
         Debug.Log($"{gameObject.name} died.");
         if (rewardController != null)
         {
             rewardController.AddMoney(enemyData.moneyReward);
             rewardController.AddScore(enemyData.scoreReward);
         }
-        //적 컨트롤러 비활성화 처리
-        EnemyController controller = GetComponent<EnemyController>();
+
+        var controller = GetComponent<EnemyController>();
         if (controller != null)
-        {
             controller.SetDead();
-            gameObject.SetActive(false);
-        }
+
+        StartCoroutine(DeactivateAfterDelay(enemyData.deathDelay));
+    }
+
+    private IEnumerator DeactivateAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gameObject.SetActive(false);
     }
      
 }

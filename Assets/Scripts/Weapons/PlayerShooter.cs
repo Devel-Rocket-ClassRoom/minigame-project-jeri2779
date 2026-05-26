@@ -143,7 +143,7 @@ public class PlayerShooter : MonoBehaviour
         bool fired = weapon.Use(ctx);
 
         if (fired && weapon.CurrentAmmo != -1)
-        {
+        {   
             currentRecoil += weapon.Data.verticalRecoil;
             firedThisPress = true;
         }

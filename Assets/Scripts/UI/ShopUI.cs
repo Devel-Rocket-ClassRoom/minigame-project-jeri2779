@@ -9,33 +9,48 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private UpgradeManager upgradeManager;
     [SerializeField] private Button atkUpgradeButton;
     [SerializeField] private Button hpUpgradeButton;
-    [SerializeField] private Button weaponShopButton;
-    [SerializeField] private WeaponData arData;
     [SerializeField] private WeaponInventoryNew weaponInventory;
     [SerializeField] private RewardController rewardController;
+
+    [SerializeField] private Button[] categoryButtons;
+    [SerializeField] private GameObject[] categoryPanels;
 
     private void Awake()
     {
         atkUpgradeButton.onClick.AddListener(upgradeManager.UpgradeAttack);
         hpUpgradeButton.onClick.AddListener(upgradeManager.UpgradeHp);
-        weaponShopButton?.onClick.AddListener(BuyAR);
         shopPanel.SetActive(false);
+
+        for (int i = 0; i < categoryButtons.Length; i++)
+        {
+            int idx = i;
+            categoryButtons[i].onClick.AddListener(() => ShowPanel(idx));
+        }
+
+        foreach (var panel in categoryPanels)
+            panel.SetActive(false);
     }
 
-    private void BuyAR()
+    private void ShowPanel(int index)
     {
-        if (arData == null || weaponInventory == null) return;
-        if (weaponInventory.HasWeapon(arData))
+        for (int i = 0; i < categoryPanels.Length; i++)
+            categoryPanels[i].SetActive(i == index);
+    }
+
+    public void TryBuy(WeaponData data)
+    {
+        if (data == null || weaponInventory == null) return;
+        if (weaponInventory.HasWeapon(data))
         {
             Debug.Log("이미 장착됨");
             return;
         }
-        if (!rewardController.SpendMoney(arData.price))
+        if (!rewardController.SpendMoney(data.price))
         {
             Debug.Log("돈 부족");
             return;
         }
-        weaponInventory.EquipByCategory(arData);
+        weaponInventory.EquipByCategory(data);
     }
 
     private void Update()

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5fad4586172fd044ab5bd194a74d421, type: 3}
+  m_Name: FragGrenadeData
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowableWeaponData
+  damage: 25
+  fireRate: 0.1
+  range: 100
+  weaponModelPrefab: {fileID: 1395159897861994593, guid: 4c88afe0d1f92f844bdfe7220a2a1390,
+    type: 3}
+  price: 300
+  verticalRecoil: 0
+  category: 3
+  isAutomatic: 0
+  viewModelPosition: {x: 0.15, y: -0.15, z: 0.4}
+  viewModelRotation: {x: 0, y: 0, z: 0}
+  drawDuration: 0.5
+  fuseTime: 3
+  blastRadius: 4
+  blastDamage: 80
+  grenadePrefab: {fileID: 4668448173559025437, guid: 6befb68eb4ffa844ab70528ff3f623f3,
+    type: 3}
+  throwForce: 12
+  maxCount: 2
+  explosionVFX: {fileID: 4520469302474059286, guid: 65bbdc6526a45844bb68fc61c23c25f6,
+    type: 3}

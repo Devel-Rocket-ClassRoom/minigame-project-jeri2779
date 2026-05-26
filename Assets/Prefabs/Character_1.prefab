@@ -633,7 +633,7 @@ MonoBehaviour:
   blockedWpOffset: {x: 0, y: -0.2, z: -0.25}
   wpSwaySpeed: 12
   defaultFOV: 60
-  adsFOV: 40
+  adsFOV: 20
   adsSpeed: 10
 --- !u!1 &8163671235254392355
 GameObject:

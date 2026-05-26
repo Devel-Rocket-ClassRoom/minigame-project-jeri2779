@@ -36,4 +36,4 @@ MonoBehaviour:
   swingAngle: 90
   thrustDistance: 0.5
   thrustPoseRotation: {x: 75, y: 10, z: 15}
-  thrustRotationRatio: 0.1
+  thrustRotationRatio: 0.164

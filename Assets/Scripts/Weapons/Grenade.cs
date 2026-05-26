@@ -20,6 +20,9 @@ public class Grenade : MonoBehaviour
 
     private void Explode()
     {
+        if (data.explosionVFX != null)
+            Destroy(Instantiate(data.explosionVFX, transform.position, Quaternion.identity), 5f);
+
         var hitSet = new HashSet<IDamageable>();
         Collider[] cols = Physics.OverlapSphere(transform.position, data.blastRadius);
         foreach (var col in cols)

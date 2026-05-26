@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5076201cb62dadd42ba5dcb3f3cc033e, type: 3}
+  m_Name: WP_SR2_Data
+  m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
+  damage: 90
+  fireRate: 2
+  range: 350
+  weaponModelPrefab: {fileID: 2098045051187760901, guid: e7051aede9f97a048aefbd906bb2e09b,
+    type: 3}
+  price: 800
+  verticalRecoil: 5
+  category: 0
+  isAutomatic: 0
+  viewModelPosition: {x: 0, y: -0.5, z: 0}
+  viewModelRotation: {x: 0, y: 0, z: 0}
+  drawDuration: 0.5
+  magazineSize: 5
+  reloadTime: 3.5
+  maxReserveAmmo: 20
+  pelletCount: 1
+  spreadAngle: 0

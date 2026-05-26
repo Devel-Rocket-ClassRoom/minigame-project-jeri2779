@@ -3,23 +3,29 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    public enum EnemyState
-    {
-        Idle,
-        Chasing,
-        Attacking,
-        Dead
-    }
-    private EnemyState currentState = EnemyState.Idle;
+    public enum EnemyState { Idle, Chasing, Attacking, Prepare, Action, Recover, Dead }
+
     [SerializeField] private EnemyData enemyData;
     [SerializeField] private Transform character;
+    [SerializeField] private Animator animator;
 
-    private float attackTimer = 0f;
+    private static readonly int IsWalkingHash = Animator.StringToHash("isWalking");
+    private static readonly int IsRunningHash = Animator.StringToHash("isRunning");
+    private static readonly int IsDead1Hash = Animator.StringToHash("isDead1");
+    private static readonly int IsPunchingHash = Animator.StringToHash("isPunching_Left");
+
+    private EnemyState currentState = EnemyState.Idle;
+    private float attackTimer;
+    private float prepareTimer;
+    private float recoverTimer;
+    private float chargeTimer;
+    private Vector3 lockedTargetPos;
+
     private IDamageable playerDamageable;
     private CharacterHealth playerHealth;
     private NavMeshAgent agent;
-    
-
+    private Renderer[] renderers;
+    private Color originalColor;
 
     public void Initialize(Transform player)
     {
@@ -29,35 +35,54 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.speed = enemyData.moveSpeed;
         playerDamageable = character.GetComponent<IDamageable>();
         playerHealth = character.GetComponent<CharacterHealth>();
+        renderers = GetComponentsInChildren<Renderer>();
+        if (renderers.Length > 0)
+            originalColor = renderers[0].sharedMaterial.color;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(currentState == EnemyState.Dead) return;
+        if (currentState == EnemyState.Dead) return;
         UpdateState();
-            
+
         switch (currentState)
-        { 
-            case EnemyState.Idle:
-                // Handle idle behavior
-                break;
+        {
             case EnemyState.Chasing:
-                if (agent.isOnNavMesh)
-                {
-                    agent.isStopped = false;
-                    agent.SetDestination(character.position);
-                }
+                if (agent.isOnNavMesh) { agent.isStopped = false; agent.SetDestination(character.position); }
+                animator.SetBool(IsWalkingHash, true);
+                animator.SetBool(IsRunningHash, false);
+                animator.SetBool(IsPunchingHash, false);
                 break;
             case EnemyState.Attacking:
-                if (agent.isOnNavMesh)
-                    agent.isStopped = true;
+                if (agent.isOnNavMesh) agent.isStopped = true;
+                animator.SetBool(IsWalkingHash, false);
+                animator.SetBool(IsRunningHash, false);
+                animator.SetBool(IsPunchingHash, true);
                 HandleAttack();
                 break;
-            case EnemyState.Dead:
-                // Handle dead behavior
+            case EnemyState.Prepare:
+                animator.SetBool(IsWalkingHash, false);
+                animator.SetBool(IsRunningHash, false);
+                animator.SetBool(IsPunchingHash, false);
+                HandlePrepare();
+                break;
+            case EnemyState.Action:
+                if (enemyData.behaviorType == EnemyBehaviorType.Charger)
+                {
+                    animator.SetBool(IsRunningHash, false);
+                    animator.SetBool(IsWalkingHash, false);
+                    animator.SetBool(IsPunchingHash, true);
+                    HandleChargeAction();
+                }
+                break;
+            case EnemyState.Recover:
+                animator.SetBool(IsWalkingHash, false);
+                animator.SetBool(IsRunningHash, false);
+                animator.SetBool(IsPunchingHash, false);
+                HandleRecover();
                 break;
         }
     }
@@ -69,21 +94,126 @@ public class EnemyController : MonoBehaviour
             currentState = EnemyState.Idle;
             return;
         }
-        Vector3 flatDist = character.position - transform.position;
-        flatDist.y = 0f;
-        float sqrDist = flatDist.sqrMagnitude;
-        float sqrRange = enemyData.attackRange * enemyData.attackRange;
 
-        if (sqrDist <= sqrRange)
+        if (currentState == EnemyState.Prepare ||
+            currentState == EnemyState.Action ||
+            currentState == EnemyState.Recover)
+            return;
+
+        float sqrDist = GetSqrFlatDist();
+
+        switch (enemyData.behaviorType)
         {
-            currentState = EnemyState.Attacking;
+            case EnemyBehaviorType.Default:
+                currentState = sqrDist <= enemyData.attackRange * enemyData.attackRange
+                    ? EnemyState.Attacking : EnemyState.Chasing;
+                break;
+            case EnemyBehaviorType.Charger:
+            case EnemyBehaviorType.Thrower:
+                if (sqrDist <= enemyData.prepareDistance * enemyData.prepareDistance)
+                {
+                    if (currentState == EnemyState.Chasing)
+                        EnterPrepare();
+                }
+                else
+                    currentState = EnemyState.Chasing;
+                break;
         }
-        else
-        {
-            currentState = EnemyState.Chasing;
-        }
-        
     }
+
+    private void EnterPrepare()
+    {
+        currentState = EnemyState.Prepare;
+        lockedTargetPos = character.position;
+        prepareTimer = 0f;
+        if (agent.isOnNavMesh) agent.isStopped = true;
+        SetTint(enemyData.prepareColor);
+    }
+
+    private void HandlePrepare()
+    {
+        prepareTimer += Time.deltaTime;
+        if (prepareTimer >= enemyData.prepareDuration)
+            EnterAction();
+    }
+
+    private void EnterAction()
+    {
+        currentState = EnemyState.Action;
+        chargeTimer = 0f;
+
+        if (enemyData.behaviorType == EnemyBehaviorType.Thrower)
+        {
+            ThrowProjectile();
+            EnterRecover();
+        }
+        else if (enemyData.behaviorType == EnemyBehaviorType.Charger)
+        {
+            agent.enabled = false;
+        }
+    }
+
+    private void HandleChargeAction()
+    {
+        chargeTimer += Time.deltaTime;
+        Vector3 dir = lockedTargetPos - transform.position;
+        dir.y = 0f;
+
+        if (dir.sqrMagnitude < 0.2f || chargeTimer >= enemyData.chargeMaxDuration)
+        {
+            EnterRecover();
+            return;
+        }
+
+        // 초반 0.2초간 가속 커브 적용
+        float accel = Mathf.Clamp01(chargeTimer / 0.2f);
+        accel = accel * accel;
+        transform.Translate(dir.normalized * enemyData.chargeSpeed * accel * Time.deltaTime, Space.World);
+
+        if (GetSqrFlatDist() <= enemyData.attackRange * enemyData.attackRange)
+        {
+            playerDamageable.TakeDamage(enemyData.chargeContactDamage);
+            EnterRecover();
+        }
+    }
+
+    private void ThrowProjectile()
+    {
+        if (enemyData.projectilePrefab == null) return;
+
+        Vector3 toTarget = lockedTargetPos - transform.position;
+        Vector3 flatDir = new Vector3(toTarget.x, 0f, toTarget.z);
+        float horizDist = flatDir.magnitude;
+
+        float t = Mathf.Clamp01((horizDist - enemyData.attackRange) / (enemyData.prepareDistance - enemyData.attackRange));
+        float angle = Mathf.Lerp(enemyData.minThrowAngle, enemyData.maxThrowAngle, t);
+
+        Vector3 dir = (flatDir.normalized + Vector3.up * Mathf.Tan(angle * Mathf.Deg2Rad)).normalized;
+        Vector3 spawnPos = transform.position + Vector3.up * 1.5f;
+
+        var go = Instantiate(enemyData.projectilePrefab, spawnPos, Quaternion.LookRotation(dir));
+        go.GetComponent<EnemyProjectile>().Init(enemyData.projectileDamage, enemyData.fuseTime, enemyData.explosionRadius, GetComponentsInChildren<Collider>());
+
+        var rb = go.GetComponent<Rigidbody>();
+        if (rb != null) rb.linearVelocity = dir * enemyData.throwForce;
+    }
+
+    private void EnterRecover()
+    {
+        currentState = EnemyState.Recover;
+        recoverTimer = 0f;
+        if (!agent.enabled) agent.enabled = true;
+        if (agent.isOnNavMesh) agent.isStopped = true;
+        SetTint(originalColor);
+    }
+
+    private void HandleRecover()
+    {
+        recoverTimer += Time.deltaTime;
+        if (recoverTimer >= enemyData.recoverDuration)
+            currentState = EnemyState.Chasing;
+    }
+
     private void HandleAttack()
     {
         attackTimer += Time.deltaTime;
@@ -91,19 +221,33 @@ public class EnemyController : MonoBehaviour
         {
             Debug.Log($"{gameObject.name} is attacking the player!");
             if (playerDamageable != null)
-            {
                 playerDamageable.TakeDamage(enemyData.attackDamage);
-            }
-            attackTimer = 0f; // Reset the attack timer
+            attackTimer = 0f;
         }
     }
+
     public void SetDead()
     {
         currentState = EnemyState.Dead;
-        if (agent.isOnNavMesh)
-            agent.isStopped = true;
+        if (!agent.enabled) agent.enabled = true;
+        if (agent.isOnNavMesh) agent.isStopped = true;
+        SetTint(originalColor);
+        animator.SetBool(IsDead1Hash, true);
+        animator.SetBool(IsWalkingHash, false);
+        animator.SetBool(IsRunningHash, false);
+        animator.SetBool(IsPunchingHash, false);
     }
-    
 
-   
+    private float GetSqrFlatDist()
+    {
+        Vector3 d = character.position - transform.position;
+        d.y = 0f;
+        return d.sqrMagnitude;
+    }
+
+    private void SetTint(Color colors)
+    {
+        foreach (var ren in renderers)
+            ren.material.color = colors;
+    }
 }
