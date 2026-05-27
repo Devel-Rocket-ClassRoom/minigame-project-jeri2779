@@ -15,17 +15,17 @@ MonoBehaviour:
   damage: 31
   fireRate: 0.1
   range: 100
-  magazineSize: 30
-  reloadTime: 2
   weaponModelPrefab: {fileID: 4484158918520316832, guid: ab34f41808ca7d346a9a945d7d0e40fb,
     type: 3}
   price: 2500
   verticalRecoil: 3
-  maxReserveAmmo: 90
   category: 0
   isAutomatic: 1
-  pelletCount: 1
-  spreadAngle: 0
   viewModelPosition: {x: 0, y: -0.5, z: 0}
   viewModelRotation: {x: 0, y: 0, z: 0}
   drawDuration: 1
+  magazineSize: 30
+  reloadTime: 2
+  maxReserveAmmo: 90
+  pelletCount: 1
+  spreadAngle: 0

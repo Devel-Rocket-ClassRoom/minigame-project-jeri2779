@@ -15,14 +15,14 @@ MonoBehaviour:
   damage: 25
   fireRate: 1
   range: 4
-  weaponModelPrefab: {fileID: 4088691994292692110, guid: 633fc386a8e7379448fcc5dea4add651,
+  weaponModelPrefab: {fileID: 7070548583672584605, guid: bc4de70f591a99246a79954f3b5cebe8,
     type: 3}
   price: 0
   verticalRecoil: 0
   category: 2
   isAutomatic: 1
-  viewModelPosition: {x: 0.23, y: -0.3, z: 0.34}
-  viewModelRotation: {x: 0, y: 0, z: 60}
+  viewModelPosition: {x: 0.2, y: -0.17, z: 0.33}
+  viewModelRotation: {x: 0, y: -80, z: 100}
   drawDuration: 0
   swingWindup: 0
   maxTargets: 5

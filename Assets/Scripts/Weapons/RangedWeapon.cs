@@ -27,6 +27,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         headLayer = LayerMask.NameToLayer("Head");
         currentAmmo = data.magazineSize;
         reserveAmmo = data.maxReserveAmmo;
+      
         SyncAnimationSpeed();
     }
 

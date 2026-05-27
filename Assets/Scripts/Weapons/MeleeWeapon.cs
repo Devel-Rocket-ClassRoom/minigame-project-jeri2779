@@ -4,17 +4,13 @@ using UnityEngine;
 public class MeleeWeapon : MonoBehaviour, IWeapon
 {
     [SerializeField] private MeleeWeaponData data;
+    [SerializeField] private Animator weaponAnimator;
 
     private CharacterStats stats;
     private float nextSwingTime;
     private float pendingHitTime = -1f;
     private FireContext pendingCtx;
     private int headLayer;
-    private float swingTimer = -1f;
-    private bool swingIsThrust;
-
-    public Vector3 SwingEulerOffset { get; private set; }
-    public Vector3 SwingPositionOffset { get; private set; }
 
     public WeaponData Data => data;
     public int CurrentAmmo => -1;
@@ -38,14 +34,14 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
         if (Time.time < nextSwingTime) return false;
         nextSwingTime = Time.time + data.fireRate;
 
-        swingTimer = 0f;
-        swingIsThrust = ctx.isAiming;
-
         if (ctx.isAiming)
         {
+            weaponAnimator?.SetTrigger("AltFire");
             HitDetection(ctx, data.altDamageMultiplier, data.altHalfAngleX, data.altHalfAngleY, 1);
             return true;
         }
+
+        weaponAnimator?.SetTrigger("Fire");
 
         if (data.swingWindup <= 0f)
         {
@@ -60,52 +56,12 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
 
     public void Tick(FireContext ctx)
     {
-        if (pendingHitTime >= 0f)
+        if (pendingHitTime < 0f) return;
+        pendingCtx = ctx;
+        if (Time.time >= pendingHitTime)
         {
-            pendingCtx = ctx;
-            if (Time.time >= pendingHitTime)
-            {
-                HitDetection(pendingCtx, 1f, data.halfAngleX, data.halfAngleY, data.maxTargets);
-                pendingHitTime = -1f;
-            }
-        }
-
-        if (swingTimer >= 0f)
-        {
-            swingTimer += Time.deltaTime;
-            float t = Mathf.Clamp01(swingTimer / Mathf.Max(data.fireRate, 0.01f));
-            float curve = Mathf.Sin(t * Mathf.PI);
-
-            if (swingIsThrust)
-            {
-                float split = data.thrustRotationRatio;
-                if (t < split)
-                {
-                    float rt = Mathf.SmoothStep(0f, 1f, t / split);
-                    SwingEulerOffset = (data.thrustPoseRotation - data.viewModelRotation) * rt;
-                    SwingPositionOffset = Vector3.zero;
-                }
-                else
-                {
-                    float pt = (t - split) / (1f - split);
-                    SwingEulerOffset =
-                        (data.thrustPoseRotation - data.viewModelRotation)
-                        * (1f - Mathf.SmoothStep(0f, 1f, pt));
-                    SwingPositionOffset = new Vector3(0f, 0f, Mathf.Sin(pt * Mathf.PI) * data.thrustDistance);
-                }
-            }
-            else
-            {
-                SwingEulerOffset = data.swingEulerAxis.normalized * (curve * data.swingAngle);
-                SwingPositionOffset = Vector3.zero;
-            }
-
-            if (t >= 1f)
-            {
-                swingTimer = -1f;
-                SwingEulerOffset = Vector3.zero;
-                SwingPositionOffset = Vector3.zero;
-            }
+            HitDetection(pendingCtx, 1f, data.halfAngleX, data.halfAngleY, data.maxTargets);
+            pendingHitTime = -1f;
         }
     }
 
@@ -114,9 +70,6 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
     public void CancelAction()
     {
         pendingHitTime = -1f;
-        swingTimer = -1f;
-        SwingEulerOffset = Vector3.zero;
-        SwingPositionOffset = Vector3.zero;
     }
 
     public void ResetAmmo() { }
