@@ -19,6 +19,8 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private TMP_Text shopMoneyText;
     [SerializeField] private TMP_Text shopTimeText;
 
+    private WeaponShopItem[] shopItems;
+
     private void Awake()
     {
         atkUpgradeButton.onClick.AddListener(upgradeManager.UpgradeAttack);
@@ -33,6 +35,14 @@ public class ShopUI : MonoBehaviour
 
         foreach (var panel in categoryPanels)
             panel.SetActive(false);
+
+        shopItems = shopPanel.GetComponentsInChildren<WeaponShopItem>(true);
+    }
+
+    private void RefreshAll()
+    {
+        foreach (var item in shopItems)
+            item.Refresh(rewardController.Money, weaponInventory);
     }
 
     private int openPanelIndex = -1;
@@ -45,6 +55,7 @@ public class ShopUI : MonoBehaviour
             categoryPanels[i].SetActive(!isAlreadyOpen && i == index);
         }
         openPanelIndex = isAlreadyOpen ? -1 : index;
+        RefreshAll();
     }
 
     public void TryBuy(WeaponData data)
@@ -61,6 +72,7 @@ public class ShopUI : MonoBehaviour
             return;
         }
         weaponInventory.EquipByCategory(data);
+        RefreshAll();
     }
 
     private void Update()

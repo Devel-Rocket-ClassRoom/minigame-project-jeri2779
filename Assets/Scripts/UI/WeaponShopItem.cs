@@ -24,8 +24,11 @@ public class WeaponShopItem : MonoBehaviour
 
     public void Refresh(int money, WeaponInventoryNew inventory)
     {
+        if (data == null) return;
+        if (button == null) button = GetComponent<Button>();
         bool owned = inventory.HasWeapon(data);
         button.interactable = !owned && money >= data.price;
-        statusText.text = owned ? "보유중" : $"{data.price}G";
+        if (statusText != null)
+            statusText.text = owned ? "보유중" : $"{data.price}G";
     }
 }
