@@ -1,13 +1,31 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WeaponShopItem : MonoBehaviour
 {
     [SerializeField] private WeaponData data;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text statusText;
+
+    private Button button;
+    private ShopUI shopUI;
 
     private void Start()
     {
-        var shopUI = GetComponentInParent<ShopUI>(true);
-        GetComponent<Button>().onClick.AddListener(() => shopUI.TryBuy(data));
+        if (data == null) return;
+        button = GetComponent<Button>();
+        shopUI = GetComponentInParent<ShopUI>(true);
+        button.onClick.AddListener(() => shopUI.TryBuy(data));
+
+        if (nameText != null) nameText.text = data.displayName;
+        if (statusText != null) statusText.text = $"{data.price}G";
+    }
+
+    public void Refresh(int money, WeaponInventoryNew inventory)
+    {
+        bool owned = inventory.HasWeapon(data);
+        button.interactable = !owned && money >= data.price;
+        statusText.text = owned ? "보유중" : $"{data.price}G";
     }
 }

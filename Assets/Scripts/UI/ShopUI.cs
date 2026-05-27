@@ -86,7 +86,7 @@ public class ShopUI : MonoBehaviour
 
     private void Close()
     {
-        if (openPanelIndex >= 0) 
+        if (openPanelIndex >= 0)
         {
             categoryPanels[openPanelIndex].SetActive(false);
         }

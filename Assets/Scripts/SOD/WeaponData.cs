@@ -2,6 +2,7 @@ using UnityEngine;
 
 public abstract class WeaponData : ScriptableObject
 {
+    public string displayName;
     public float damage = 25f;
     public float fireRate = 0.1f;
     public float range = 100f;

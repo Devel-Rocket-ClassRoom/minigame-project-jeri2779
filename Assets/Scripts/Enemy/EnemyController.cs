@@ -102,10 +102,12 @@ public class EnemyController : MonoBehaviour
 
         float sqrDist = GetSqrFlatDist();
 
+        float sqrDist3D = (character.position - transform.position).sqrMagnitude;
+
         switch (enemyData.behaviorType)
         {
             case EnemyBehaviorType.Default:
-                currentState = sqrDist <= enemyData.attackRange * enemyData.attackRange
+                currentState = sqrDist3D <= enemyData.attackRange * enemyData.attackRange
                     ? EnemyState.Attacking : EnemyState.Chasing;
                 break;
             case EnemyBehaviorType.Charger:
@@ -170,7 +172,7 @@ public class EnemyController : MonoBehaviour
         accel = accel * accel;
         transform.Translate(dir.normalized * enemyData.chargeSpeed * accel * Time.deltaTime, Space.World);
 
-        if (GetSqrFlatDist() <= enemyData.attackRange * enemyData.attackRange)
+        if ((character.position - transform.position).sqrMagnitude <= enemyData.attackRange * enemyData.attackRange)
         {
             playerDamageable.TakeDamage(enemyData.chargeContactDamage);
             EnterRecover();

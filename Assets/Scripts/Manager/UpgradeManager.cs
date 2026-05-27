@@ -28,11 +28,12 @@ public class UpgradeManager : MonoBehaviour
 
     public void UpgradeHp()
     {
-        if (!rewardController.SpendMoney(upgradePrice))
-        {
-            Debug.Log("돈 부족");
-            return;
-        }
+ 
+         if (!rewardController.SpendMoney(upgradePrice))
+          {
+                Debug.Log("돈 부족");
+                return;
+          }
         characterStats.ApplyHpBonus(hpUpgradeAmount);
         characterHealth.AddHealth(hpUpgradeAmount);
         HpLevel++;
