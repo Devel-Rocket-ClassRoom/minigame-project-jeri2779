@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ec0c06d001ab2b4e907ece5119c0852, type: 3}
   m_Name: MeleeDefault
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponData
+  displayName: Combat Knife
   damage: 25
   fireRate: 1
   range: 4

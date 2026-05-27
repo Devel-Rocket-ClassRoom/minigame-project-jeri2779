@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5fad4586172fd044ab5bd194a74d421, type: 3}
   m_Name: FragGrenadeData
   m_EditorClassIdentifier: Assembly-CSharp::ThrowableWeaponData
+  displayName: HEGreanade
   damage: 25
   fireRate: 0.1
   range: 100

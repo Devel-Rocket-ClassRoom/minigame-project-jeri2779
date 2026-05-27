@@ -15,6 +15,7 @@ MonoBehaviour:
   maxHealth: 150
   moveSpeed: 3.5
   attackRange: 1.5
+  attackHeightRange: 1.2
   attackDamage: 0
   attackInterval: 1
   moneyReward: 50
@@ -31,3 +32,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 0}
   throwForce: 12
   projectileDamage: 15
+  fuseTime: 3
+  explosionRadius: 3
+  minThrowAngle: 15
+  maxThrowAngle: 60

@@ -15,6 +15,7 @@ MonoBehaviour:
   maxHealth: 80
   moveSpeed: 2
   attackRange: 1.5
+  attackHeightRange: 1.2
   attackDamage: 0
   attackInterval: 1
   moneyReward: 60
@@ -32,3 +33,7 @@ MonoBehaviour:
     type: 3}
   throwForce: 12
   projectileDamage: 20
+  fuseTime: 3
+  explosionRadius: 3
+  minThrowAngle: 15
+  maxThrowAngle: 60

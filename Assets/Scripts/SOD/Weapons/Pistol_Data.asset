@@ -12,20 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5076201cb62dadd42ba5dcb3f3cc033e, type: 3}
   m_Name: Pistol_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
+  displayName: M1911
   damage: 20
   fireRate: 0.25
   range: 50
-  magazineSize: 12
-  reloadTime: 2
   weaponModelPrefab: {fileID: 2588208364163622316, guid: 4fab788ed3a428b49bbe030ed1b4a213,
     type: 3}
   price: 0
   verticalRecoil: 1
-  maxReserveAmmo: 36
   category: 1
   isAutomatic: 0
-  pelletCount: 1
-  spreadAngle: 0
   viewModelPosition: {x: 0, y: -0.5, z: 0}
   viewModelRotation: {x: 0, y: 0, z: 0}
   drawDuration: 0.83
+  magazineSize: 12
+  reloadTime: 2
+  maxReserveAmmo: 36
+  pelletCount: 1
+  spreadAngle: 0

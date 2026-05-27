@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5076201cb62dadd42ba5dcb3f3cc033e, type: 3}
   m_Name: WP_SMG2_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
+  displayName: Mp5
   damage: 14
   fireRate: 0.08
   range: 65

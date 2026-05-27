@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -14,6 +15,9 @@ public class ShopUI : MonoBehaviour
 
     [SerializeField] private Button[] categoryButtons;
     [SerializeField] private GameObject[] categoryPanels;
+
+    [SerializeField] private TMP_Text shopMoneyText;
+    [SerializeField] private TMP_Text shopTimeText;
 
     private void Awake()
     {
@@ -61,10 +65,14 @@ public class ShopUI : MonoBehaviour
 
     private void Update()
     {
-        if (shopPanel.activeSelf && !enemySpawner.IsShopPhase)
+        if (shopPanel.activeSelf)
         {
-            Close();
-            return;
+            if (!enemySpawner.IsShopPhase)
+            {
+                Close();
+                return;
+            }
+            UpdateInfoTexts();
         }
 
         if (Keyboard.current == null) return;
@@ -90,6 +98,14 @@ public class ShopUI : MonoBehaviour
             Close();
         else
             Open();
+    }
+
+    private void UpdateInfoTexts()
+    {
+        if (shopMoneyText != null)
+            shopMoneyText.text = $"{rewardController.Money}G";
+        if (shopTimeText != null)
+            shopTimeText.text = $"{Mathf.FloorToInt(enemySpawner.ShopTimer)}초";
     }
 
     private void Open()
