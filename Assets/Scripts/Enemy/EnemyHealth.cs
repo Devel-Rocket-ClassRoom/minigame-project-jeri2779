@@ -11,6 +11,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private float hitFlashDuration = 0.1f;
 
     private float currentHealth;
+    private bool isDead;
     private float hitFlashTimer;
     private Material hitMaterial;
     private RewardController rewardController;
@@ -35,6 +36,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
+        if (isDead) return;
         currentHealth -= damage;
         Debug.Log($"{damage} damage.health: {currentHealth}");
         hitMaterial.color = hitColor;
@@ -42,6 +44,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         if (currentHealth <= 0)
         {
+            isDead = true;
             Die();
         }
     }
