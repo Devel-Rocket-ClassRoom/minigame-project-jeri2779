@@ -14,7 +14,6 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject roundClearPanel;
     [SerializeField] private TextMeshProUGUI finalClearText;
     [SerializeField] private RewardController rewardController;
-    [SerializeField] private int roundClearReward = 500;
 
     [Header("라운드 설정")]
     [SerializeField] private int totalRounds = 10;
@@ -182,7 +181,7 @@ public class EnemySpawner : MonoBehaviour
         }
         aliveEnemies.Clear();
         pendingSpawns.Clear();
-        rewardController?.AddMoney(roundClearReward);
+        rewardController?.AddRoundClearReward();
         Debug.Log($" Round {currentRound}/{totalRounds} 클리어  ");
         Debug.Log($"  조건: {clearType} | 처치: {killedEnemiesThisRound}/{totalEnemiesThisRound} | 경과: {elapsed:F1}초");
 

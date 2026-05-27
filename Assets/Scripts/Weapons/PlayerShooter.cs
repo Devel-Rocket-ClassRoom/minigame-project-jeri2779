@@ -75,7 +75,7 @@ public class PlayerShooter : MonoBehaviour
 
     public void OnReload(InputAction.CallbackContext context)
     {
-        if (context.performed && !inventory.IsDrawing)
+        if (context.performed && !inventory.IsDrawing && !characterMoves.IsSprinting)
             inventory.CurrentWeapon?.TryReload();
     }
 
@@ -98,7 +98,7 @@ public class PlayerShooter : MonoBehaviour
     {
         var weapon = inventory.CurrentWeapon;
 
-        bool adsActive = isAiming && weapon?.Data.category != WeaponCategory.Melee;
+        bool adsActive = isAiming && weapon?.Data.category != WeaponCategory.Melee && !characterMoves.IsSprinting;
         float targetFOV = adsActive ? adsFOV : defaultFOV;
         characterCamera.fieldOfView = Mathf.Lerp(characterCamera.fieldOfView, targetFOV, Time.deltaTime * adsSpeed);
 
@@ -106,6 +106,7 @@ public class PlayerShooter : MonoBehaviour
         if (weapon == null) return;
         if (weapon.Data.category != WeaponCategory.Melee) return;
         if (!characterMoves.CanMove) return;
+        if (characterMoves.IsSprinting) return;
         if (inventory.IsDrawing) return;
         if (altFiredThisPress) return;
 
@@ -126,6 +127,7 @@ public class PlayerShooter : MonoBehaviour
     private void HandleFire()
     {
         if (!characterMoves.CanMove) return;
+        if (characterMoves.IsSprinting) return;
         if (!isFiring) return;
         if (inventory.IsDrawing) return;
 

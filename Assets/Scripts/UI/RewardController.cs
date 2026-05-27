@@ -3,6 +3,7 @@ using UnityEngine;
 public class RewardController : MonoBehaviour
 {
     [SerializeField] private int startingMoney = 7500;
+    [SerializeField] private int roundClearReward = 500;
 
     public int Money => money;
     public int Score => score;
@@ -30,5 +31,10 @@ public class RewardController : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
+    }
+
+    public void AddRoundClearReward()
+    {
+        money += roundClearReward;
     }
 }

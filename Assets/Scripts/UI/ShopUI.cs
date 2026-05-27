@@ -68,6 +68,21 @@ public class ShopUI : MonoBehaviour
         }
 
         if (Keyboard.current == null) return;
+
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && shopPanel.activeSelf)
+        {
+            if (openPanelIndex >= 0)
+            {
+                categoryPanels[openPanelIndex].SetActive(false);
+                openPanelIndex = -1;
+            }
+            else
+            {
+                Close();
+            }
+            return;
+        }
+
         if (!Keyboard.current.bKey.wasPressedThisFrame) return;
         if (!enemySpawner.IsShopPhase) return;
 
