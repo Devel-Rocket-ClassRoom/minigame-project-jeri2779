@@ -101,18 +101,19 @@ public class EnemyController : MonoBehaviour
             return;
 
         float sqrDist = GetSqrFlatDist();
-
-        float sqrDist3D = (character.position - transform.position).sqrMagnitude;
+        float yDiff = Mathf.Abs(character.position.y - transform.position.y);
 
         switch (enemyData.behaviorType)
         {
             case EnemyBehaviorType.Default:
-                currentState = sqrDist3D <= enemyData.attackRange * enemyData.attackRange
-                    ? EnemyState.Attacking : EnemyState.Chasing;
+                bool inRange = sqrDist <= enemyData.attackRange * enemyData.attackRange
+                    && yDiff <= enemyData.attackHeightRange;
+                currentState = inRange ? EnemyState.Attacking : EnemyState.Chasing;
                 break;
             case EnemyBehaviorType.Charger:
             case EnemyBehaviorType.Thrower:
-                if (sqrDist <= enemyData.prepareDistance * enemyData.prepareDistance)
+                if (sqrDist <= enemyData.prepareDistance * enemyData.prepareDistance
+                    && yDiff <= enemyData.attackHeightRange)
                 {
                     if (currentState == EnemyState.Chasing)
                         EnterPrepare();
@@ -172,7 +173,9 @@ public class EnemyController : MonoBehaviour
         accel = accel * accel;
         transform.Translate(dir.normalized * enemyData.chargeSpeed * accel * Time.deltaTime, Space.World);
 
-        if ((character.position - transform.position).sqrMagnitude <= enemyData.attackRange * enemyData.attackRange)
+        float contactYDiff = Mathf.Abs(character.position.y - transform.position.y);
+        if (GetSqrFlatDist() <= enemyData.attackRange * enemyData.attackRange
+            && contactYDiff <= enemyData.attackHeightRange)
         {
             playerDamageable.TakeDamage(enemyData.chargeContactDamage);
             EnterRecover();

@@ -8,6 +8,7 @@ public class EnemyData : ScriptableObject
     public float maxHealth = 100f;
     public float moveSpeed = 2f;
     public float attackRange = 1.5f;
+    public float attackHeightRange = 1.2f;
     public float attackDamage = 10f;
     public float attackInterval = 1f;
     public int moneyReward = 30;
