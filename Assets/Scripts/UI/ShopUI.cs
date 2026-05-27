@@ -31,11 +31,16 @@ public class ShopUI : MonoBehaviour
             panel.SetActive(false);
     }
 
+    private int openPanelIndex = -1;
+
     private void ShowPanel(int index)
     {
         bool isAlreadyOpen = categoryPanels[index].activeSelf;
         for (int i = 0; i < categoryPanels.Length; i++)
+        {
             categoryPanels[i].SetActive(!isAlreadyOpen && i == index);
+        }
+        openPanelIndex = isAlreadyOpen ? -1 : index;
     }
 
     public void TryBuy(WeaponData data)
@@ -81,6 +86,11 @@ public class ShopUI : MonoBehaviour
 
     private void Close()
     {
+        if (openPanelIndex >= 0) 
+        {
+            categoryPanels[openPanelIndex].SetActive(false);
+        }
+        openPanelIndex = -1;
         shopPanel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
