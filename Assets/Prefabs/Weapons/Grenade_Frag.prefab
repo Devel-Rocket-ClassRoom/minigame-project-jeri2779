@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5925488018162242760}
   - component: {fileID: 3876713492354204713}
   - component: {fileID: 3842987392647875056}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Grenade_Frag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,6 +107,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Frag_Granade_prefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 2743952917080061498, guid: 21dee39e8518c7044bf197ce0d114c2c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8934746715757845466, guid: 21dee39e8518c7044bf197ce0d114c2c,
         type: 3}

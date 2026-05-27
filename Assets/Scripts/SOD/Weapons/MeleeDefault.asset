@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponData
   damage: 25
   fireRate: 1
-  range: 10
+  range: 4
   weaponModelPrefab: {fileID: 4088691994292692110, guid: 633fc386a8e7379448fcc5dea4add651,
     type: 3}
   price: 0
@@ -28,7 +28,7 @@ MonoBehaviour:
   maxTargets: 5
   halfAngleX: 90
   halfAngleY: 90
-  sphereRadius: 3
+  sphereRadius: 1
   altDamageMultiplier: 2
   altHalfAngleX: 10
   altHalfAngleY: 10

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6297647272974216334}
   - component: {fileID: 8206174326409793887}
   m_Layer: 0
-  m_Name: Charger
+  m_Name: Emy_Normal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17ab90cbc27ccd14cbc297a8f3618ea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  enemyData: {fileID: 11400000, guid: b4a07aeee4fbc29449b0c3b1bce57a89, type: 2}
+  enemyData: {fileID: 11400000, guid: db5cc1c0fe3cca940bbec3a9b5075799, type: 2}
   character: {fileID: 2346187779893796961, guid: 26ca269b0473f294cae3a075da323a42,
     type: 3}
   animator: {fileID: 5786739290960898782}
@@ -65,7 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf3488d6ad19534a911d28d464463ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  enemyData: {fileID: 11400000, guid: b4a07aeee4fbc29449b0c3b1bce57a89, type: 2}
+  enemyData: {fileID: 11400000, guid: db5cc1c0fe3cca940bbec3a9b5075799, type: 2}
   hitRenderer: {fileID: 5836091239407726440}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   normalColor: {r: 0.38823533, g: 0.42352945, b: 0.47058827, a: 1}

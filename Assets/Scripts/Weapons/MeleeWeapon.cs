@@ -4,7 +4,6 @@ using UnityEngine;
 public class MeleeWeapon : MonoBehaviour, IWeapon
 {
     [SerializeField] private MeleeWeaponData data;
-    [SerializeField] private Animator weaponAnimator;
 
     private CharacterStats stats;
     private float nextSwingTime;
@@ -39,20 +38,18 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
         if (Time.time < nextSwingTime) return false;
         nextSwingTime = Time.time + data.fireRate;
 
-        if (weaponAnimator != null) weaponAnimator.SetTrigger("Fire");
-
         swingTimer = 0f;
         swingIsThrust = ctx.isAiming;
 
         if (ctx.isAiming)
         {
-            DoJudgment(ctx, data.altDamageMultiplier, data.altHalfAngleX, data.altHalfAngleY, 1);
+            HitDetection(ctx, data.altDamageMultiplier, data.altHalfAngleX, data.altHalfAngleY, 1);
             return true;
         }
 
         if (data.swingWindup <= 0f)
         {
-            DoJudgment(ctx, 1f, data.halfAngleX, data.halfAngleY, data.maxTargets);
+            HitDetection(ctx, 1f, data.halfAngleX, data.halfAngleY, data.maxTargets);
             return true;
         }
 
@@ -68,7 +65,7 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
             pendingCtx = ctx;
             if (Time.time >= pendingHitTime)
             {
-                DoJudgment(pendingCtx, 1f, data.halfAngleX, data.halfAngleY, data.maxTargets);
+                HitDetection(pendingCtx, 1f, data.halfAngleX, data.halfAngleY, data.maxTargets);
                 pendingHitTime = -1f;
             }
         }
@@ -124,7 +121,7 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
 
     public void ResetAmmo() { }
 
-    private void DoJudgment(FireContext ctx, float dmgMult, float angleX, float angleY, int maxHits)
+    private void HitDetection(FireContext ctx, float dmgMult, float angleX, float angleY, int maxHits)
     {
         var hitSet = new HashSet<IDamageable>();
         float dmgBase = data.damage * stats.AttackMultiplier * dmgMult;

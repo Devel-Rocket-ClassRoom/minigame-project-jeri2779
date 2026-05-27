@@ -33,8 +33,9 @@ public class ShopUI : MonoBehaviour
 
     private void ShowPanel(int index)
     {
+        bool isAlreadyOpen = categoryPanels[index].activeSelf;
         for (int i = 0; i < categoryPanels.Length; i++)
-            categoryPanels[i].SetActive(i == index);
+            categoryPanels[i].SetActive(!isAlreadyOpen && i == index);
     }
 
     public void TryBuy(WeaponData data)
