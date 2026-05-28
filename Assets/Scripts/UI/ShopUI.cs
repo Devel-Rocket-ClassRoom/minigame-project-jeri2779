@@ -18,6 +18,7 @@ public class ShopUI : MonoBehaviour
 
     [SerializeField] private TMP_Text shopMoneyText;
     [SerializeField] private TMP_Text shopTimeText;
+    [SerializeField] private WeaponInfoPanel weaponInfoPanel;
 
     [SerializeField] private float purchaseWindowDuration = 30f;
 
@@ -26,7 +27,7 @@ public class ShopUI : MonoBehaviour
     private float purchaseTimeRemaining;
     private bool wasRoundActive;
 
-    private bool CanShop => enemySpawner.IsShopPhase || purchaseTimeRemaining > 0f;
+    private bool CanShop => !enemySpawner.IsGameStopped && (enemySpawner.IsShopPhase || purchaseTimeRemaining > 0f);
 
     private void Awake()
     {
@@ -100,6 +101,10 @@ public class ShopUI : MonoBehaviour
         Close();
     }
 
+    public void ShowWeaponInfo(WeaponData data) => weaponInfoPanel?.Show(data);
+
+    public void HideWeaponInfo() => weaponInfoPanel?.Hide();
+
     /// <summary>StatUpgradeItem에서 호출. 강화 시도 후 UI 갱신.</summary>
     public void TryStatUpgrade(StatType statType, int price, float bonusPerLevel, int maxLevel)
     {
@@ -109,6 +114,8 @@ public class ShopUI : MonoBehaviour
 
     private void Update()
     {
+      
+
         // 라운드 시작 감지 → 구매 가능 시간 초기화
         bool isRoundActive = enemySpawner.IsRoundActive;
         if (isRoundActive && !wasRoundActive)
@@ -126,7 +133,8 @@ public class ShopUI : MonoBehaviour
         {
             if (!CanShop)
             {
-                Close();
+                if (enemySpawner.IsGameStopped) SoftClose();
+                else Close();
                 return;
             }
             UpdateInfoTexts();
@@ -178,13 +186,18 @@ public class ShopUI : MonoBehaviour
 
     private void Close()
     {
-        if (openPanelIndex >= 0)
-        {
-            categoryPanels[openPanelIndex].SetActive(false);
-        }
-        openPanelIndex = -1;
-        shopPanel.SetActive(false);
+        SoftClose();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    // 게임 중단 등 외부 상태로 인한 닫힘. 커서 잠금 안 함.
+    private void SoftClose()
+    {
+        if (openPanelIndex >= 0)
+            categoryPanels[openPanelIndex].SetActive(false);
+        openPanelIndex = -1;
+        weaponInfoPanel?.Hide();
+        shopPanel.SetActive(false);
     }
 }

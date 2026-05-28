@@ -10,6 +10,7 @@ public class CharacterHUD : MonoBehaviour
     [SerializeField] private CharacterMoves characterMoves;
     [SerializeField] private EnemySpawner enemySpawner;
     [SerializeField] private RewardController rewardController;
+    [SerializeField] private UpgradeManager upgradeManager;
 
     [SerializeField] private TextMeshProUGUI hpText;
 
@@ -22,6 +23,8 @@ public class CharacterHUD : MonoBehaviour
     [SerializeField] private TextMeshProUGUI moneyText;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI staminaText;
+    [SerializeField] private TextMeshProUGUI atkLvText;
+    [SerializeField] private TextMeshProUGUI hpLvText;
 
 
     private void Update()
@@ -32,6 +35,14 @@ public class CharacterHUD : MonoBehaviour
         UpdateKill();
         UpdateSession();
         UpdateStamina();
+        UpdateUpgradeLevels();
+    }
+
+    private void UpdateUpgradeLevels()
+    {
+        if (upgradeManager == null) return;
+        if (atkLvText != null) atkLvText.text = $"{upgradeManager.AtkLevel}";
+        if (hpLvText != null) hpLvText.text = $"{upgradeManager.HpLevel}";
     }
 
     private void UpdateHP()

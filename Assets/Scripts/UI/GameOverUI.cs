@@ -39,6 +39,9 @@ public class GameOverUI : MonoBehaviour
         currentTime = restartTimer;
         isActive = true;
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         if (waveResultText != null) waveResultText.SetActive(false);
         if (killResultText != null) killResultText.SetActive(false);
         if (scoreResultText != null) scoreResultText.SetActive(false);
@@ -46,6 +49,12 @@ public class GameOverUI : MonoBehaviour
 
     private void Update()
     {
+        // 다른 시스템(ShopUI 등)이 커서를 잠그더라도 게임오버 동안엔 무조건 풀린 상태 유지
+        if (Cursor.lockState != CursorLockMode.None)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         UpdateTimer();
     }
 

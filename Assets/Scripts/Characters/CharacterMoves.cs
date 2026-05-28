@@ -188,6 +188,6 @@ public class CharacterMoves : MonoBehaviour
     private void HandleJump()
     {
         if (controller.isGrounded && isJumping)
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
+            velocity.y = Mathf.Sqrt((jumpHeight + stats.JumpHeightBonus) * -2f * Physics.gravity.y);
     }
 }

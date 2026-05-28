@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: Saiga12
   damage: 18
-  fireRate: 0.9
+  fireRate: 0.5
   range: 35
   weaponModelPrefab: {fileID: 1144810847374534087, guid: b2dc342eb51f53d4b93be27e212b737a,
     type: 3}
   price: 500
   verticalRecoil: 4
   category: 0
-  isAutomatic: 0
+  isAutomatic: 1
   viewModelPosition: {x: 11.5, y: -0.5, z: 0}
   viewModelRotation: {x: 0, y: 0, z: 0}
   drawDuration: 0.5

@@ -33,6 +33,7 @@ public class EnemySpawner : MonoBehaviour
     public float ShopTimer => shopTimer;
     public bool IsRoundActive => isRoundActive;
     public bool IsShopPhase => isShopPhase;
+    public bool IsGameStopped => isGameStopped;
     public int KilledCount => totalKilledCount;
     private int currentRound = 0;
     private float roundTimer;
@@ -45,6 +46,7 @@ public class EnemySpawner : MonoBehaviour
     private List<EnemySpawnEntry> pendingSpawns = new List<EnemySpawnEntry>();
     private bool isRoundActive = false;
     private bool isShopPhase = false;
+    private bool isGameStopped = false;
     private CharacterMoves characterMoves;
 
     private void Start()
@@ -113,6 +115,8 @@ public class EnemySpawner : MonoBehaviour
     public void StopGame()
     {
         isRoundActive = false;
+        isShopPhase = false;
+        isGameStopped = true;
         StopAllCoroutines();
     }
 

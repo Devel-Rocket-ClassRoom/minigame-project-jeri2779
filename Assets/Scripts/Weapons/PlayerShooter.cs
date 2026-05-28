@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerShooter : MonoBehaviour
@@ -124,12 +126,25 @@ public class PlayerShooter : MonoBehaviour
             inventory.DiscardSlot((int)WeaponCategory.Throwable);
     }
 
+    private static readonly List<RaycastResult> _uiRaycastResults = new List<RaycastResult>();
+    private bool IsPointerOverUI()
+    {
+        if (Cursor.lockState == CursorLockMode.Locked) return false;
+        if (EventSystem.current == null) return false;
+        if (Mouse.current == null) return false;
+        var pointer = new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() };
+        _uiRaycastResults.Clear();
+        EventSystem.current.RaycastAll(pointer, _uiRaycastResults);
+        return _uiRaycastResults.Count > 0;
+    }
+
     private void HandleFire()
     {
         if (!characterMoves.CanMove) return;
         if (characterMoves.IsSprinting) return;
         if (!isFiring) return;
         if (inventory.IsDrawing) return;
+        if (IsPointerOverUI()) return;
 
         var weapon = inventory.CurrentWeapon;
         if (weapon == null) return;

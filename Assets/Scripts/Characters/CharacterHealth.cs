@@ -35,7 +35,7 @@ public class CharacterHealth : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         if (State == CharacterState.Dead) return;
-        currentHealth -= damage;
+        currentHealth -= damage * (1f - characterStats.DamageReduction);
         Debug.Log($"{gameObject.name}{damage} damage. health: {currentHealth}");
 
         if (currentHealth <= 0)

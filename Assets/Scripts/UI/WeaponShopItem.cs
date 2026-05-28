@@ -1,8 +1,9 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class WeaponShopItem : MonoBehaviour
+public class WeaponShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private WeaponData data;
     [SerializeField] private TMP_Text nameText;
@@ -20,6 +21,16 @@ public class WeaponShopItem : MonoBehaviour
 
         if (nameText != null) nameText.text = data.displayName;
         if (statusText != null) statusText.text = $"{data.price}G";
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (data != null) shopUI?.ShowWeaponInfo(data);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        shopUI?.HideWeaponInfo();
     }
 
     public void Refresh(int money, WeaponInventoryNew inventory)

@@ -98,7 +98,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         if (currentAmmo <= 0) return false;
         if (Time.time < nextFireTime) return false;
 
-        nextFireTime = Time.time + data.fireRate;
+        nextFireTime = Time.time + data.fireRate / (stats != null ? stats.FireRateMultiplier : 1f);
         currentAmmo--;
         PlayFireFx();
 
@@ -106,7 +106,8 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         {
             Vector3 dir = ApplySpread(ctx.ray.direction);
             Debug.DrawRay(ctx.ray.origin, dir * data.range, Color.red, 1f);
-            if (!Physics.Raycast(ctx.ray.origin, dir, out RaycastHit hit, data.range, ctx.layer))
+            float range = data.range + (stats != null ? stats.RangeBonus : 0f);
+            if (!Physics.Raycast(ctx.ray.origin, dir, out RaycastHit hit, range, ctx.layer))
                 continue;
 
             Debug.DrawLine(ctx.ray.origin, hit.point, Color.yellow, 1f);
