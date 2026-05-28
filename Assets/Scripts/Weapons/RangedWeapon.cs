@@ -14,6 +14,8 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     private float nextFireTime;
     private int headLayer;
     private bool isAiming;
+    // SyncAnimationSpeed에서 계산한 기준 애니메이션 속도 저장
+    private float baseReloadAnimSpeed;
 
     public WeaponData Data => data;
     public int CurrentAmmo => currentAmmo;
@@ -41,6 +43,10 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         if (weaponAnimator == null) return;
         if (weaponAnimator.runtimeAnimatorController == null) return;
 
+        // 파라미터가 존재할 경우 기본값 1.0 보장 (클립 검색 실패 시 애니메이션 멈춤 방지)
+        weaponAnimator.SetFloat("FireSpeed", 1f);
+        weaponAnimator.SetFloat("ReloadSpeed", 1f);
+
         float fireLen = 0f;
         float reloadLen = 0f;
         foreach (var clip in weaponAnimator.runtimeAnimatorController.animationClips)
@@ -54,7 +60,10 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         if (fireLen > 0f && data.fireRate > 0f)
             weaponAnimator.SetFloat("FireSpeed", fireLen / data.fireRate);
         if (reloadLen > 0f && data.reloadTime > 0f)
-            weaponAnimator.SetFloat("ReloadSpeed", reloadLen / data.reloadTime);
+        {
+            baseReloadAnimSpeed = reloadLen / data.reloadTime;
+            weaponAnimator.SetFloat("ReloadSpeed", baseReloadAnimSpeed);
+        }
     }
 
     private void Update()
@@ -116,7 +125,16 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         if (reserveAmmo <= 0) return;
 
         isReloading = true;
-        reloadEndTime = Time.time + data.reloadTime;
+
+        // stats.ReloadSpeedMultiplier 로 재장전 시간 단축 (강화 없을 때 1.0 → 변화 없음)
+        float multiplier = stats != null ? stats.ReloadSpeedMultiplier : 1f;
+        float actualReloadTime = data.reloadTime / multiplier;
+        reloadEndTime = Time.time + actualReloadTime;
+
+        // 애니메이션도 동일 배율로 빠르게
+        if (weaponAnimator != null && baseReloadAnimSpeed > 0f)
+            weaponAnimator.SetFloat("ReloadSpeed", baseReloadAnimSpeed * multiplier);
+
         weaponAnimator.SetTrigger("Reload");
     }
 

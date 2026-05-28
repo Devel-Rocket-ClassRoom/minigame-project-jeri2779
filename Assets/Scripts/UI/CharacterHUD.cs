@@ -43,7 +43,7 @@ public class CharacterHUD : MonoBehaviour
     private void UpdateAmmo()
     {
         if (ammoText == null) return;
-        var w = weaponInventory?.CurrentWeapon;
+        var w = weaponInventory.CurrentWeapon;
         if (w == null || w.CurrentAmmo == -1)
             ammoText.text = "— / —";
         else

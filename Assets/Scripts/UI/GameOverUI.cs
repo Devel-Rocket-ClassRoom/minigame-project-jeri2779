@@ -11,6 +11,7 @@ public class GameOverUI : MonoBehaviour
 
    
     [SerializeField] private Button retryButton;
+    [SerializeField] private Button mainMenuButton;
     [SerializeField] private GameObject restartLabel;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private GameObject gameOverText;
@@ -28,6 +29,8 @@ public class GameOverUI : MonoBehaviour
     {
         if (retryButton != null)
             retryButton.onClick.AddListener(OnRetryClicked);
+        if (mainMenuButton != null)
+            mainMenuButton.onClick.AddListener(OnMainMenuClicked);
     }
 
     public void Show()
@@ -86,6 +89,13 @@ public class GameOverUI : MonoBehaviour
             scoreResultText.GetComponent<TextMeshProUGUI>().text =
                 $"점수  {rewardController.Score}";
         }
+
+        if (mainMenuButton != null) mainMenuButton.gameObject.SetActive(true);
+    }
+
+    private void OnMainMenuClicked()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void OnRetryClicked()

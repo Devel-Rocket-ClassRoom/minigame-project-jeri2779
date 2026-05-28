@@ -10,6 +10,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private float hitFlashDuration = 0.1f;
 
+    public System.Action onKilled;
+
     private float currentHealth;
     private bool isDead;
     private float hitFlashTimer;
@@ -51,6 +53,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void Die()
     {
         Debug.Log($"{gameObject.name} died.");
+        onKilled?.Invoke();
         if (rewardController != null)
         {
             rewardController.AddMoney(enemyData.moneyReward);

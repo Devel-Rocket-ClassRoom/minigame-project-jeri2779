@@ -19,7 +19,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int totalRounds = 10;
     [SerializeField] private float roundDuration = 60f;
     [SerializeField] private float roundEndDelay = 3f;
-    [SerializeField] private float timeBetweenRounds = 5f;
+    [SerializeField] private float ShoppingTimer = 5f;
 
     [Header("스폰 설정")]
     [SerializeField] private int maxAliveEnemies = 15;
@@ -58,11 +58,7 @@ public class EnemySpawner : MonoBehaviour
     {
         if (!isRoundActive) return;
 
-        int beforeCount = aliveEnemies.Count;
         aliveEnemies.RemoveAll(enemy => enemy == null || !enemy.activeInHierarchy);
-        int killed = beforeCount - aliveEnemies.Count;
-        killedEnemiesThisRound += killed;
-        totalKilledCount += killed;
 
         roundTimer -= Time.deltaTime;
 
@@ -105,7 +101,7 @@ public class EnemySpawner : MonoBehaviour
         characterMoves.ResetStamina();
         isShopPhase = true;
         currentRound++;
-        shopTimer = timeBetweenRounds;
+        shopTimer = ShoppingTimer;
         while (shopTimer > 0f)
         {
             shopTimer -= Time.deltaTime;
@@ -155,6 +151,7 @@ public class EnemySpawner : MonoBehaviour
             Transform sp = spawnPoints[Random.Range(0, spawnPoints.Length)];
             GameObject enemy = Instantiate(pendingSpawns[i].prefab, sp.position, sp.rotation);
             enemy.GetComponent<EnemyController>().Initialize(player);
+            enemy.GetComponent<EnemyHealth>().onKilled += OnEnemyKilled;
             aliveEnemies.Add(enemy);
 
             pendingSpawns[i].count--;
@@ -163,6 +160,12 @@ public class EnemySpawner : MonoBehaviour
 
             count--;
         }
+    }
+
+    private void OnEnemyKilled()
+    {
+        killedEnemiesThisRound++;
+        totalKilledCount++;
     }
 
     private void EndRound()
@@ -181,7 +184,6 @@ public class EnemySpawner : MonoBehaviour
         }
         aliveEnemies.Clear();
         pendingSpawns.Clear();
-        rewardController?.AddRoundClearReward();
         Debug.Log($" Round {currentRound}/{totalRounds} 클리어  ");
         Debug.Log($"  조건: {clearType} | 처치: {killedEnemiesThisRound}/{totalEnemiesThisRound} | 경과: {elapsed:F1}초");
 
@@ -220,6 +222,7 @@ public class EnemySpawner : MonoBehaviour
         if (roundClearPanel != null) roundClearPanel.SetActive(true);
         if (finalClearText != null) finalClearText.gameObject.SetActive(true);
         yield return new WaitForSeconds(roundEndDelay);
+        rewardController.AddRoundClearReward();
         if (roundClearPanel != null) roundClearPanel.SetActive(false);
         if (finalClearText != null) finalClearText.gameObject.SetActive(false);
         characterMoves.SetMovable(false);
@@ -230,6 +233,7 @@ public class EnemySpawner : MonoBehaviour
     {
         yield return new WaitForSeconds(roundEndDelay);
         if (roundClearPanel != null) roundClearPanel.SetActive(false);
+        rewardController.AddRoundClearReward();
         characterMoves.SetMovable(false);
         characterMoves.Teleport(playerSpawnPoint.position);
         player.GetComponent<CharacterHealth>().ResetHealth();
@@ -237,7 +241,7 @@ public class EnemySpawner : MonoBehaviour
         characterMoves.ResetStamina();
         isShopPhase = true;
         currentRound++;
-        shopTimer = timeBetweenRounds;
+        shopTimer = ShoppingTimer;
         while (shopTimer > 0f)
         {
             shopTimer -= Time.deltaTime;

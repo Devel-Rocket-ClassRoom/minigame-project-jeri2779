@@ -11,6 +11,7 @@ public class CharacterMoves : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 1f;
     [SerializeField] private float jumpHeight = 1.2f;
     [SerializeField] private Camera playerCamera;
+    [SerializeField] private WeaponInventoryNew weaponInventory;
 
     private bool isSprinting = false;
     private bool isJumping = false;
@@ -33,6 +34,11 @@ public class CharacterMoves : MonoBehaviour
     public void ResetStamina()
     {
         currentStamina = stats.MaxStamina;
+    }
+
+    public void AddStamina(float amount)
+    {
+        currentStamina = Mathf.Min(currentStamina + amount, stats.MaxStamina);
     }
 
     public IEnumerator DeathCameraRotate(float duration)
@@ -152,7 +158,8 @@ public class CharacterMoves : MonoBehaviour
     {
         bool sprinting = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
 
-        if (sprinting && currentStamina > 0f && moveInput != Vector2.zero && canMove)
+        bool isReloading = weaponInventory.CurrentWeapon?.IsReloading ?? false;
+        if (sprinting && !isReloading && currentStamina > 0f && moveInput != Vector2.zero && canMove)
         {
             isSprinting = true;
             currentStamina -= stats.StaminaDrainRate * Time.deltaTime;

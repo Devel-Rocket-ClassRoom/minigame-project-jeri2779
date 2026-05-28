@@ -19,12 +19,19 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private TMP_Text shopMoneyText;
     [SerializeField] private TMP_Text shopTimeText;
 
+    [SerializeField] private float purchaseWindowDuration = 30f;
+
     private WeaponShopItem[] shopItems;
+    private StatUpgradeItem[] statItems;
+    private float purchaseTimeRemaining;
+    private bool wasRoundActive;
+
+    private bool CanShop => enemySpawner.IsShopPhase || purchaseTimeRemaining > 0f;
 
     private void Awake()
     {
-        atkUpgradeButton.onClick.AddListener(upgradeManager.UpgradeAttack);
-        hpUpgradeButton.onClick.AddListener(upgradeManager.UpgradeHp);
+        atkUpgradeButton.onClick.AddListener(OnAtkUpgrade);
+        hpUpgradeButton.onClick.AddListener(OnHpUpgrade);
         shopPanel.SetActive(false);
 
         for (int i = 0; i < categoryButtons.Length; i++)
@@ -37,12 +44,28 @@ public class ShopUI : MonoBehaviour
             panel.SetActive(false);
 
         shopItems = shopPanel.GetComponentsInChildren<WeaponShopItem>(true);
+        statItems = shopPanel.GetComponentsInChildren<StatUpgradeItem>(true);
+    }
+
+    private void OnAtkUpgrade()
+    {
+        upgradeManager.UpgradeAttack();
+        RefreshAll();
+    }
+
+    private void OnHpUpgrade()
+    {
+        upgradeManager.UpgradeHp();
+        RefreshAll();
     }
 
     private void RefreshAll()
     {
         foreach (var item in shopItems)
             item.Refresh(rewardController.Money, weaponInventory);
+
+        foreach (var item in statItems)
+            item.Refresh(rewardController.Money, upgradeManager);
     }
 
     private int openPanelIndex = -1;
@@ -73,13 +96,35 @@ public class ShopUI : MonoBehaviour
         }
         weaponInventory.EquipByCategory(data);
         RefreshAll();
+        weaponInventory.SwitchSlot((int)data.category);
+        Close();
+    }
+
+    /// <summary>StatUpgradeItem에서 호출. 강화 시도 후 UI 갱신.</summary>
+    public void TryStatUpgrade(StatType statType, int price, float bonusPerLevel, int maxLevel)
+    {
+        upgradeManager.Upgrade(statType, price, bonusPerLevel, maxLevel);
+        RefreshAll();
     }
 
     private void Update()
     {
+        // 라운드 시작 감지 → 구매 가능 시간 초기화
+        bool isRoundActive = enemySpawner.IsRoundActive;
+        if (isRoundActive && !wasRoundActive)
+            purchaseTimeRemaining = purchaseWindowDuration;
+        wasRoundActive = isRoundActive;
+
+        if (purchaseTimeRemaining > 0f)
+        {
+            purchaseTimeRemaining -= Time.deltaTime;
+            if (purchaseTimeRemaining <= 0f && shopPanel.activeSelf)
+                Close();
+        }
+
         if (shopPanel.activeSelf)
         {
-            if (!enemySpawner.IsShopPhase)
+            if (!CanShop)
             {
                 Close();
                 return;
@@ -104,7 +149,7 @@ public class ShopUI : MonoBehaviour
         }
 
         if (!Keyboard.current.bKey.wasPressedThisFrame) return;
-        if (!enemySpawner.IsShopPhase) return;
+        if (!CanShop) return;
 
         if (shopPanel.activeSelf)
             Close();
@@ -117,12 +162,16 @@ public class ShopUI : MonoBehaviour
         if (shopMoneyText != null)
             shopMoneyText.text = $"{rewardController.Money}G";
         if (shopTimeText != null)
-            shopTimeText.text = $"{Mathf.FloorToInt(enemySpawner.ShopTimer)}초";
+        {
+            float display = enemySpawner.IsShopPhase ? enemySpawner.ShopTimer : purchaseTimeRemaining;
+            shopTimeText.text = $"{Mathf.FloorToInt(display)}초";
+        }
     }
 
     private void Open()
     {
         shopPanel.SetActive(true);
+        RefreshAll();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
