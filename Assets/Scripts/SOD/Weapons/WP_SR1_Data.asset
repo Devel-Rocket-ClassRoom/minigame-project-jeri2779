@@ -30,3 +30,4 @@ MonoBehaviour:
   maxReserveAmmo: 20
   pelletCount: 1
   spreadAngle: 0
+  useScope: 1

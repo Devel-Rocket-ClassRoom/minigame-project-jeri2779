@@ -15,6 +15,7 @@ public class PlayerShooter : MonoBehaviour
     [SerializeField] private float defaultFOV = 60f;
     [SerializeField] private float adsFOV = 40f;
     [SerializeField] private float adsSpeed = 10f;
+    [SerializeField] private float scopeFOV = 15f;
 
     private CharacterHealth health;
     private CharacterMoves characterMoves;
@@ -24,6 +25,8 @@ public class PlayerShooter : MonoBehaviour
     private bool isAiming;
     private bool altFiredThisPress;
     private IWeapon cachedWeapon;
+
+    public bool IsAiming => isAiming;
     private Vector3 originWpLocalPosition;
 
     private void Awake()
@@ -101,7 +104,9 @@ public class PlayerShooter : MonoBehaviour
         var weapon = inventory.CurrentWeapon;
 
         bool adsActive = isAiming && weapon?.Data.category != WeaponCategory.Melee && !characterMoves.IsSprinting;
-        float targetFOV = adsActive ? adsFOV : defaultFOV;
+        var rd = weapon?.Data as RangedWeaponData;
+        bool scopeActive = adsActive && rd != null && rd.useScope;
+        float targetFOV = scopeActive ? scopeFOV : (adsActive ? adsFOV : defaultFOV);
         characterCamera.fieldOfView = Mathf.Lerp(characterCamera.fieldOfView, targetFOV, Time.deltaTime * adsSpeed);
 
         if (!isAiming) return;

@@ -27,6 +27,7 @@ MonoBehaviour:
   drawDuration: 0.5
   magazineSize: 30
   reloadTime: 2.5
-  maxReserveAmmo: 120
+  maxReserveAmmo: 360
   pelletCount: 1
   spreadAngle: 2
+  useScope: 0

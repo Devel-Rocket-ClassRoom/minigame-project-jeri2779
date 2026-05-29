@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pistol_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: M1911
-  damage: 20
+  damage: 1000
   fireRate: 0.25
   range: 50
   weaponModelPrefab: {fileID: 2588208364163622316, guid: 4fab788ed3a428b49bbe030ed1b4a213,
@@ -27,6 +27,7 @@ MonoBehaviour:
   drawDuration: 0.83
   magazineSize: 12
   reloadTime: 2
-  maxReserveAmmo: 36
+  maxReserveAmmo: 360
   pelletCount: 1
   spreadAngle: 0
+  useScope: 0

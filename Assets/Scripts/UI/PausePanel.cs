@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class PausePanel : MonoBehaviour
 {
     [SerializeField] private Button backButton;
+    [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
+    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject shopPanel;
 
     private GameObject panelRoot;
     private bool isPaused = false;
@@ -15,13 +18,14 @@ public class PausePanel : MonoBehaviour
     {
         panelRoot = transform.Find("PausePanel").gameObject;
         backButton.onClick.AddListener(Resume);
+        settingsButton.onClick.AddListener(OpenSettings);
         quitButton.onClick.AddListener(Quit);
         panelRoot.SetActive(false);
     }
 
     private void Update()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && (shopPanel == null || !shopPanel.activeSelf))
             SetPause(!isPaused);
     }
 
@@ -37,6 +41,11 @@ public class PausePanel : MonoBehaviour
     private void Resume()
     {
         SetPause(false);
+    }
+
+    private void OpenSettings()
+    {
+        if (settingsPanel != null) settingsPanel.SetActive(true);
     }
 
     private void Quit()

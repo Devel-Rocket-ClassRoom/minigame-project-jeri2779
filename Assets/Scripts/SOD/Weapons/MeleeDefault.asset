@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MeleeDefault
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponData
   displayName: Combat Knife
-  damage: 25
+  damage: 1000
   fireRate: 0.5
   range: 5
   weaponModelPrefab: {fileID: 7070548583672584605, guid: bc4de70f591a99246a79954f3b5cebe8,

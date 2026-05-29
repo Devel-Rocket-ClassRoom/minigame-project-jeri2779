@@ -8,4 +8,5 @@ public class RangedWeaponData : WeaponData
     public int maxReserveAmmo = 90;
     public int pelletCount = 1;
     public float spreadAngle = 0f;
+    public bool useScope = false;
 }
