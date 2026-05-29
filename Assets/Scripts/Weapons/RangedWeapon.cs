@@ -1,4 +1,5 @@
-using UnityEngine;
+ using UnityEngine;
+
 
 public class RangedWeapon : MonoBehaviour, IWeapon
 {
@@ -15,6 +16,8 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     private int headLayer;
     private bool isAiming;
     // SyncAnimationSpeed에서 계산한 기준 애니메이션 속도 저장
+    private float baseFireAnimSpeed = 1f;
+    private bool hasFireClip = false;
     private float baseReloadAnimSpeed;
 
     public WeaponData Data => data;
@@ -51,14 +54,20 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         float reloadLen = 0f;
         foreach (var clip in weaponAnimator.runtimeAnimatorController.animationClips)
         {
-            if (clip.name.Contains("Fire") && !clip.name.Contains("AimShoot") && !clip.name.Contains("Aimshoot"))
+            bool isFire = clip.name.IndexOf("fire", System.StringComparison.OrdinalIgnoreCase) >= 0;
+            bool isAimShot = clip.name.IndexOf("AimShoot", System.StringComparison.OrdinalIgnoreCase) >= 0;
+            if (isFire && !isAimShot)
                 fireLen = clip.length;
             else if (clip.name.Contains("Reload") && !clip.name.Contains("NoAmmo"))
                 reloadLen = clip.length;
         }
 
         if (fireLen > 0f && data.fireRate > 0f)
-            weaponAnimator.SetFloat("FireSpeed", fireLen / data.fireRate);
+        {
+            hasFireClip = true;
+            baseFireAnimSpeed = Mathf.Max(fireLen / data.fireRate, 1f);
+        }
+        weaponAnimator.SetFloat("FireSpeed", baseFireAnimSpeed);
         if (reloadLen > 0f && data.reloadTime > 0f)
         {
             baseReloadAnimSpeed = reloadLen / data.reloadTime;
@@ -158,7 +167,16 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             muzzleFlash.Play();
         }
-        weaponAnimator.SetTrigger(isAiming ? "AimShoot" : "Fire");
+        if (isAiming)
+        {
+            weaponAnimator.SetTrigger("AimShoot");
+        }
+        else if (hasFireClip)
+        {
+            float multiplier = stats != null ? stats.FireRateMultiplier : 1f;
+            weaponAnimator.SetFloat("FireSpeed", baseFireAnimSpeed * multiplier);
+            weaponAnimator.Play("Fire", 0, 0f);
+        }
     }
 
     private Vector3 ApplySpread(Vector3 direction)
