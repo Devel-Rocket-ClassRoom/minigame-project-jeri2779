@@ -153,5 +153,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4398bee5316ab4458c315d410cb4ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyProjectile
-  explosionVFX: {fileID: 4520469302474059286, guid: 65bbdc6526a45844bb68fc61c23c25f6,
-    type: 3}
+  explosionVFX: {fileID: 0}

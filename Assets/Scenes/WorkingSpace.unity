@@ -31789,6 +31789,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character_1
       objectReference: {fileID: 0}
+    - target: {fileID: 7677870271825320051, guid: 26ca269b0473f294cae3a075da323a42,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7762152083946084812, guid: 26ca269b0473f294cae3a075da323a42,
         type: 3}
       propertyPath: adsFOV

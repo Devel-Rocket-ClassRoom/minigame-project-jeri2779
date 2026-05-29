@@ -113,7 +113,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             Debug.DrawLine(ctx.ray.origin, hit.point, Color.yellow, 1f);
             Debug.DrawRay(hit.point, Vector3.up * 0.3f, Color.green, 1f);
             bool isHeadshot = hit.collider.gameObject.layer == headLayer;
-            float damage = data.damage * stats.AttackMultiplier * (isHeadshot ? 2f : 1f);
+            float damage = data.damage * (stats != null ? stats.AttackMultiplier : 1f) * (isHeadshot ? 2f : 1f);
             hit.collider.GetComponentInParent<IDamageable>()?.TakeDamage(damage);
         }
         return true;
