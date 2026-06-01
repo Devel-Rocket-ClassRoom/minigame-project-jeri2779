@@ -1,8 +1,10 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WeaponInfoPanel : MonoBehaviour
 {
+    [SerializeField] private Image weaponVisual;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text priceText;
     [SerializeField] private TMP_Text fireRateText;
@@ -15,6 +17,7 @@ public class WeaponInfoPanel : MonoBehaviour
     {
         gameObject.SetActive(true);
 
+        if (weaponVisual != null) weaponVisual.sprite = data.weaponIcon;
         if (nameText != null) nameText.text = data.displayName;
         if (priceText != null) priceText.text = $"{data.price}G";
         if (fireRateText != null) fireRateText.text = $"{(1f / data.fireRate):F0}/s";

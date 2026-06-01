@@ -42,7 +42,7 @@ public class StatUpgradeItem : MonoBehaviour
         button.interactable = !maxed && money >= price;
 
         if (levelText != null)
-            levelText.text = $"Lv {level}/{maxLevel}";
+            levelText.text = $"{level}/{maxLevel}";
 
         if (priceText != null)
             priceText.text = maxed ? "MAX" : $"{price}G";

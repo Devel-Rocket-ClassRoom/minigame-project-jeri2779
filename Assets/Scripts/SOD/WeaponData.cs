@@ -14,6 +14,7 @@ public abstract class WeaponData : ScriptableObject
     public Vector3 viewModelPosition;
     public Vector3 viewModelRotation;
     public float drawDuration = 0.5f;
+    public Sprite weaponIcon;
 }
 
 public enum WeaponCategory

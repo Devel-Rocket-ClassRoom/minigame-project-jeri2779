@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: SVD
   damage: 80
-  fireRate: 1.5
+  fireRate: 0.5
   range: 300
   weaponModelPrefab: {fileID: 160425108020041947, guid: 67484856f6f52314b9a2eca42b65604d,
     type: 3}
@@ -25,9 +25,10 @@ MonoBehaviour:
   viewModelPosition: {x: 0, y: -0.5, z: 0}
   viewModelRotation: {x: 0, y: 0, z: 0}
   drawDuration: 0.5
-  magazineSize: 5
-  reloadTime: 3
-  maxReserveAmmo: 20
+  weaponIcon: {fileID: 21300000, guid: cac92edd3a1f2df40b26205b9bdfb085, type: 3}
+  magazineSize: 30
+  reloadTime: 2.5
+  maxReserveAmmo: 180
   pelletCount: 1
   spreadAngle: 0
   useScope: 1

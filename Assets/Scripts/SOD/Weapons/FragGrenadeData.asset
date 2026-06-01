@@ -25,6 +25,7 @@ MonoBehaviour:
   viewModelPosition: {x: 0.15, y: -0.15, z: 0.4}
   viewModelRotation: {x: 0, y: 0, z: 0}
   drawDuration: 0.5
+  weaponIcon: {fileID: 567064417, guid: 44598c3ae2f46924b99046f2f3300073, type: 3}
   fuseTime: 3
   blastRadius: 4
   blastDamage: 80

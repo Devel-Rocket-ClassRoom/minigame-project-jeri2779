@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: WP_SR2_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: Noreen
-  damage: 90
-  fireRate: 2
+  damage: 150
+  fireRate: 1.5
   range: 350
   weaponModelPrefab: {fileID: 2098045051187760901, guid: e7051aede9f97a048aefbd906bb2e09b,
     type: 3}
@@ -25,9 +25,10 @@ MonoBehaviour:
   viewModelPosition: {x: 0, y: -0.5, z: 0}
   viewModelRotation: {x: 0, y: 0, z: 0}
   drawDuration: 0.5
+  weaponIcon: {fileID: 21300000, guid: c7ba986ec8e2bde40abb7334050d598b, type: 3}
   magazineSize: 5
   reloadTime: 3.5
-  maxReserveAmmo: 20
+  maxReserveAmmo: 100
   pelletCount: 1
   spreadAngle: 0
   useScope: 1

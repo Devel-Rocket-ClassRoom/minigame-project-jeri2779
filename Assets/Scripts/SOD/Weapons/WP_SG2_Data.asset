@@ -25,8 +25,10 @@ MonoBehaviour:
   viewModelPosition: {x: 11.5, y: -0.5, z: 0}
   viewModelRotation: {x: 0, y: 0, z: 0}
   drawDuration: 0.5
+  weaponIcon: {fileID: 21300000, guid: 2fa4d724c72f4c0468063c6d3a594158, type: 3}
   magazineSize: 8
   reloadTime: 2.5
-  maxReserveAmmo: 32
+  maxReserveAmmo: 120
   pelletCount: 8
   spreadAngle: 7
+  useScope: 0

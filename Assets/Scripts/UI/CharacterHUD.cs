@@ -27,15 +27,42 @@ public class CharacterHUD : MonoBehaviour
     [SerializeField] private TextMeshProUGUI hpLvText;
 
 
+    private void OnEnable()
+    {
+        if (characterHealth != null)
+            characterHealth.OnHealthChanged += HandleHealthChanged;
+        if (upgradeManager != null)
+            upgradeManager.OnUpgradeLevelChanged += HandleUpgradeLevelChanged;
+        UpdateHP(); // 구독 전 초기값 1회 갱신
+        UpdateUpgradeLevels();
+    }
+
+    private void OnDisable()
+    {
+        if (characterHealth != null)
+            characterHealth.OnHealthChanged -= HandleHealthChanged;
+        if (upgradeManager != null)
+            upgradeManager.OnUpgradeLevelChanged -= HandleUpgradeLevelChanged;
+    }
+
+    private void HandleHealthChanged(float current, float max)
+    {
+        if (hpText != null) hpText.text = $"{(int)current} / {(int)max}";
+    }
+
+    private void HandleUpgradeLevelChanged(int atkLevel, int hpLevel)
+    {
+        if (atkLvText != null) atkLvText.text = $"{atkLevel}";
+        if (hpLvText != null) hpLvText.text = $"{hpLevel}";
+    }
+
     private void Update()
     {
-        UpdateHP();
         UpdateAmmo();
         UpdateWave();
         UpdateKill();
         UpdateSession();
         UpdateStamina();
-        UpdateUpgradeLevels();
     }
 
     private void UpdateUpgradeLevels()

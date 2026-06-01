@@ -10,24 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5076201cb62dadd42ba5dcb3f3cc033e, type: 3}
-  m_Name: AR_Data
+  m_Name: WP_AR2_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
-  displayName: ARS
-  damage: 31
+  displayName: CVM
+  damage: 22
   fireRate: 0.1
   range: 100
-  weaponModelPrefab: {fileID: 4484158918520316832, guid: ab34f41808ca7d346a9a945d7d0e40fb,
+  weaponModelPrefab: {fileID: 3051007511966890975, guid: d9a86bb645364ab458d52d79e95c138a,
     type: 3}
-  price: 2500
-  verticalRecoil: 3
+  price: 500
+  verticalRecoil: 1.5
   category: 0
   isAutomatic: 1
   viewModelPosition: {x: 0, y: -0.5, z: 0}
   viewModelRotation: {x: 0, y: 0, z: 0}
-  drawDuration: 1
+  drawDuration: 0.5
+  weaponIcon: {fileID: 21300000, guid: c29e38568c88d24418f78e25cb3a27bc, type: 3}
   magazineSize: 30
-  reloadTime: 2
-  maxReserveAmmo: 90
+  reloadTime: 2.5
+  maxReserveAmmo: 360
   pelletCount: 1
-  spreadAngle: 0
+  spreadAngle: 2
   useScope: 0

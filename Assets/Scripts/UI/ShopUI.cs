@@ -10,6 +10,10 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private UpgradeManager upgradeManager;
     [SerializeField] private Button atkUpgradeButton;
     [SerializeField] private Button hpUpgradeButton;
+    [SerializeField] private TMP_Text atkLevelText;
+    [SerializeField] private TMP_Text atkPriceText;
+    [SerializeField] private TMP_Text hpLevelText;
+    [SerializeField] private TMP_Text hpPriceText;
     [SerializeField] private WeaponInventoryNew weaponInventory;
     [SerializeField] private RewardController rewardController;
 
@@ -67,6 +71,11 @@ public class ShopUI : MonoBehaviour
 
         foreach (var item in statItems)
             item.Refresh(rewardController.Money, upgradeManager);
+
+        if (atkLevelText != null) atkLevelText.text = $"LV.{upgradeManager.AtkLevel}";
+        if (hpLevelText != null) hpLevelText.text = $"LV.{upgradeManager.HpLevel}";
+        if (atkPriceText != null) atkPriceText.text = $"{upgradeManager.UpgradePrice}$";
+        if (hpPriceText != null) hpPriceText.text = $"{upgradeManager.UpgradePrice}$";
     }
 
     private int openPanelIndex = -1;

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CharacterHealth : MonoBehaviour, IDamageable
@@ -9,6 +10,10 @@ public class CharacterHealth : MonoBehaviour, IDamageable
     }
     public CharacterState State { get; private set; } = CharacterState.Alive;
     public float CurrentHealth => currentHealth;
+
+    // 체력/최대체력 변경 시 발행 (current, max)
+    public event Action<float, float> OnHealthChanged;
+
     private CharacterStats characterStats;
     private float currentHealth;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -18,18 +23,24 @@ public class CharacterHealth : MonoBehaviour, IDamageable
         currentHealth = characterStats.MaxHealth;
     }
 
- 
+    private void RaiseHealthChanged()
+    {
+        OnHealthChanged?.Invoke(currentHealth, characterStats.MaxHealth);
+    }
+
     public void ResetHealth()
     {
         State = CharacterState.Alive;
         currentHealth = characterStats.MaxHealth;
+        RaiseHealthChanged();
     }
 
     public void AddHealth(float amount)
     {
-        
+
         characterStats = GetComponent<CharacterStats>();
         currentHealth = Mathf.Min(currentHealth + amount, characterStats.MaxHealth);
+        RaiseHealthChanged();
     }
 
     public void TakeDamage(float damage)
@@ -37,10 +48,11 @@ public class CharacterHealth : MonoBehaviour, IDamageable
         if (State == CharacterState.Dead) return;
         currentHealth -= damage * (1f - characterStats.DamageReduction);
         Debug.Log($"{gameObject.name}{damage} damage. health: {currentHealth}");
+        RaiseHealthChanged();
 
         if (currentHealth <= 0)
         {
-             
+
             Die();
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,6 +29,10 @@ public class UpgradeManager : MonoBehaviour
 
     public int AtkLevel { get; private set; }
     public int HpLevel { get; private set; }
+    public int UpgradePrice => upgradePrice;
+
+    // ATK/HP 강화 레벨 변경 시 발행 (atkLevel, hpLevel)
+    public event Action<int, int> OnUpgradeLevelChanged;
 
     private readonly Dictionary<StatType, int> statLevels = new Dictionary<StatType, int>();
 
@@ -44,6 +49,7 @@ public class UpgradeManager : MonoBehaviour
         characterStats.ApplyAtkBonus(characterStats.BaseAttackMultiplier * atkUpgradePercent);
         Debug.Log($"공격 배율 {beforeMul:F2} -> {characterStats.AttackMultiplier:F2}");
         AtkLevel++;
+        OnUpgradeLevelChanged?.Invoke(AtkLevel, HpLevel);
     }
 
     public void UpgradeHp()
@@ -56,6 +62,7 @@ public class UpgradeManager : MonoBehaviour
         characterStats.ApplyHpBonus(hpUpgradeAmount);
         characterHealth.AddHealth(hpUpgradeAmount);
         HpLevel++;
+        OnUpgradeLevelChanged?.Invoke(AtkLevel, HpLevel);
     }
 
     // ─── 공통 스탯 강화 ───────────────────────────────────────────────────
