@@ -26,8 +26,7 @@ public class GameClearUI : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        UIManager.EnsureInstance().RegisterOverlayOpened(this);
 
         if (playingHUD != null) playingHUD.SetActive(false);
         if (crossHair != null) crossHair.SetActive(false);

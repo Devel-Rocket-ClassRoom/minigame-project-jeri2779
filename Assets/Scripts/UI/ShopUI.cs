@@ -206,17 +206,14 @@ public class ShopUI : MonoBehaviour
 
     private void Open()
     {
-        shopPanel.SetActive(true);
+        UIManager.EnsureInstance().ShowOverlay(shopPanel, this);
         RefreshAll();
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
 
     private void Close()
     {
         SoftClose();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        UIManager.EnsureInstance().RegisterOverlayClosed(this);
     }
 
     // 게임 중단 등 외부 상태로 인한 닫힘. 커서 잠금 안 함.

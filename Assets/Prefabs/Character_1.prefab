@@ -526,6 +526,7 @@ MonoBehaviour:
   mouseSensitivity: 0.1
   jumpHeight: 1.2
   playerCamera: {fileID: 934043769406895343}
+  weaponInventory: {fileID: 9185768798811754486}
 --- !u!114 &5045063764107414857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -590,6 +591,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeManager
   characterStats: {fileID: 5045063764107414857}
   characterHealth: {fileID: 8703008233461567453}
+  characterMoves: {fileID: 9182838733724328703}
   rewardController: {fileID: 0}
   atkUpgradePercent: 0.2
   hpUpgradeAmount: 20
@@ -633,8 +635,9 @@ MonoBehaviour:
   blockedWpOffset: {x: 0, y: -0.2, z: -0.25}
   wpSwaySpeed: 12
   defaultFOV: 60
-  adsFOV: 20
+  adsFOV: 30
   adsSpeed: 10
+  scopeFOV: 15
 --- !u!1 &8163671235254392355
 GameObject:
   m_ObjectHideFlags: 0

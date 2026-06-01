@@ -28,8 +28,13 @@ public class MainMenuUI : MonoBehaviour
         mainMenuPanel.SetActive(true);
         playingHUD.SetActive(false);
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        UIManager.EnsureInstance().RegisterOverlayOpened(this);
+    }
+
+    private void Start()
+    {
+        if (mainMenuPanel != null && mainMenuPanel.activeSelf)
+            UIManager.EnsureInstance().RegisterOverlayOpened(this);
     }
 
     private void Update()
@@ -50,8 +55,7 @@ public class MainMenuUI : MonoBehaviour
     private IEnumerator IntroSequence()
     {
         mainMenuPanel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        UIManager.EnsureInstance().RegisterOverlayClosed(this);
 
         enemySpawner.BeginIntro();
         playingHUD.SetActive(true);

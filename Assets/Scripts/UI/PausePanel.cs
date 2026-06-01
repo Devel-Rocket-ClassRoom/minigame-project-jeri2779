@@ -36,9 +36,11 @@ public class PausePanel : MonoBehaviour
     {
         isPaused = pause;
         Time.timeScale = isPaused ? 0f : 1f;
-        panelRoot.SetActive(isPaused);
-        Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = isPaused;
+
+        if (isPaused)
+            UIManager.EnsureInstance().ShowOverlay(panelRoot, this);
+        else
+            UIManager.EnsureInstance().HideOverlay(panelRoot, this);
     }
 
     private void Resume()
@@ -54,6 +56,13 @@ public class PausePanel : MonoBehaviour
     private void Quit()
     {
         Time.timeScale = 1f;
+
+        if (isPaused)
+        {
+            isPaused = false;
+            UIManager.EnsureInstance().HideOverlay(panelRoot, this);
+        }
+
         SceneManager.LoadScene(0);
     }
 }

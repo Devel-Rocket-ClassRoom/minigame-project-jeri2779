@@ -13,6 +13,8 @@ public class CharacterHealth : MonoBehaviour, IDamageable
 
     // 체력/최대체력 변경 시 발행 (current, max)
     public event Action<float, float> OnHealthChanged;
+    // 사망 시 1회 발행
+    public event Action OnDied;
 
     private CharacterStats characterStats;
     private float currentHealth;
@@ -37,8 +39,6 @@ public class CharacterHealth : MonoBehaviour, IDamageable
 
     public void AddHealth(float amount)
     {
-
-        characterStats = GetComponent<CharacterStats>();
         currentHealth = Mathf.Min(currentHealth + amount, characterStats.MaxHealth);
         RaiseHealthChanged();
     }
@@ -59,7 +59,7 @@ public class CharacterHealth : MonoBehaviour, IDamageable
     private void Die()
     {
         State = CharacterState.Dead;
-        
+        OnDied?.Invoke();
         Debug.Log($"{gameObject.name} died.");
         //캐릭터 컨트롤러 비활성화 처리
         CharacterController controller = GetComponent<CharacterController>();

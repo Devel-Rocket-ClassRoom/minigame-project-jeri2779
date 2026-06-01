@@ -33,8 +33,6 @@ public class CharacterDead : MonoBehaviour
 
         yield return StartCoroutine(characterMoves.DeathCameraRotate(tiltDuration));
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         gameOverUI.Show();
     }
 }
