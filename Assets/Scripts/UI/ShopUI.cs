@@ -79,7 +79,25 @@ public class ShopUI : MonoBehaviour
             categoryPanels[i].SetActive(!isAlreadyOpen && i == index);
         }
         openPanelIndex = isAlreadyOpen ? -1 : index;
+        UpdateCategorySelection();
         RefreshAll();
+    }
+
+    //선택한 카테고리 버튼의 highligted상태 유지용.
+    private void UpdateCategorySelection()
+    {
+        for (int i = 0; i < categoryButtons.Length; i++)
+        {
+            Transform t = categoryButtons[i].transform;
+            CanvasGroup normalCG = t.Find("Normal")?.GetComponent<CanvasGroup>();
+            CanvasGroup highlightedCG = t.Find("Highlighted")?.GetComponent<CanvasGroup>();
+            if (normalCG == null || highlightedCG == null) continue;
+
+            bool selected = i == openPanelIndex;
+            normalCG.alpha = selected ? 0f : 1f;
+            highlightedCG.alpha = selected ? 1f : 0f;
+            categoryButtons[i].interactable = !selected;
+        }
     }
 
     public void TryBuy(WeaponData data)
@@ -148,6 +166,7 @@ public class ShopUI : MonoBehaviour
             {
                 categoryPanels[openPanelIndex].SetActive(false);
                 openPanelIndex = -1;
+                UpdateCategorySelection();
             }
             else
             {
@@ -197,6 +216,7 @@ public class ShopUI : MonoBehaviour
         if (openPanelIndex >= 0)
             categoryPanels[openPanelIndex].SetActive(false);
         openPanelIndex = -1;
+        UpdateCategorySelection();
         weaponInfoPanel?.Hide();
         shopPanel.SetActive(false);
     }

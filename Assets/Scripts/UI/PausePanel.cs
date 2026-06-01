@@ -10,6 +10,7 @@ public class PausePanel : MonoBehaviour
     [SerializeField] private Button quitButton;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject shopPanel;
+    [SerializeField] private GameObject mainMenuPanel;
 
     private GameObject panelRoot;
     private bool isPaused = false;
@@ -25,7 +26,9 @@ public class PausePanel : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame && (shopPanel == null || !shopPanel.activeSelf))
+        if (Keyboard.current.escapeKey.wasPressedThisFrame
+            && (shopPanel == null || !shopPanel.activeSelf)
+            && (mainMenuPanel == null || !mainMenuPanel.activeSelf))
             SetPause(!isPaused);
     }
 
