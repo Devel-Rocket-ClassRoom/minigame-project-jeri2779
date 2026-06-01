@@ -595,7 +595,7 @@ MonoBehaviour:
   rewardController: {fileID: 0}
   atkUpgradePercent: 0.2
   hpUpgradeAmount: 20
-  upgradePrice: 3000
+  upgradePrice: 300
 --- !u!114 &9185768798811754486
 MonoBehaviour:
   m_ObjectHideFlags: 0
