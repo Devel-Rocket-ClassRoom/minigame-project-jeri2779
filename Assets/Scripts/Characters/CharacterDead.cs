@@ -15,13 +15,31 @@ public class CharacterDead : MonoBehaviour
 
     private bool triggered = false;
 
-    private void Update()
+    private void Awake()
     {
-        if (!triggered && characterHealth.State == CharacterHealth.CharacterState.Dead)
-        {
-            triggered = true;
-            StartCoroutine(DeathMoment());
-        }
+        if (characterHealth == null)
+            characterHealth = GetComponent<CharacterHealth>();
+    }
+
+    private void OnEnable()
+    {
+        if (characterHealth != null)
+            characterHealth.OnDied += HandleDied;
+    }
+
+    private void OnDisable()
+    {
+        if (characterHealth != null)
+            characterHealth.OnDied -= HandleDied;
+    }
+
+    private void HandleDied()
+    {
+        if (triggered)
+            return;
+
+        triggered = true;
+        StartCoroutine(DeathMoment());
     }
 
     private IEnumerator DeathMoment()
