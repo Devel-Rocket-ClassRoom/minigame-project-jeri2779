@@ -52,12 +52,14 @@ public class EnemySpawner : MonoBehaviour
     private bool isShopPhase = false;
     private bool isGameStopped = false;
     private CharacterMoves characterMoves;
+    private CharacterStats characterStats;
 
     private void Start()
     {
         characterMoves = player.GetComponent<CharacterMoves>();
+        characterStats = player.GetComponent<CharacterStats>();
         characterMoves.SetMovable(false);
-        
+
     }
 
     private void Update()
@@ -171,10 +173,13 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    private void OnEnemyKilled()
+    private void OnEnemyKilled(EnemyData data)
     {
         killedEnemiesThisRound++;
         totalKilledCount++;
+        rewardController.AddMoney(data.moneyReward);
+        rewardController.AddScore(data.scoreReward);
+        characterStats?.RegisterKill();
     }
 
     private void EndRound()

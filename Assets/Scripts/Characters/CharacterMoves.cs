@@ -17,19 +17,19 @@ public class CharacterMoves : MonoBehaviour
     private bool isJumping = false;
     private bool prevJumping = false;
     private int airJumpsRemaining = 0;
-    private bool canMove = true;
     private float currentStamina;
     private CharacterController controller;
     private CharacterHealth health;
     private CharacterStats stats;
+    private PlayerControl playerControl;
     private Vector2 lookInput;
     private Vector2 moveInput;
     private Vector3 velocity;
     private float xRotation;
 
     public float CurrentStamina => currentStamina;
-    public bool CanMove => canMove;
-    public bool IsMoving => canMove && moveInput.sqrMagnitude > 0.01f;
+    public bool CanMove => playerControl.ControlState == PlayerControlState.Active;
+    public bool IsMoving => CanMove && moveInput.sqrMagnitude > 0.01f;
     public bool IsSprinting => isSprinting;
     public float RecoilPitch { get; set; }
 
@@ -74,6 +74,7 @@ public class CharacterMoves : MonoBehaviour
         controller = GetComponent<CharacterController>();
         health = GetComponent<CharacterHealth>();
         stats = GetComponent<CharacterStats>();
+        playerControl = GetComponent<PlayerControl>();
         currentStamina = stats.MaxStamina;
     }
 
@@ -88,7 +89,10 @@ public class CharacterMoves : MonoBehaviour
 
     public void SetMovable(bool movable)
     {
-        canMove = movable;
+        if (movable)
+            playerControl.Unfreeze();
+        else
+            playerControl.Freeze();
     }
 
     public void Teleport(Vector3 position)
@@ -119,7 +123,7 @@ public class CharacterMoves : MonoBehaviour
 
     private void HandleMove()
     {
-        if (canMove)
+        if (CanMove)
         {
             Vector3 moveDir = transform.right * moveInput.x + transform.forward * moveInput.y;
             float currentSpeed;
@@ -161,7 +165,7 @@ public class CharacterMoves : MonoBehaviour
         bool sprinting = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
 
         bool isReloading = weaponInventory.CurrentWeapon?.IsReloading ?? false;
-        if (sprinting && !isReloading && currentStamina > 0f && moveInput != Vector2.zero && canMove)
+        if (sprinting && !isReloading && currentStamina > 0f && moveInput != Vector2.zero && CanMove)
         {
             isSprinting = true;
             currentStamina -= stats.StaminaDrainRate * Time.deltaTime;

@@ -10,18 +10,16 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private float hitFlashDuration = 0.1f;
 
-    public System.Action onKilled;
+    public System.Action<EnemyData> onKilled;
 
     private float currentHealth;
     private bool isDead;
     private float hitFlashTimer;
     private Material hitMaterial;
-    private RewardController rewardController;
 
     private void Start()
     {
         currentHealth = enemyData.maxHealth;
-        rewardController = FindFirstObjectByType<RewardController>();
         hitMaterial = hitRenderer.material;
         hitMaterial.color = normalColor;
     }
@@ -54,13 +52,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void Die()
     {
         Debug.Log($"{gameObject.name} died.");
-        onKilled?.Invoke();
-        FindFirstObjectByType<CharacterStats>()?.RegisterKill();
-        if (rewardController != null)
-        {
-            rewardController.AddMoney(enemyData.moneyReward);
-            rewardController.AddScore(enemyData.scoreReward);
-        }
+        onKilled?.Invoke(enemyData);
 
         var controller = GetComponent<EnemyController>();
         if (controller != null)

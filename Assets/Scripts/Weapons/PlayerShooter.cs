@@ -17,7 +17,7 @@ public class PlayerShooter : MonoBehaviour
     [SerializeField] private float adsSpeed = 10f;
     [SerializeField] private float scopeFOV = 15f;
 
-    private CharacterHealth health;
+    private PlayerControl playerControl;
     private CharacterMoves characterMoves;
     private float currentRecoil;
     private bool isFiring;
@@ -30,9 +30,12 @@ public class PlayerShooter : MonoBehaviour
     public bool IsFirePressed => isFiring;
     private Vector3 originWpLocalPosition;
 
+    // 발사/조준 공통 차단 조건 (이동 가능 + 비질주 + 비드로우)
+    private bool CanFire => characterMoves.CanMove && !characterMoves.IsSprinting && !inventory.IsDrawing;
+
     private void Awake()
     {
-        health = GetComponent<CharacterHealth>();
+        playerControl = GetComponent<PlayerControl>();
         characterMoves = GetComponent<CharacterMoves>();
     }
 
@@ -40,7 +43,7 @@ public class PlayerShooter : MonoBehaviour
 
     private void Update()
     {
-        if (health.State == CharacterHealth.CharacterState.Dead) return;
+        if (playerControl.ControlState == PlayerControlState.Dead) return;
 
         HandleFire();
         HandleAim();
@@ -113,9 +116,7 @@ public class PlayerShooter : MonoBehaviour
         if (!isAiming) return;
         if (weapon == null) return;
         if (weapon.Data.category != WeaponCategory.Melee) return;
-        if (!characterMoves.CanMove) return;
-        if (characterMoves.IsSprinting) return;
-        if (inventory.IsDrawing) return;
+        if (!CanFire) return;
         if (altFiredThisPress) return;
 
         var ctx = new FireContext { ray = BuildAimRay(), layer = shootableLayer, isAiming = true };
@@ -146,10 +147,8 @@ public class PlayerShooter : MonoBehaviour
 
     private void HandleFire()
     {
-        if (!characterMoves.CanMove) return;
-        if (characterMoves.IsSprinting) return;
+        if (!CanFire) return;
         if (!isFiring) return;
-        if (inventory.IsDrawing) return;
         if (IsPointerOverUI()) return;
 
         var weapon = inventory.CurrentWeapon;
