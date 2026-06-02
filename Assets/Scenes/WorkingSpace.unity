@@ -8999,18 +8999,12 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 296247323918007526}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314652538}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bf8195db9bcaee42af7f344f4c2e803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponInventoryNew
---- !u!1 &314652538 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7677870271825320051, guid: 26ca269b0473f294cae3a075da323a42,
-    type: 3}
-  m_PrefabInstance: {fileID: 296247323918007526}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &319566563
 GameObject:
   m_ObjectHideFlags: 0
@@ -63392,12 +63386,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5045063764107414857, guid: 26ca269b0473f294cae3a075da323a42,
-        type: 3}
-      propertyPath: explosionVFX
-      value: 
-      objectReference: {fileID: 8008228959439112381, guid: 26ee4bcb4f6a0404eaaf6bf1351ac2f1,
-        type: 3}
     - target: {fileID: 6042507001176377755, guid: 26ca269b0473f294cae3a075da323a42,
         type: 3}
       propertyPath: rewardController
@@ -63431,11 +63419,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7677870271825320051, guid: 26ca269b0473f294cae3a075da323a42,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6942270119648514766}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 26ca269b0473f294cae3a075da323a42, type: 3}
 --- !u!114 &1312475000190588084 stripped
 MonoBehaviour:
@@ -63443,7 +63427,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 296247323918007526}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314652538}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3453d84e9fa26c14a967253c0d62200c, type: 3}
@@ -63461,7 +63445,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 296247323918007526}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314652538}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e91c4b523a035e447888ab3c15a538f6, type: 3}
@@ -63473,7 +63457,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 296247323918007526}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314652538}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ff4e48d5cc92d14ab012441fe4b34a2, type: 3}
@@ -63485,7 +63469,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 296247323918007526}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314652538}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd5af19cd6f142c4d9863b84b83f3527, type: 3}
@@ -63497,27 +63481,12 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 296247323918007526}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314652538}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ca3d86c95ae5a3439b9ef069cf46302, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooter
---- !u!114 &6942270119648514766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314652538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 729c515d2919a1944b01858b1b5182c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PassiveHealthRegen
-  data: {fileID: 11400000, guid: abed3716b1bad334f80e30ab3f1253c0, type: 2}
-  triggerDelay: 3
-  healInterval: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

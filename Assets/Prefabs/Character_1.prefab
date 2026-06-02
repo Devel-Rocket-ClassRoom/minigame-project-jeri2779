@@ -180,6 +180,8 @@ GameObject:
   - component: {fileID: 6042507001176377755}
   - component: {fileID: 9185768798811754486}
   - component: {fileID: 7762152083946084812}
+  - component: {fileID: 8968587446061740606}
+  - component: {fileID: 3019186760209208686}
   m_Layer: 0
   m_Name: Character_1
   m_TagString: Untagged
@@ -545,6 +547,11 @@ MonoBehaviour:
   staminaDrainRate: 10
   staminaRegenRate: 10
   attackMultiplier: 1.2
+  explosionVFX: {fileID: 8008228959439112381, guid: 26ee4bcb4f6a0404eaaf6bf1351ac2f1,
+    type: 3}
+  explosiveInterval: 8
+  explosiveRadius: 3
+  lifestealKillThreshold: 5
 --- !u!114 &8703008233461567453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -638,6 +645,33 @@ MonoBehaviour:
   adsFOV: 30
   adsSpeed: 10
   scopeFOV: 15
+--- !u!114 &8968587446061740606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 729c515d2919a1944b01858b1b5182c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PassiveHealthRegen
+  data: {fileID: 11400000, guid: abed3716b1bad334f80e30ab3f1253c0, type: 2}
+  triggerDelay: 3
+  healInterval: 1
+--- !u!114 &3019186760209208686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a64e0c6a00c9b4f8f89e78db7d471d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerControl
 --- !u!1 &8163671235254392355
 GameObject:
   m_ObjectHideFlags: 0
