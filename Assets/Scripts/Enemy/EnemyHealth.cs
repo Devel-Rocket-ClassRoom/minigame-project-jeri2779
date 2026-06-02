@@ -47,6 +47,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if (currentHealth <= 0)
         {
             isDead = true;
+            GetComponent<Collider>().enabled = false; 
             Die();
         }
     }
@@ -54,6 +55,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         Debug.Log($"{gameObject.name} died.");
         onKilled?.Invoke();
+        FindFirstObjectByType<CharacterStats>()?.RegisterKill();
         if (rewardController != null)
         {
             rewardController.AddMoney(enemyData.moneyReward);
@@ -69,8 +71,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private IEnumerator DeactivateAfterDelay(float delay)
     {
+        
         yield return new WaitForSeconds(delay);
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
      
 }

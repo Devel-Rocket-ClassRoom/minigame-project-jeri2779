@@ -77,7 +77,8 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
     private void HitDetection(FireContext ctx, float dmgMult, float angleX, float angleY, int maxHits)
     {
         var hitSet = new HashSet<IDamageable>();
-        float dmgBase = data.damage * stats.AttackMultiplier * dmgMult;
+        float critMult = (stats != null && Random.value < stats.CritChance) ? 2f : 1f;
+        float dmgBase = data.damage * stats.AttackMultiplier * dmgMult * stats.MeleeDamageMultiplier * critMult;
 
         // Stage 1: Raycast — center precision + headshot
         if (Physics.Raycast(ctx.ray.origin, ctx.ray.direction, out RaycastHit hit, data.range, ctx.layer))

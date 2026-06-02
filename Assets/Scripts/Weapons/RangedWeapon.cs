@@ -85,6 +85,8 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         int taken = Mathf.Min(needed, reserveAmmo);
         currentAmmo += taken;
         reserveAmmo -= taken;
+        if (stats != null && stats.BonusAmmoPercent > 0f)
+            currentAmmo += Mathf.RoundToInt(data.magazineSize * stats.BonusAmmoPercent);
     }
 
     public void Init(CharacterStats stats)
@@ -122,8 +124,15 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             Debug.DrawLine(ctx.ray.origin, hit.point, Color.yellow, 1f);
             Debug.DrawRay(hit.point, Vector3.up * 0.3f, Color.green, 1f);
             bool isHeadshot = hit.collider.gameObject.layer == headLayer;
-            float damage = data.damage * (stats != null ? stats.AttackMultiplier : 1f) * (isHeadshot ? 2f : 1f);
+            float critMult = (stats != null && Random.value < stats.CritChance) ? 2f : 1f;
+            float damage = data.damage * (stats != null ? stats.AttackMultiplier : 1f) * (isHeadshot ? 2f : 1f) * critMult;
             hit.collider.GetComponentInParent<IDamageable>()?.TakeDamage(damage);
+
+            if (stats != null && stats.IsExplosiveReady)
+            {
+                TriggerExplosion(hit.point);
+                stats.ConsumeExplosive();
+            }
         }
         return true;
     }
@@ -176,6 +185,22 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             float multiplier = stats != null ? stats.FireRateMultiplier : 1f;
             weaponAnimator.SetFloat("FireSpeed", baseFireAnimSpeed * multiplier);
             weaponAnimator.Play("Fire", 0, 0f);
+        }
+    }
+
+    private void TriggerExplosion(Vector3 point)
+    {
+        if (stats.ExplosionVFX != null)
+            Destroy(Instantiate(stats.ExplosionVFX, point, Quaternion.identity), 3f);
+
+        var hitSet = new System.Collections.Generic.HashSet<IDamageable>();
+        Collider[] cols = Physics.OverlapSphere(point, stats.ExplosiveRadius);
+        foreach (var col in cols)
+        {
+            var target = col.GetComponentInParent<IDamageable>();
+            if (target == null || hitSet.Contains(target)) continue;
+            target.TakeDamage(stats.ExplosiveDamage);
+            hitSet.Add(target);
         }
     }
 

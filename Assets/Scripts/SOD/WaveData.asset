@@ -20,12 +20,22 @@ MonoBehaviour:
     countPerRound: 5
   - prefab: {fileID: 1301038958784751183, guid: b0a60c4b06e1a974c902a92a97aa2dc3,
       type: 3}
-    startRound: 1
+    startRound: 2
     baseCount: 10
     countPerRound: 1
   - prefab: {fileID: 1301038958784751183, guid: 26931209329c14e4492d836fbdaab773,
       type: 3}
+    startRound: 3
+    baseCount: 10
+    countPerRound: 1
+  - prefab: {fileID: 1301038958784751183, guid: 2150c1451e213c14bbf029f59108ec62,
+      type: 3}
     startRound: 1
+    baseCount: 10
+    countPerRound: 10
+  - prefab: {fileID: 1301038958784751183, guid: 26931209329c14e4492d836fbdaab773,
+      type: 3}
+    startRound: 3
     baseCount: 10
     countPerRound: 1
   overrides: []

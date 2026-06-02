@@ -15,6 +15,8 @@ public class CharacterMoves : MonoBehaviour
 
     private bool isSprinting = false;
     private bool isJumping = false;
+    private bool prevJumping = false;
+    private int airJumpsRemaining = 0;
     private bool canMove = true;
     private float currentStamina;
     private CharacterController controller;
@@ -187,7 +189,19 @@ public class CharacterMoves : MonoBehaviour
 
     private void HandleJump()
     {
-        if (controller.isGrounded && isJumping)
+        bool justPressed = isJumping && !prevJumping;
+        prevJumping = isJumping;
+
+        if (controller.isGrounded)
+        {
+            airJumpsRemaining = stats.ExtraJumpCount;
+            if (isJumping)
+                velocity.y = Mathf.Sqrt((jumpHeight + stats.JumpHeightBonus) * -2f * Physics.gravity.y);
+        }
+        else if (justPressed && airJumpsRemaining > 0)
+        {
             velocity.y = Mathf.Sqrt((jumpHeight + stats.JumpHeightBonus) * -2f * Physics.gravity.y);
+            airJumpsRemaining--;
+        }
     }
 }

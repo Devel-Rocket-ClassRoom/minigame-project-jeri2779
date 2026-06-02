@@ -8,10 +8,18 @@ using UnityEngine.UI;
  
 public class StatUpgradeItem : MonoBehaviour
 {
+    [SerializeField] private string displayName;
     [SerializeField] private StatType statType;
     [SerializeField] private int price = 2000;
     [SerializeField] private int maxLevel = 5;
     [SerializeField] private float bonusPerLevel = 1f;
+    [SerializeField] private bool isPercentage;
+
+    // SO 마이그레이션 시 아래 프로퍼티의 반환값만 SO 필드로 교체하면 됨
+    public string DisplayName => displayName;
+    public StatType StatType => statType;
+    public float BonusPerLevel => bonusPerLevel;
+    public bool IsPercentage => isPercentage;
 
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private TMP_Text priceText;

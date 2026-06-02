@@ -15,6 +15,12 @@ public enum StatType
     Range,
     MoneyGain,
     HealthRegen,
+    DoubleJump,
+    CritChance,
+    BonusAmmo,
+    MeleeDamage,
+    ExplosiveRounds,
+    Lifesteal,
 }
 
 public class UpgradeManager : MonoBehaviour
@@ -160,6 +166,24 @@ public class UpgradeManager : MonoBehaviour
                 Debug.Log($"재화 배율 {before:F2} -> {characterStats.MoneyGainMultiplier:F2}");
                 break;
             }
+            case StatType.DoubleJump:
+                characterStats.AddExtraJump();
+                break;
+            case StatType.CritChance:
+                characterStats.ApplyCritChanceBonus(bonusPerLevel);
+                break;
+            case StatType.BonusAmmo:
+                characterStats.ApplyBonusAmmoBonus(bonusPerLevel);
+                break;
+            case StatType.MeleeDamage:
+                characterStats.ApplyMeleeDamageBonus(bonusPerLevel);
+                break;
+            case StatType.ExplosiveRounds:
+                characterStats.ApplyExplosiveDamageBonus(bonusPerLevel);
+                break;
+            case StatType.Lifesteal:
+                characterStats.ApplyLifestealBonus(bonusPerLevel);
+                break;
         }
 
         Debug.Log($"{statType} 강화 완료 → Lv {statLevels[statType]}/{maxLevel}");

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6297647272974216334}
   - component: {fileID: 8206174326409793887}
   m_Layer: 0
-  m_Name: Emy_Throw
+  m_Name: Emy_HIghSpeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17ab90cbc27ccd14cbc297a8f3618ea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  enemyData: {fileID: 11400000, guid: 86a173e9706943b448055875864d6562, type: 2}
+  enemyData: {fileID: 11400000, guid: 42490cd36c967464aa2a1ddad17d3726, type: 2}
   character: {fileID: 2346187779893796961, guid: 26ca269b0473f294cae3a075da323a42,
     type: 3}
   animator: {fileID: 5786739290960898782}
@@ -65,10 +65,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf3488d6ad19534a911d28d464463ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  enemyData: {fileID: 11400000, guid: 86a173e9706943b448055875864d6562, type: 2}
-  hitRenderer: {fileID: 5836091239407726440}
+  enemyData: {fileID: 11400000, guid: 42490cd36c967464aa2a1ddad17d3726, type: 2}
+  hitRenderer: {fileID: 5833206676097820838}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
-  normalColor: {r: 0, g: 0.43529412, b: 0.105882354, a: 1}
+  normalColor: {r: 0.2627451, g: 0.14509805, b: 0.08235294, a: 1}
   hitFlashDuration: 0.1
 --- !u!195 &6297647272974216334
 NavMeshAgent:
@@ -178,7 +178,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1072905077390212, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1187010538823314, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
       propertyPath: m_Name
@@ -194,7 +194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1741205231021210, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4507433646410060, guid: b87cb604b959698428935c5d56bd97c0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -252,9 +252,9 @@ Animator:
     type: 3}
   m_PrefabInstance: {fileID: 5844088170421770234}
   m_PrefabAsset: {fileID: 0}
---- !u!137 &5836091239407726440 stripped
+--- !u!137 &5833206676097820838 stripped
 SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 137264362978539666, guid: b87cb604b959698428935c5d56bd97c0,
+  m_CorrespondingSourceObject: {fileID: 137898183122632540, guid: b87cb604b959698428935c5d56bd97c0,
     type: 3}
   m_PrefabInstance: {fileID: 5844088170421770234}
   m_PrefabAsset: {fileID: 0}
