@@ -11,7 +11,7 @@ public class CharacterHealth : MonoBehaviour, IDamageable
     public CharacterState State { get; private set; } = CharacterState.Alive;
     public float CurrentHealth => currentHealth;
 
-    // 체력/최대체력 변경 시 발행 (current, max)
+    // 체력/최대체력 변경 시  (current, max)
     public event Action<float, float> OnHealthChanged;
     // 사망 시 1회 발행
     public event Action OnDied;

@@ -14,6 +14,7 @@ public enum StatType
     FireRate,
     Range,
     MoneyGain,
+    HealthRegen,
 }
 
 public class UpgradeManager : MonoBehaviour

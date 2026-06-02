@@ -27,6 +27,7 @@ public class PlayerShooter : MonoBehaviour
     private IWeapon cachedWeapon;
 
     public bool IsAiming => isAiming;
+    public bool IsFirePressed => isFiring;
     private Vector3 originWpLocalPosition;
 
     private void Awake()

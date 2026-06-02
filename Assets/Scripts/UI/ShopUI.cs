@@ -19,6 +19,7 @@ public class ShopUI : MonoBehaviour
 
     [SerializeField] private Button[] categoryButtons;
     [SerializeField] private GameObject[] categoryPanels;
+    [SerializeField] private Button closeButton;
 
     [SerializeField] private TMP_Text shopMoneyText;
     [SerializeField] private TMP_Text shopTimeText;
@@ -44,6 +45,9 @@ public class ShopUI : MonoBehaviour
             int idx = i;
             categoryButtons[i].onClick.AddListener(() => ShowPanel(idx));
         }
+
+        if (closeButton != null)
+            closeButton.onClick.AddListener(ClosePanel);
 
         foreach (var panel in categoryPanels)
             panel.SetActive(false);
@@ -90,6 +94,15 @@ public class ShopUI : MonoBehaviour
         openPanelIndex = isAlreadyOpen ? -1 : index;
         UpdateCategorySelection();
         RefreshAll();
+    }
+
+     
+    public void ClosePanel()
+    {
+        if (openPanelIndex < 0) return;
+        categoryPanels[openPanelIndex].SetActive(false);
+        openPanelIndex = -1;
+        UpdateCategorySelection();
     }
 
     //선택한 카테고리 버튼의 highligted상태 유지용.
@@ -172,15 +185,9 @@ public class ShopUI : MonoBehaviour
         if (Keyboard.current.escapeKey.wasPressedThisFrame && shopPanel.activeSelf)
         {
             if (openPanelIndex >= 0)
-            {
-                categoryPanels[openPanelIndex].SetActive(false);
-                openPanelIndex = -1;
-                UpdateCategorySelection();
-            }
+                ClosePanel();
             else
-            {
                 Close();
-            }
             return;
         }
 

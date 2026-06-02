@@ -91,14 +91,14 @@ public class CharacterHUD : MonoBehaviour
     private void UpdateKill()
     {
         if (killText == null) return;
-        killText.text = $"Killed\n{enemySpawner.KilledCount}";
+        killText.text = $"{enemySpawner.KilledCount}";
     }
 
     private void UpdateSession()
     {
         if (rewardController == null) return;
         if (moneyText != null)
-            moneyText.text = $"{rewardController.Money}$";
+            moneyText.text = $"{rewardController.Money}";
         if (scoreText != null)
             scoreText.text = $"{rewardController.Score}";
     }
@@ -112,7 +112,7 @@ public class CharacterHUD : MonoBehaviour
     private void UpdateWave()
     {
         if (waveText != null)
-            waveText.text = $"Round\n{enemySpawner.CurrentRound} / {enemySpawner.TotalRounds}";
+            waveText.text = $"{enemySpawner.CurrentRound} / {enemySpawner.TotalRounds}";
 
         if (timerText != null)
         {
@@ -121,18 +121,25 @@ public class CharacterHUD : MonoBehaviour
                 int total = Mathf.FloorToInt(enemySpawner.RoundTimer);
                 int min = total / 60;
                 int sec = total % 60;
-                timerText.text = $"남은 시간\n{min:00}:{sec:00}";
+                timerText.text = $"{min:00}:{sec:00}";
             }
             else
-                timerText.text = $"남은 시간\n00:00";
+                timerText.text = "00:00";
         }
 
         if (shopCountdownText != null)
         {
-            if (enemySpawner.IsShopPhase)
-                shopCountdownText.text = $"라운드 시작까지\n{Mathf.FloorToInt(enemySpawner.ShopTimer)}초";
+            if (enemySpawner.IsRoundActive)
+            {
+                shopCountdownText.gameObject.SetActive(false);
+            }
             else
-                shopCountdownText.text = string.Empty;
+            {
+                shopCountdownText.gameObject.SetActive(true);
+                shopCountdownText.text = enemySpawner.IsShopPhase
+                    ? $"{Mathf.FloorToInt(enemySpawner.ShopTimer)}"
+                    : "0";
+            }
         }
     }
 }
