@@ -5861,6 +5861,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverUI
   enemySpawner: {fileID: 252777120}
+  roundManager: {fileID: 1711922859}
   rewardController: {fileID: 1861354069}
   retryButton: {fileID: 1445618799}
   mainMenuButton: {fileID: 1340679466}
@@ -6223,16 +6224,7 @@ MonoBehaviour:
   - {fileID: 82142517}
   - {fileID: 190607669}
   player: {fileID: 5660011641883840377}
-  playerSpawnPoint: {fileID: 416470854}
-  weaponInventory: {fileID: 307461093}
-  gameClearUI: {fileID: 324807297}
-  roundClearPanel: {fileID: 2014292566}
-  finalClearText: {fileID: 1884524238}
   rewardController: {fileID: 1861354069}
-  totalRounds: 5
-  roundDuration: 120
-  roundEndDelay: 3
-  ShoppingTimer: 15
   maxAliveEnemies: 50
   spawnBatchSize: 2
   spawnStartDelay: 2
@@ -9134,6 +9126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameClearUI
   enemySpawner: {fileID: 252777120}
+  roundManager: {fileID: 1711922859}
   rewardController: {fileID: 1861354069}
   playingHUD: {fileID: 573013145}
   crossHair: {fileID: 1063519843}
@@ -19321,6 +19314,7 @@ MonoBehaviour:
   weaponInventory: {fileID: 307461093}
   characterMoves: {fileID: 1312475000190588084}
   enemySpawner: {fileID: 252777120}
+  roundManager: {fileID: 1711922859}
   rewardController: {fileID: 1861354069}
   upgradeManager: {fileID: 5846927656521650094}
   hpText: {fileID: 378822737}
@@ -19368,7 +19362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopUI
   shopPanel: {fileID: 749603322}
-  enemySpawner: {fileID: 252777120}
+  roundManager: {fileID: 1711922859}
   gameManager: {fileID: 1298758339}
   upgradeManager: {fileID: 5846927656521650094}
   atkUpgradeButton: {fileID: 1657009306}
@@ -38207,7 +38201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 861e4756e23b39947b65387533e83ead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  enemySpawner: {fileID: 252777120}
+  roundManager: {fileID: 1711922859}
+  playerHealth: {fileID: 6942270119648514758}
 --- !u!4 &1298758340
 Transform:
   m_ObjectHideFlags: 0
@@ -49692,6 +49687,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695881945}
   m_CullTransparentMesh: 0
+--- !u!1 &1711922858
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1711922860}
+  - component: {fileID: 1711922859}
+  m_Layer: 0
+  m_Name: RoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1711922859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711922858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d815eb1708e32d4409c7bb064fd8bcfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoundManager
+  enemySpawner: {fileID: 252777120}
+  player: {fileID: 5660011641883840377}
+  playerSpawnPoint: {fileID: 416470854}
+  weaponInventory: {fileID: 307461093}
+  rewardController: {fileID: 1861354069}
+  gameClearUI: {fileID: 324807297}
+  roundClearPanel: {fileID: 2014292566}
+  finalClearText: {fileID: 1884524238}
+  totalRounds: 5
+  roundDuration: 120
+  roundEndDelay: 3
+  ShoppingTimer: 15
+--- !u!4 &1711922860
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711922858}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1719699845
 GameObject:
   m_ObjectHideFlags: 0
@@ -63555,3 +63606,4 @@ SceneRoots:
   - {fileID: 1861354070}
   - {fileID: 121543868}
   - {fileID: 1298758340}
+  - {fileID: 1711922860}

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ShopUI : MonoBehaviour
 {
     [SerializeField] private GameObject shopPanel;
-    [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private RoundManager roundManager;
     [SerializeField] private GameManager gameManager;
     [SerializeField] private UpgradeManager upgradeManager;
     [SerializeField] private Button atkUpgradeButton;
@@ -33,7 +33,7 @@ public class ShopUI : MonoBehaviour
     private float purchaseTimeRemaining;
     private bool wasRoundActive;
 
-    private bool CanShop => !gameManager.IsStopped && (enemySpawner.IsShopPhase || purchaseTimeRemaining > 0f);
+    private bool CanShop => !gameManager.IsStopped && (roundManager.IsShopPhase || purchaseTimeRemaining > 0f);
 
     private void Awake()
     {
@@ -158,7 +158,7 @@ public class ShopUI : MonoBehaviour
       
 
         // 라운드 시작 감지 → 구매 가능 시간 초기화
-        bool isRoundActive = enemySpawner.IsRoundActive;
+        bool isRoundActive = roundManager.IsRoundActive;
         if (isRoundActive && !wasRoundActive)
             purchaseTimeRemaining = purchaseWindowDuration;
         wasRoundActive = isRoundActive;
@@ -207,7 +207,7 @@ public class ShopUI : MonoBehaviour
             shopMoneyText.text = $"{rewardController.Money}G";
         if (shopTimeText != null)
         {
-            float display = enemySpawner.IsShopPhase ? enemySpawner.ShopTimer : purchaseTimeRemaining;
+            float display = roundManager.IsShopPhase ? roundManager.ShopTimer : purchaseTimeRemaining;
             shopTimeText.text = $"{Mathf.FloorToInt(display)}초";
         }
     }

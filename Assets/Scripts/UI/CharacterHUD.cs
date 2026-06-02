@@ -9,6 +9,7 @@ public class CharacterHUD : MonoBehaviour
     [SerializeField] private WeaponInventoryNew weaponInventory;
     [SerializeField] private CharacterMoves characterMoves;
     [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private RoundManager roundManager;
     [SerializeField] private RewardController rewardController;
     [SerializeField] private UpgradeManager upgradeManager;
 
@@ -33,8 +34,8 @@ public class CharacterHUD : MonoBehaviour
             characterHealth.OnHealthChanged += HandleHealthChanged;
         if (upgradeManager != null)
             upgradeManager.OnUpgradeLevelChanged += HandleUpgradeLevelChanged;
-        if (enemySpawner != null)
-            enemySpawner.OnRoundChanged += HandleRoundChanged;
+        if (roundManager != null)
+            roundManager.OnRoundChanged += HandleRoundChanged;
         UpdateHP(); // 구독 전 초기값 1회 갱신
         UpdateUpgradeLevels();
         UpdateWaveText();
@@ -46,8 +47,8 @@ public class CharacterHUD : MonoBehaviour
             characterHealth.OnHealthChanged -= HandleHealthChanged;
         if (upgradeManager != null)
             upgradeManager.OnUpgradeLevelChanged -= HandleUpgradeLevelChanged;
-        if (enemySpawner != null)
-            enemySpawner.OnRoundChanged -= HandleRoundChanged;
+        if (roundManager != null)
+            roundManager.OnRoundChanged -= HandleRoundChanged;
     }
 
     private void HandleHealthChanged(float current, float max)
@@ -68,8 +69,8 @@ public class CharacterHUD : MonoBehaviour
 
     private void UpdateWaveText()
     {
-        if (waveText == null || enemySpawner == null) return;
-        waveText.text = $"{enemySpawner.CurrentRound} / {enemySpawner.TotalRounds}";
+        if (waveText == null || roundManager == null) return;
+        waveText.text = $"{roundManager.CurrentRound} / {roundManager.TotalRounds}";
     }
 
     private void Update()
@@ -129,9 +130,9 @@ public class CharacterHUD : MonoBehaviour
     {
         if (timerText != null)
         {
-            if (enemySpawner.IsRoundActive)
+            if (roundManager.IsRoundActive)
             {
-                int total = Mathf.FloorToInt(enemySpawner.RoundTimer);
+                int total = Mathf.FloorToInt(roundManager.RoundTimer);
                 int min = total / 60;
                 int sec = total % 60;
                 timerText.text = $"{min:00}:{sec:00}";
@@ -142,10 +143,10 @@ public class CharacterHUD : MonoBehaviour
 
         if (shopCountdownText != null)
         {
-            bool isShopPhase = enemySpawner.IsShopPhase;
+            bool isShopPhase = roundManager.IsShopPhase;
             shopCountdownText.gameObject.SetActive(isShopPhase);
             if (isShopPhase)
-                shopCountdownText.text = $"라운드 시작까지\n{Mathf.FloorToInt(enemySpawner.ShopTimer)}초";
+                shopCountdownText.text = $"라운드 시작까지\n{Mathf.FloorToInt(roundManager.ShopTimer)}초";
         }
     }
 }

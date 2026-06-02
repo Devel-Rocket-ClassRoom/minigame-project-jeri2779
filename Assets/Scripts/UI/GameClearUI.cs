@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameClearUI : MonoBehaviour
 {
     [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private RoundManager roundManager;
     [SerializeField] private RewardController rewardController;
 
     [SerializeField] private GameObject playingHUD;
@@ -32,8 +33,8 @@ public class GameClearUI : MonoBehaviour
         if (crossHair != null) crossHair.SetActive(false);
         if (fpWeapon != null) fpWeapon.SetActive(false);
 
-        if (waveResultText != null && enemySpawner != null)
-            waveResultText.text = $"라운드 {enemySpawner.TotalRounds} / {enemySpawner.TotalRounds}";
+        if (waveResultText != null && roundManager != null)
+            waveResultText.text = $"라운드 {roundManager.TotalRounds} / {roundManager.TotalRounds}";
         if (killResultText != null && enemySpawner != null)
             killResultText.text = $"처치 수 {enemySpawner.KilledCount}";
         if (scoreResultText != null && rewardController != null)

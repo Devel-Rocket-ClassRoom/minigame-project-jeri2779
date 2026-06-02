@@ -7,6 +7,7 @@ public class GameOverUI : MonoBehaviour
 {
     
     [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private RoundManager roundManager;
     [SerializeField] private RewardController rewardController;
 
    
@@ -77,7 +78,7 @@ public class GameOverUI : MonoBehaviour
         {
             waveResultText.SetActive(true);
             waveResultText.GetComponent<TextMeshProUGUI>().text =
-                $"도달 웨이브  {enemySpawner.CurrentRound} / {enemySpawner.TotalRounds}";
+                $"도달 웨이브  {roundManager.CurrentRound} / {roundManager.TotalRounds}";
         }
         if (killResultText != null)
         {
