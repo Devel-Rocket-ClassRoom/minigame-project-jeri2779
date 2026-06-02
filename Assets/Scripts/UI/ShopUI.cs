@@ -7,6 +7,7 @@ public class ShopUI : MonoBehaviour
 {
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private UpgradeManager upgradeManager;
     [SerializeField] private Button atkUpgradeButton;
     [SerializeField] private Button hpUpgradeButton;
@@ -32,7 +33,7 @@ public class ShopUI : MonoBehaviour
     private float purchaseTimeRemaining;
     private bool wasRoundActive;
 
-    private bool CanShop => !enemySpawner.IsGameStopped && (enemySpawner.IsShopPhase || purchaseTimeRemaining > 0f);
+    private bool CanShop => !gameManager.IsStopped && (enemySpawner.IsShopPhase || purchaseTimeRemaining > 0f);
 
     private void Awake()
     {
@@ -173,7 +174,7 @@ public class ShopUI : MonoBehaviour
         {
             if (!CanShop)
             {
-                if (enemySpawner.IsGameStopped) SoftClose();
+                if (gameManager.IsStopped) SoftClose();
                 else Close();
                 return;
             }

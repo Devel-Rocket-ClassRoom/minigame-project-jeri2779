@@ -1,16 +1,30 @@
 using UnityEngine;
 
+// 게임 흐름 조율자. 진행/정지 상태를 소유하고, 실행은 EnemySpawner에 명령한다.
 public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private EnemySpawner enemySpawner;
+
+    // 게임 진행 정지 상태 (게임오버/중단). 기존 EnemySpawner.isGameStopped 이관.
+    public bool IsStopped { get; private set; }
+
+    // 메인메뉴 → 인트로 진입
+    public void BeginIntro()
     {
-        
+        enemySpawner.BeginIntro();
     }
 
-    // Update is called once per frame
-    void Update()
+    // 인트로 후 게임 시작
+    public void StartGame()
     {
-        
+        IsStopped = false;
+        enemySpawner.BeginFirstRound();
+    }
+
+    // 사망 등으로 게임 흐름 정지
+    public void StopGame()
+    {
+        IsStopped = true;
+        enemySpawner.HaltRounds();
     }
 }

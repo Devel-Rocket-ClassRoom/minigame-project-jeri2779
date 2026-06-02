@@ -10,7 +10,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject playingHUD;
     [SerializeField] private TextMeshProUGUI gameStartText;
-    [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private Button startButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private ModalWindowManager quitModal;
@@ -57,14 +57,14 @@ public class MainMenuUI : MonoBehaviour
         mainMenuPanel.SetActive(false);
         UIManager.EnsureInstance().RegisterOverlayClosed(this);
 
-        enemySpawner.BeginIntro();
+        gameManager.BeginIntro();
         playingHUD.SetActive(true);
         gameStartText.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(introDelay);
 
         gameStartText.gameObject.SetActive(false);
-        enemySpawner.StartGame();
+        gameManager.StartGame();
     }
 
     private void OnQuitClicked()

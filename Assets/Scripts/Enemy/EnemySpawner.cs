@@ -37,7 +37,6 @@ public class EnemySpawner : MonoBehaviour
     public float ShopTimer => shopTimer;
     public bool IsRoundActive => isRoundActive;
     public bool IsShopPhase => isShopPhase;
-    public bool IsGameStopped => isGameStopped;
     public int KilledCount => totalKilledCount;
     private int currentRound = 0;
     private float roundTimer;
@@ -50,7 +49,6 @@ public class EnemySpawner : MonoBehaviour
     private List<EnemySpawnEntry> pendingSpawns = new List<EnemySpawnEntry>();
     private bool isRoundActive = false;
     private bool isShopPhase = false;
-    private bool isGameStopped = false;
     private CharacterMoves characterMoves;
     private CharacterStats characterStats;
 
@@ -95,7 +93,8 @@ public class EnemySpawner : MonoBehaviour
         characterMoves.SetMovable(true);
     }
 
-    public void StartGame()
+    // GameManager가 호출 — 첫 라운드 루프 시작
+    public void BeginFirstRound()
     {
         StartCoroutine(FirstRoundRoutine());
     }
@@ -119,11 +118,11 @@ public class EnemySpawner : MonoBehaviour
         StartRound();
     }
 
-    public void StopGame()
+    // GameManager가 호출 — 진행 중인 라운드/코루틴 정지
+    public void HaltRounds()
     {
         isRoundActive = false;
         isShopPhase = false;
-        isGameStopped = true;
         StopAllCoroutines();
     }
 

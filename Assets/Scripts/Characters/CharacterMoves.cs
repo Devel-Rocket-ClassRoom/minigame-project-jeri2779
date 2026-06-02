@@ -14,6 +14,7 @@ public class CharacterMoves : MonoBehaviour
     [SerializeField] private WeaponInventoryNew weaponInventory;
 
     private bool isSprinting = false;
+    private bool sprintHeld = false;
     private bool isJumping = false;
     private bool prevJumping = false;
     private int airJumpsRemaining = 0;
@@ -116,9 +117,9 @@ public class CharacterMoves : MonoBehaviour
     public void OnSprint(InputAction.CallbackContext context)
     {
         if (context.started)
-            isSprinting = true;
+            sprintHeld = true;
         else if (context.canceled)
-            isSprinting = false;
+            sprintHeld = false;
     }
 
     private void HandleMove()
@@ -162,7 +163,7 @@ public class CharacterMoves : MonoBehaviour
 
     private void HandleSprint()
     {
-        bool sprinting = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
+        bool sprinting = sprintHeld;
 
         bool isReloading = weaponInventory.CurrentWeapon?.IsReloading ?? false;
         if (sprinting && !isReloading && currentStamina > 0f && moveInput != Vector2.zero && CanMove)
