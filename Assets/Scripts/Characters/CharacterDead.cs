@@ -9,7 +9,6 @@ public class CharacterDead : MonoBehaviour
     [SerializeField] private GameObject weaponModel;
     [SerializeField] private GameObject crosshair;
     [SerializeField] private GameOverUI gameOverUI;
-    [SerializeField] private GameManager gameManager;
 
     [SerializeField] private float tiltDuration = 1.5f;
 
@@ -44,7 +43,6 @@ public class CharacterDead : MonoBehaviour
 
     private IEnumerator DeathMoment()
     {
-        gameManager.StopGame();
         weaponModel.SetActive(false);
         crosshair.SetActive(false);
         hud.SetActive(false);

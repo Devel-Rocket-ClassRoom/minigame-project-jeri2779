@@ -4,9 +4,22 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private EnemySpawner enemySpawner;
+    [SerializeField] private CharacterHealth playerHealth;
 
     // 게임 진행 정지 상태 (게임오버/중단). 기존 EnemySpawner.isGameStopped 이관.
     public bool IsStopped { get; private set; }
+
+    private void OnEnable()
+    {
+        if (playerHealth != null)
+            playerHealth.OnDied += StopGame;
+    }
+
+    private void OnDisable()
+    {
+        if (playerHealth != null)
+            playerHealth.OnDied -= StopGame;
+    }
 
     // 메인메뉴 → 인트로 진입
     public void BeginIntro()

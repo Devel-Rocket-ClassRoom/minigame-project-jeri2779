@@ -38,6 +38,38 @@ public class EnemySpawner : MonoBehaviour
     public bool IsRoundActive => isRoundActive;
     public bool IsShopPhase => isShopPhase;
     public int KilledCount => totalKilledCount;
+
+    // ── 스폰 프리미티브 (RoundManager용) ──────────────────────────
+    // 대기 스폰 없고 생존 적도 없으면 true
+    public bool IsAllCleared => pendingSpawns.Count == 0 && aliveEnemies.Count == 0;
+
+    // 해당 라운드의 스폰 준비 후 시작
+    public void StartSpawning(int round)
+    {
+        spawnTimer = spawnStartDelay;
+        aliveEnemies.Clear();
+        killedEnemiesThisRound = 0;
+        pendingSpawns = GetEntriesForRound(round);
+        totalEnemiesThisRound = 0;
+        foreach (var e in pendingSpawns) totalEnemiesThisRound += e.count;
+        isSpawning = true;
+    }
+
+    // 진행 중인 스폰 정지 + 잔여 적 비활성화
+    public void StopSpawning()
+    {
+        isSpawning = false;
+        foreach (var enemy in aliveEnemies)
+        {
+            if (enemy == null || !enemy.activeInHierarchy) continue;
+            var ctrl = enemy.GetComponent<EnemyController>();
+            if (ctrl != null) ctrl.SetDead();
+            enemy.SetActive(false);
+        }
+        aliveEnemies.Clear();
+        pendingSpawns.Clear();
+    }
+    // ─────────────────────────────────────────────────────────────
     private int currentRound = 0;
     private float roundTimer;
     private float shopTimer;
@@ -49,6 +81,7 @@ public class EnemySpawner : MonoBehaviour
     private List<EnemySpawnEntry> pendingSpawns = new List<EnemySpawnEntry>();
     private bool isRoundActive = false;
     private bool isShopPhase = false;
+    private bool isSpawning = false;
     private CharacterMoves characterMoves;
     private CharacterStats characterStats;
 
@@ -138,13 +171,8 @@ public class EnemySpawner : MonoBehaviour
         characterMoves.SetMovable(true);
         isRoundActive = true;
         roundTimer = roundDuration;
-        spawnTimer = spawnStartDelay;
-        aliveEnemies.Clear();
 
-        killedEnemiesThisRound = 0;
-        pendingSpawns = GetEntriesForRound(currentRound);
-        totalEnemiesThisRound = 0;
-        foreach (var e in pendingSpawns) totalEnemiesThisRound += e.count;
+        StartSpawning(currentRound);
 
         Debug.Log($"Round {currentRound}/{totalRounds} 시작 ");
         Debug.Log($"  적 {totalEnemiesThisRound}마리 예정 | 제한시간 {roundDuration}초");
@@ -186,17 +214,9 @@ public class EnemySpawner : MonoBehaviour
         isRoundActive = false;
 
         float elapsed = roundDuration - roundTimer;
-        string clearType = pendingSpawns.Count == 0 && aliveEnemies.Count == 0 ? "적 전부 처치" : "시간 만료";
+        string clearType = IsAllCleared ? "적 전부 처치" : "시간 만료";
 
-        foreach (var enemy in aliveEnemies)
-        {
-            if (enemy == null || !enemy.activeInHierarchy) continue;
-            var ctrl = enemy.GetComponent<EnemyController>();
-            if (ctrl != null) ctrl.SetDead();
-            enemy.SetActive(false);
-        }
-        aliveEnemies.Clear();
-        pendingSpawns.Clear();
+        StopSpawning();
         Debug.Log($" Round {currentRound}/{totalRounds} 클리어  ");
         Debug.Log($"  조건: {clearType} | 처치: {killedEnemiesThisRound}/{totalEnemiesThisRound} | 경과: {elapsed:F1}초");
 
