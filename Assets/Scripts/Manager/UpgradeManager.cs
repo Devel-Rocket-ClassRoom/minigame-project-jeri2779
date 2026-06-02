@@ -32,8 +32,9 @@ public class UpgradeManager : MonoBehaviour
     public int HpLevel { get; private set; }
     public int UpgradePrice => upgradePrice;
 
-    // ATK/HP 강화 레벨 변경 시 발행 (atkLevel, hpLevel)
+ 
     public event Action<int, int> OnUpgradeLevelChanged;
+    public event Action<StatType, int> OnStatUpgradeLevelChanged;   
 
     private readonly Dictionary<StatType, int> statLevels = new Dictionary<StatType, int>();
 
@@ -74,9 +75,7 @@ public class UpgradeManager : MonoBehaviour
         return statLevels.TryGetValue(statType, out int level) ? level : 0;
     }
 
-    /// <summary>
-    /// 스탯 강화 시도. 재화 부족 또는 최대 레벨 도달 시 false 반환.
-    /// </summary>
+  
     public bool Upgrade(StatType statType, int price, float bonusPerLevel, int maxLevel)
     {
         if (GetLevel(statType) >= maxLevel)
@@ -164,6 +163,7 @@ public class UpgradeManager : MonoBehaviour
         }
 
         Debug.Log($"{statType} 강화 완료 → Lv {statLevels[statType]}/{maxLevel}");
+        OnStatUpgradeLevelChanged?.Invoke(statType, statLevels[statType]);
         return true;
     }
 }
