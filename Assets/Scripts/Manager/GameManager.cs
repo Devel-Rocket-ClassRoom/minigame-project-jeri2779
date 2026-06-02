@@ -6,8 +6,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private RoundManager roundManager;
     [SerializeField] private CharacterHealth playerHealth;
 
-    // 게임 진행 정지 상태 (게임오버/중단). 기존 EnemySpawner.isGameStopped 이관.
-    public bool IsStopped { get; private set; }
+    // 게임 흐름의 최상위 단계. 이 한 변수가 단일 진실원.
+    public GameState CurrentState { get; private set; } = GameState.MainMenu;
+
+    // 게임 진행 정지 여부 = 상태에서 파생(병존 플래그 제거). 기존 소비처 호환 유지.
+    public bool IsStopped => CurrentState is GameState.GameOver or GameState.Clear;
 
     private void OnEnable()
     {
@@ -24,20 +27,21 @@ public class GameManager : MonoBehaviour
     // 메인메뉴 → 인트로 진입
     public void BeginIntro()
     {
+        CurrentState = GameState.Intro;
         roundManager.BeginIntro();
     }
 
     // 인트로 후 게임 시작
     public void StartGame()
     {
-        IsStopped = false;
+        CurrentState = GameState.Playing;
         roundManager.BeginFirstRound();
     }
 
     // 사망 등으로 게임 흐름 정지
     public void StopGame()
     {
-        IsStopped = true;
+        CurrentState = GameState.GameOver;
         roundManager.HaltRounds();
     }
 }

@@ -33,12 +33,12 @@ public class WeaponShopItem : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         shopUI?.HideWeaponInfo();
     }
 
-    public void Refresh(int money, WeaponInventoryNew inventory)
+    public void Refresh(ShopController shop)
     {
         if (data == null) return;
         if (button == null) button = GetComponent<Button>();
-        bool owned = inventory.HasWeapon(data);
-        button.interactable = !owned && money >= data.price;
+        bool owned = shop.IsWeaponOwned(data);
+        button.interactable = shop.CanBuyWeapon(data);
         if (statusText != null)
             statusText.text = owned ? "보유중" : $"{data.price}G";
     }

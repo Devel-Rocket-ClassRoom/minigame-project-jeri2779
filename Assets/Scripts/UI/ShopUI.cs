@@ -15,7 +15,7 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private TMP_Text atkPriceText;
     [SerializeField] private TMP_Text hpLevelText;
     [SerializeField] private TMP_Text hpPriceText;
-    [SerializeField] private WeaponInventoryNew weaponInventory;
+    [SerializeField] private ShopController shopController;
     [SerializeField] private RewardController rewardController;
 
     [SerializeField] private Button[] categoryButtons;
@@ -26,14 +26,10 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private TMP_Text shopTimeText;
     [SerializeField] private WeaponInfoPanel weaponInfoPanel;
 
-    [SerializeField] private float purchaseWindowDuration = 30f;
-
     private WeaponShopItem[] shopItems;
     private StatUpgradeItem[] statItems;
-    private float purchaseTimeRemaining;
-    private bool wasRoundActive;
-
-    private bool CanShop => !gameManager.IsStopped && (roundManager.IsShopPhase || purchaseTimeRemaining > 0f);
+    private CanvasGroup[] categoryNormalCGs;
+    private CanvasGroup[] categoryHighlightedCGs;
 
     private void Awake()
     {
@@ -41,10 +37,16 @@ public class ShopUI : MonoBehaviour
         hpUpgradeButton.onClick.AddListener(OnHpUpgrade);
         shopPanel.SetActive(false);
 
+        categoryNormalCGs = new CanvasGroup[categoryButtons.Length];
+        categoryHighlightedCGs = new CanvasGroup[categoryButtons.Length];
         for (int i = 0; i < categoryButtons.Length; i++)
         {
             int idx = i;
             categoryButtons[i].onClick.AddListener(() => ShowPanel(idx));
+
+            Transform t = categoryButtons[i].transform;
+            categoryNormalCGs[i] = t.Find("Normal")?.GetComponent<CanvasGroup>();
+            categoryHighlightedCGs[i] = t.Find("Highlighted")?.GetComponent<CanvasGroup>();
         }
 
         if (closeButton != null)
@@ -72,10 +74,10 @@ public class ShopUI : MonoBehaviour
     private void RefreshAll()
     {
         foreach (var item in shopItems)
-            item.Refresh(rewardController.Money, weaponInventory);
+            item.Refresh(shopController);
 
         foreach (var item in statItems)
-            item.Refresh(rewardController.Money, upgradeManager);
+            item.Refresh(shopController);
 
         if (atkLevelText != null) atkLevelText.text = $"LV.{upgradeManager.AtkLevel}";
         if (hpLevelText != null) hpLevelText.text = $"LV.{upgradeManager.HpLevel}";
@@ -111,9 +113,8 @@ public class ShopUI : MonoBehaviour
     {
         for (int i = 0; i < categoryButtons.Length; i++)
         {
-            Transform t = categoryButtons[i].transform;
-            CanvasGroup normalCG = t.Find("Normal")?.GetComponent<CanvasGroup>();
-            CanvasGroup highlightedCG = t.Find("Highlighted")?.GetComponent<CanvasGroup>();
+            CanvasGroup normalCG = categoryNormalCGs[i];
+            CanvasGroup highlightedCG = categoryHighlightedCGs[i];
             if (normalCG == null || highlightedCG == null) continue;
 
             bool selected = i == openPanelIndex;
@@ -125,21 +126,11 @@ public class ShopUI : MonoBehaviour
 
     public void TryBuy(WeaponData data)
     {
-        if (data == null || weaponInventory == null) return;
-        if (weaponInventory.HasWeapon(data))
+        if (shopController.BuyWeapon(data))
         {
-            Debug.Log("이미 장착됨");
-            return;
+            RefreshAll();
+            Close();
         }
-        if (!rewardController.SpendMoney(data.price))
-        {
-            Debug.Log("돈 부족");
-            return;
-        }
-        weaponInventory.EquipByCategory(data);
-        RefreshAll();
-        weaponInventory.SwitchSlot((int)data.category);
-        Close();
     }
 
     public void ShowWeaponInfo(WeaponData data) => weaponInfoPanel?.Show(data);
@@ -149,30 +140,15 @@ public class ShopUI : MonoBehaviour
     /// <summary>StatUpgradeItem에서 호출. 강화 시도 후 UI 갱신.</summary>
     public void TryStatUpgrade(StatType statType, int price, float bonusPerLevel, int maxLevel)
     {
-        upgradeManager.Upgrade(statType, price, bonusPerLevel, maxLevel);
-        RefreshAll();
+        if (shopController.UpgradeStat(statType, price, bonusPerLevel, maxLevel))
+            RefreshAll();
     }
 
     private void Update()
     {
-      
-
-        // 라운드 시작 감지 → 구매 가능 시간 초기화
-        bool isRoundActive = roundManager.IsRoundActive;
-        if (isRoundActive && !wasRoundActive)
-            purchaseTimeRemaining = purchaseWindowDuration;
-        wasRoundActive = isRoundActive;
-
-        if (purchaseTimeRemaining > 0f)
-        {
-            purchaseTimeRemaining -= Time.deltaTime;
-            if (purchaseTimeRemaining <= 0f && shopPanel.activeSelf)
-                Close();
-        }
-
         if (shopPanel.activeSelf)
         {
-            if (!CanShop)
+            if (!shopController.CanShop)
             {
                 if (gameManager.IsStopped) SoftClose();
                 else Close();
@@ -193,7 +169,7 @@ public class ShopUI : MonoBehaviour
         }
 
         if (!Keyboard.current.bKey.wasPressedThisFrame) return;
-        if (!CanShop) return;
+        if (!shopController.CanShop) return;
 
         if (shopPanel.activeSelf)
             Close();
@@ -207,7 +183,7 @@ public class ShopUI : MonoBehaviour
             shopMoneyText.text = $"{rewardController.Money}G";
         if (shopTimeText != null)
         {
-            float display = roundManager.IsShopPhase ? roundManager.ShopTimer : purchaseTimeRemaining;
+            float display = roundManager.IsShopPhase ? roundManager.ShopTimer : shopController.PurchaseTimeRemaining;
             shopTimeText.text = $"{Mathf.FloorToInt(display)}초";
         }
     }

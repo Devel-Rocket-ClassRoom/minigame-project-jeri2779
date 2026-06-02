@@ -19374,7 +19374,7 @@ MonoBehaviour:
   atkPriceText: {fileID: 1843942367}
   hpLevelText: {fileID: 918623158}
   hpPriceText: {fileID: 1741217008}
-  weaponInventory: {fileID: 307461093}
+  shopController: {fileID: 1622338091}
   rewardController: {fileID: 1861354069}
   categoryButtons:
   - {fileID: 1339502085}
@@ -19396,7 +19396,6 @@ MonoBehaviour:
   shopMoneyText: {fileID: 2072005089}
   shopTimeText: {fileID: 19908454}
   weaponInfoPanel: {fileID: 1638458885}
-  purchaseWindowDuration: 90
 --- !u!114 &673945366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47656,6 +47655,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1621711778}
   m_CullTransparentMesh: 0
+--- !u!1 &1622338090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1622338092}
+  - component: {fileID: 1622338091}
+  m_Layer: 0
+  m_Name: ShopController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1622338091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1622338090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7b21bd2afa7f9847aaf27558ca1ab99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShopController
+  gameManager: {fileID: 1298758339}
+  roundManager: {fileID: 1711922859}
+  rewardController: {fileID: 1861354069}
+  inventory: {fileID: 307461093}
+  upgradeManager: {fileID: 5846927656521650094}
+  purchaseWindowDuration: 90
+--- !u!4 &1622338092
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1622338090}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1625061482
 GameObject:
   m_ObjectHideFlags: 0
@@ -63616,3 +63665,4 @@ SceneRoots:
   - {fileID: 121543868}
   - {fileID: 1298758340}
   - {fileID: 1711922860}
+  - {fileID: 1622338092}

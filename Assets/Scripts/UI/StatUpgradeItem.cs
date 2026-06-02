@@ -40,14 +40,14 @@ public class StatUpgradeItem : MonoBehaviour
     }
 
  
-    public void Refresh(int money, UpgradeManager upgradeManager)
+    public void Refresh(ShopController shop)
     {
         if (button == null) button = GetComponent<Button>();
 
-        int level = upgradeManager.GetLevel(statType);
+        int level = shop.GetStatLevel(statType);
         bool maxed = level >= maxLevel;
 
-        button.interactable = !maxed && money >= price;
+        button.interactable = shop.CanUpgradeStat(statType, price, maxLevel);
 
         if (levelText != null)
             levelText.text = $"{level}/{maxLevel}";
