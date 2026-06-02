@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-//추후 스크립트 역할 분리 리팩토링 필요
+using Random = UnityEngine.Random;  
+ 
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private WaveData waveData;
@@ -26,6 +28,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int spawnBatchSize = 3;
     [SerializeField] private float spawnStartDelay = 3f;
     [SerializeField] private float spawnInterval = 3f;
+
+    public event Action<int, int> OnRoundChanged;   // (currentRound, totalRounds)
 
     public int CurrentRound => currentRound;
     public int TotalRounds => totalRounds;
@@ -103,6 +107,7 @@ public class EnemySpawner : MonoBehaviour
         characterMoves.ResetStamina();
         isShopPhase = true;
         currentRound++;
+        OnRoundChanged?.Invoke(currentRound, totalRounds);
         shopTimer = ShoppingTimer;
         while (shopTimer > 0f)
         {
@@ -245,6 +250,7 @@ public class EnemySpawner : MonoBehaviour
         characterMoves.ResetStamina();
         isShopPhase = true;
         currentRound++;
+        OnRoundChanged?.Invoke(currentRound, totalRounds);
         shopTimer = ShoppingTimer;
         while (shopTimer > 0f)
         {

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5076201cb62dadd42ba5dcb3f3cc033e, type: 3}
   m_Name: Pistol_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
-  displayName: M1911
+  displayName: DefaultPistol
   damage: 1000
   fireRate: 0.25
   range: 50

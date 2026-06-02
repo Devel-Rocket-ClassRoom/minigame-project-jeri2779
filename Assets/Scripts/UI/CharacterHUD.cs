@@ -33,8 +33,11 @@ public class CharacterHUD : MonoBehaviour
             characterHealth.OnHealthChanged += HandleHealthChanged;
         if (upgradeManager != null)
             upgradeManager.OnUpgradeLevelChanged += HandleUpgradeLevelChanged;
+        if (enemySpawner != null)
+            enemySpawner.OnRoundChanged += HandleRoundChanged;
         UpdateHP(); // 구독 전 초기값 1회 갱신
         UpdateUpgradeLevels();
+        UpdateWaveText();
     }
 
     private void OnDisable()
@@ -43,6 +46,8 @@ public class CharacterHUD : MonoBehaviour
             characterHealth.OnHealthChanged -= HandleHealthChanged;
         if (upgradeManager != null)
             upgradeManager.OnUpgradeLevelChanged -= HandleUpgradeLevelChanged;
+        if (enemySpawner != null)
+            enemySpawner.OnRoundChanged -= HandleRoundChanged;
     }
 
     private void HandleHealthChanged(float current, float max)
@@ -54,6 +59,17 @@ public class CharacterHUD : MonoBehaviour
     {
         if (atkLvText != null) atkLvText.text = $"{atkLevel}";
         if (hpLvText != null) hpLvText.text = $"{hpLevel}";
+    }
+
+    private void HandleRoundChanged(int current, int total)
+    {
+        if (waveText != null) waveText.text = $"{current} / {total}";
+    }
+
+    private void UpdateWaveText()
+    {
+        if (waveText == null || enemySpawner == null) return;
+        waveText.text = $"{enemySpawner.CurrentRound} / {enemySpawner.TotalRounds}";
     }
 
     private void Update()
@@ -111,9 +127,6 @@ public class CharacterHUD : MonoBehaviour
 
     private void UpdateWave()
     {
-        if (waveText != null)
-            waveText.text = $"{enemySpawner.CurrentRound} / {enemySpawner.TotalRounds}";
-
         if (timerText != null)
         {
             if (enemySpawner.IsRoundActive)
@@ -129,17 +142,10 @@ public class CharacterHUD : MonoBehaviour
 
         if (shopCountdownText != null)
         {
-            if (enemySpawner.IsRoundActive)
-            {
-                shopCountdownText.gameObject.SetActive(false);
-            }
-            else
-            {
-                shopCountdownText.gameObject.SetActive(true);
-                shopCountdownText.text = enemySpawner.IsShopPhase
-                    ? $"{Mathf.FloorToInt(enemySpawner.ShopTimer)}"
-                    : "0";
-            }
+            bool isShopPhase = enemySpawner.IsShopPhase;
+            shopCountdownText.gameObject.SetActive(isShopPhase);
+            if (isShopPhase)
+                shopCountdownText.text = $"라운드 시작까지\n{Mathf.FloorToInt(enemySpawner.ShopTimer)}초";
         }
     }
 }
