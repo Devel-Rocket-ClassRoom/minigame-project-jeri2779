@@ -10,6 +10,10 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private RoundManager roundManager;
     [SerializeField] private RewardController rewardController;
 
+    [SerializeField] private GameObject playingHUD;
+    [SerializeField] private GameObject crossHair;
+    [SerializeField] private GameObject fpWeapon;
+
    
     [SerializeField] private Button retryButton;
     [SerializeField] private Button mainMenuButton;
@@ -32,6 +36,14 @@ public class GameOverUI : MonoBehaviour
             retryButton.onClick.AddListener(OnRetryClicked);
         if (mainMenuButton != null)
             mainMenuButton.onClick.AddListener(OnMainMenuClicked);
+    }
+
+    // 사망 즉시(틸트 전) 게임플레이 UI/무기모델 숨김. CharacterDead가 호출.
+    public void HideGameplayUI()
+    {
+        if (playingHUD != null) playingHUD.SetActive(false);
+        if (crossHair != null) crossHair.SetActive(false);
+        if (fpWeapon != null) fpWeapon.SetActive(false);
     }
 
     public void Show()

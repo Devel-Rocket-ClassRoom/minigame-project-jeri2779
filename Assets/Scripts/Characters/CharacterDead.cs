@@ -5,9 +5,6 @@ public class CharacterDead : MonoBehaviour
 {
     [SerializeField] private CharacterHealth characterHealth;
     [SerializeField] private CharacterMoves characterMoves;
-    [SerializeField] private GameObject hud;
-    [SerializeField] private GameObject weaponModel;
-    [SerializeField] private GameObject crosshair;
     [SerializeField] private GameOverUI gameOverUI;
 
     [SerializeField] private float tiltDuration = 1.5f;
@@ -43,12 +40,10 @@ public class CharacterDead : MonoBehaviour
 
     private IEnumerator DeathMoment()
     {
-        weaponModel.SetActive(false);
-        crosshair.SetActive(false);
-        hud.SetActive(false);
+        gameOverUI.HideGameplayUI();   // 즉시: HUD/크로스헤어/무기모델 off
 
         yield return StartCoroutine(characterMoves.DeathCameraRotate(tiltDuration));
 
-        gameOverUI.Show();
+        gameOverUI.Show();             // 틸트 후: 게임오버 패널
     }
 }

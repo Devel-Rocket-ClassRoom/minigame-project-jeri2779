@@ -5863,6 +5863,9 @@ MonoBehaviour:
   enemySpawner: {fileID: 252777120}
   roundManager: {fileID: 1711922859}
   rewardController: {fileID: 1861354069}
+  playingHUD: {fileID: 573013145}
+  crossHair: {fileID: 773248137}
+  fpWeapon: {fileID: 734864385}
   retryButton: {fileID: 1445618799}
   mainMenuButton: {fileID: 1340679466}
   restartLabel: {fileID: 1423198718}
@@ -20865,6 +20868,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 734650130}
   m_CullTransparentMesh: 0
+--- !u!1 &734864385 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3247647487203374352, guid: 26ca269b0473f294cae3a075da323a42,
+    type: 3}
+  m_PrefabInstance: {fileID: 296247323918007526}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &738497482
 GameObject:
   m_ObjectHideFlags: 0
