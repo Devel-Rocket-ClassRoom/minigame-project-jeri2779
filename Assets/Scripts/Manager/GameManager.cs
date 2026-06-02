@@ -16,12 +16,22 @@ public class GameManager : MonoBehaviour
     {
         if (playerHealth != null)
             playerHealth.OnDied += StopGame;
+        if (roundManager != null)
+            roundManager.OnAllRoundsCleared += HandleAllRoundsCleared;
     }
 
     private void OnDisable()
     {
         if (playerHealth != null)
             playerHealth.OnDied -= StopGame;
+        if (roundManager != null)
+            roundManager.OnAllRoundsCleared -= HandleAllRoundsCleared;
+    }
+
+    // 최종 클리어 → 게임 전체 상태를 Clear로 (IsStopped 파생도 true가 됨)
+    private void HandleAllRoundsCleared()
+    {
+        CurrentState = GameState.Clear;
     }
 
     // 메인메뉴 → 인트로 진입

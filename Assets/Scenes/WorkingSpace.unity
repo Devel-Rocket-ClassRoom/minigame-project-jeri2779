@@ -10677,6 +10677,54 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &379289231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 379289233}
+  - component: {fileID: 379289232}
+  m_Layer: 0
+  m_Name: RoundUIPresenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &379289232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379289231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47481aafcdd3070428f336026d4bc0b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoundUIPresenter
+  roundManager: {fileID: 1711922859}
+  roundClearPanel: {fileID: 2014292566}
+  finalClearText: {fileID: 1884524237}
+  gameClearUI: {fileID: 324807297}
+--- !u!4 &379289233
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379289231}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &385553959
 GameObject:
   m_ObjectHideFlags: 0
@@ -49775,13 +49823,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoundManager
   enemySpawner: {fileID: 252777120}
-  player: {fileID: 5660011641883840377}
-  playerSpawnPoint: {fileID: 416470854}
-  weaponInventory: {fileID: 307461093}
+  playerSpawner: {fileID: 6942270119648514768}
   rewardController: {fileID: 1861354069}
-  gameClearUI: {fileID: 324807297}
-  roundClearPanel: {fileID: 2014292566}
-  finalClearText: {fileID: 1884524238}
   totalRounds: 5
   roundDuration: 120
   roundEndDelay: 3
@@ -63491,6 +63534,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 370449055992854482, guid: 26ca269b0473f294cae3a075da323a42,
+        type: 3}
+      propertyPath: spawnPoint
+      value: 
+      objectReference: {fileID: 416470854}
     - target: {fileID: 2346187779893796961, guid: 26ca269b0473f294cae3a075da323a42,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -63548,29 +63596,9 @@ PrefabInstance:
       objectReference: {fileID: 1861354069}
     - target: {fileID: 7190066847717367169, guid: 26ca269b0473f294cae3a075da323a42,
         type: 3}
-      propertyPath: hud
-      value: 
-      objectReference: {fileID: 573013145}
-    - target: {fileID: 7190066847717367169, guid: 26ca269b0473f294cae3a075da323a42,
-        type: 3}
-      propertyPath: crosshair
-      value: 
-      objectReference: {fileID: 1063519843}
-    - target: {fileID: 7190066847717367169, guid: 26ca269b0473f294cae3a075da323a42,
-        type: 3}
       propertyPath: gameOverUI
       value: 
       objectReference: {fileID: 234577559}
-    - target: {fileID: 7190066847717367169, guid: 26ca269b0473f294cae3a075da323a42,
-        type: 3}
-      propertyPath: gameManager
-      value: 
-      objectReference: {fileID: 1298758339}
-    - target: {fileID: 7190066847717367169, guid: 26ca269b0473f294cae3a075da323a42,
-        type: 3}
-      propertyPath: enemySpawner
-      value: 
-      objectReference: {fileID: 252777120}
     - target: {fileID: 7677870271825320051, guid: 26ca269b0473f294cae3a075da323a42,
         type: 3}
       propertyPath: m_Name
@@ -63647,6 +63675,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ca3d86c95ae5a3439b9ef069cf46302, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooter
+--- !u!114 &6942270119648514768 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 370449055992854482, guid: 26ca269b0473f294cae3a075da323a42,
+    type: 3}
+  m_PrefabInstance: {fileID: 296247323918007526}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40a2cf4df350ad84b889c3e4aa06b566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawner
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -63666,3 +63706,4 @@ SceneRoots:
   - {fileID: 1298758340}
   - {fileID: 1711922860}
   - {fileID: 1622338092}
+  - {fileID: 379289233}

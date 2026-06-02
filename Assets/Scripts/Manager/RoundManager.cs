@@ -1,20 +1,15 @@
 using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 // 라운드 진행 조율자. 라운드/상점 페이즈 상태기계를 소유하고,
 // 실제 적 스폰은 EnemySpawner에 명령한다. (RoundManager → EnemySpawner 단방향)
+// 클리어 UI는 직접 만지지 않고 이벤트로 알린다 (RoundUIPresenter/GameManager가 소비).
 public class RoundManager : MonoBehaviour
 {
     [SerializeField] private EnemySpawner enemySpawner;
-    [SerializeField] private Transform player;
-    [SerializeField] private Transform playerSpawnPoint;
-    [SerializeField] private WeaponInventoryNew weaponInventory;
+    [SerializeField] private PlayerSpawner playerSpawner;
     [SerializeField] private RewardController rewardController;
-    [SerializeField] private GameClearUI gameClearUI;
-    [SerializeField] private GameObject roundClearPanel;
-    [SerializeField] private TextMeshProUGUI finalClearText;
 
     [Header("라운드 설정")]
     [SerializeField] private int totalRounds = 10;
@@ -23,6 +18,9 @@ public class RoundManager : MonoBehaviour
     [SerializeField] private float ShoppingTimer = 5f;
 
     public event Action<int, int> OnRoundChanged;   // (currentRound, totalRounds)
+    public event Action<bool> OnRoundCleared;       // 클리어 배너 표시 (isFinal=최종 여부)
+    public event Action OnRoundClearHidden;         // 클리어 배너 숨김
+    public event Action OnAllRoundsCleared;         // 최종 클리어 (게임 전체 상태로 승격)
 
     public int CurrentRound => currentRound;
     public int TotalRounds => totalRounds;
@@ -36,12 +34,10 @@ public class RoundManager : MonoBehaviour
     private float shopTimer;
     private bool isRoundActive = false;
     private bool isShopPhase = false;
-    private CharacterMoves characterMoves;
 
     private void Start()
     {
-        characterMoves = player.GetComponent<CharacterMoves>();
-        characterMoves.SetMovable(false);
+        playerSpawner.Freeze();
     }
 
     private void Update()
@@ -60,8 +56,7 @@ public class RoundManager : MonoBehaviour
     // GameManager가 호출 — 인트로 진입 (플레이어 배치)
     public void BeginIntro()
     {
-        characterMoves.Teleport(playerSpawnPoint.position);
-        characterMoves.SetMovable(true);
+        playerSpawner.PlaceForIntro();
     }
 
     // GameManager가 호출 — 첫 라운드 루프 시작
@@ -81,11 +76,7 @@ public class RoundManager : MonoBehaviour
 
     private IEnumerator FirstRoundRoutine()
     {
-        characterMoves.SetMovable(false);
-        characterMoves.Teleport(playerSpawnPoint.position);
-        player.GetComponent<CharacterHealth>().ResetHealth();
-        weaponInventory?.ResetAmmo();
-        characterMoves.ResetStamina();
+        playerSpawner.ResetForRound();
         isShopPhase = true;
         currentRound++;
         OnRoundChanged?.Invoke(currentRound, totalRounds);
@@ -107,7 +98,7 @@ public class RoundManager : MonoBehaviour
             return;
         }
 
-        characterMoves.SetMovable(true);
+        playerSpawner.Unfreeze();
         isRoundActive = true;
         roundTimer = roundDuration;
 
@@ -130,32 +121,26 @@ public class RoundManager : MonoBehaviour
             return;
         }
 
-        if (roundClearPanel != null) roundClearPanel.SetActive(true);
+        OnRoundCleared?.Invoke(false);
         StartCoroutine(NextRoundRoutine());
     }
 
     private IEnumerator FinalClearSequence()
     {
-        if (roundClearPanel != null) roundClearPanel.SetActive(true);
-        if (finalClearText != null) finalClearText.gameObject.SetActive(true);
+        OnRoundCleared?.Invoke(true);
         yield return new WaitForSeconds(roundEndDelay);
         rewardController.AddRoundClearReward();
-        if (roundClearPanel != null) roundClearPanel.SetActive(false);
-        if (finalClearText != null) finalClearText.gameObject.SetActive(false);
-        characterMoves.SetMovable(false);
-        if (gameClearUI != null) gameClearUI.Show();
+        OnRoundClearHidden?.Invoke();
+        playerSpawner.Freeze();
+        OnAllRoundsCleared?.Invoke();
     }
 
     private IEnumerator NextRoundRoutine()
     {
         yield return new WaitForSeconds(roundEndDelay);
-        if (roundClearPanel != null) roundClearPanel.SetActive(false);
+        OnRoundClearHidden?.Invoke();
         rewardController.AddRoundClearReward();
-        characterMoves.SetMovable(false);
-        characterMoves.Teleport(playerSpawnPoint.position);
-        player.GetComponent<CharacterHealth>().ResetHealth();
-        weaponInventory?.ResetAmmo();
-        characterMoves.ResetStamina();
+        playerSpawner.ResetForRound();
         isShopPhase = true;
         currentRound++;
         OnRoundChanged?.Invoke(currentRound, totalRounds);

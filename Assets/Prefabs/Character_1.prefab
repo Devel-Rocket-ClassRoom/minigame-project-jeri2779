@@ -182,6 +182,7 @@ GameObject:
   - component: {fileID: 7762152083946084812}
   - component: {fileID: 8968587446061740606}
   - component: {fileID: 3019186760209208686}
+  - component: {fileID: 370449055992854482}
   m_Layer: 0
   m_Name: Character_1
   m_TagString: Untagged
@@ -578,11 +579,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDead
   characterHealth: {fileID: 8703008233461567453}
   characterMoves: {fileID: 9182838733724328703}
-  hud: {fileID: 0}
-  weaponModel: {fileID: 3247647487203374352}
-  crosshair: {fileID: 0}
   gameOverUI: {fileID: 0}
-  enemySpawner: {fileID: 0}
   tiltDuration: 1.5
 --- !u!114 &6042507001176377755
 MonoBehaviour:
@@ -672,6 +669,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17a64e0c6a00c9b4f8f89e78db7d471d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControl
+--- !u!114 &370449055992854482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40a2cf4df350ad84b889c3e4aa06b566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawner
+  spawnPoint: {fileID: 0}
+  weaponInventory: {fileID: 9185768798811754486}
 --- !u!1 &8163671235254392355
 GameObject:
   m_ObjectHideFlags: 0
