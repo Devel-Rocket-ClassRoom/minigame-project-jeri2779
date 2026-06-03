@@ -5,12 +5,16 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
 {
     [SerializeField] private MeleeWeaponData data;
     [SerializeField] private Animator weaponAnimator;
+    [SerializeField] private LayerMask headLayer;
+
+    private static readonly int FireTrigger = Animator.StringToHash("Fire");
+    private static readonly int AltFireTrigger = Animator.StringToHash("AltFire");
 
     private CharacterStats stats;
+    private PlayerDamageCalculator damageCalc;
     private float nextSwingTime;
     private float pendingHitTime = -1f;
     private FireContext pendingCtx;
-    private int headLayer;
 
     public WeaponData Data => data;
     public int CurrentAmmo => -1;
@@ -19,14 +23,10 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
     public Transform Root => transform;
     public GameObject GameObject => gameObject;
 
-    private void Awake()
-    {
-        headLayer = LayerMask.NameToLayer("Head");
-    }
-
     public void Init(CharacterStats stats)
     {
         this.stats = stats;
+        damageCalc = stats.GetComponent<PlayerDamageCalculator>();
     }
 
     public bool Use(FireContext ctx)
@@ -36,12 +36,12 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
 
         if (ctx.isAiming)
         {
-            weaponAnimator?.SetTrigger("AltFire");
+            weaponAnimator?.SetTrigger(AltFireTrigger);
             HitDetection(ctx, data.altDamageMultiplier, data.altHalfAngleX, data.altHalfAngleY, 1);
             return true;
         }
 
-        weaponAnimator?.SetTrigger("Fire");
+        weaponAnimator?.SetTrigger(FireTrigger);
 
         if (data.swingWindup <= 0f)
         {
@@ -77,17 +77,22 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
     private void HitDetection(FireContext ctx, float dmgMult, float angleX, float angleY, int maxHits)
     {
         var hitSet = new HashSet<IDamageable>();
-        float critMult = (stats != null && Random.value < stats.CritChance) ? 2f : 1f;
-        float dmgBase = data.damage * stats.AttackMultiplier * dmgMult * stats.MeleeDamageMultiplier * critMult;
 
         // Stage 1: Raycast — center precision + headshot
         if (Physics.Raycast(ctx.ray.origin, ctx.ray.direction, out RaycastHit hit, data.range, ctx.layer))
         {
-            bool isHead = hit.collider.gameObject.layer == headLayer;
+            bool isHead = (headLayer.value & (1 << hit.collider.gameObject.layer)) != 0;
             var target = hit.collider.GetComponentInParent<IDamageable>();
             if (target != null)
             {
-                target.TakeDamage(dmgBase * (isHead ? 2f : 1f));
+                target.TakeDamage(damageCalc.Compute(new DamageContext
+                {
+                    baseDamage = data.damage,
+                    isHeadshot = isHead,
+                    isMelee = true,
+                    weaponMultiplier = dmgMult,
+                    targetHealthRatio = (target as IHealthInfo)?.HealthRatio ?? 1f,
+                }));
                 hitSet.Add(target);
             }
         }
@@ -111,7 +116,14 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
             float vertAngle = Mathf.Abs(Mathf.Atan2(local.y, local.z) * Mathf.Rad2Deg);
             if (horizAngle > angleX || vertAngle > angleY) continue;
 
-            target.TakeDamage(dmgBase);
+            target.TakeDamage(damageCalc.Compute(new DamageContext
+            {
+                baseDamage = data.damage,
+                isHeadshot = false,
+                isMelee = true,
+                weaponMultiplier = dmgMult,
+                targetHealthRatio = (target as IHealthInfo)?.HealthRatio ?? 1f,
+            }));
             hitSet.Add(target);
         }
     }

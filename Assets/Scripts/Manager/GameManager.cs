@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private RoundManager roundManager;
     [SerializeField] private CharacterHealth playerHealth;
+    [SerializeField] private GameOverUI gameOverUI;
+    [SerializeField] private CharacterDead deathPresenter;
 
     // 게임 흐름의 최상위 단계. 이 한 변수가 단일 진실원.
     public GameState CurrentState { get; private set; } = GameState.MainMenu;
@@ -15,17 +17,21 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         if (playerHealth != null)
-            playerHealth.OnDied += StopGame;
+            playerHealth.OnDied += HandlePlayerDied;
         if (roundManager != null)
             roundManager.OnAllRoundsCleared += HandleAllRoundsCleared;
+        if (deathPresenter != null)
+            deathPresenter.OnDeathPresented += HandleDeathPresented;
     }
 
     private void OnDisable()
     {
         if (playerHealth != null)
-            playerHealth.OnDied -= StopGame;
+            playerHealth.OnDied -= HandlePlayerDied;
         if (roundManager != null)
             roundManager.OnAllRoundsCleared -= HandleAllRoundsCleared;
+        if (deathPresenter != null)
+            deathPresenter.OnDeathPresented -= HandleDeathPresented;
     }
 
     // 최종 클리어 → 게임 전체 상태를 Clear로 (IsStopped 파생도 true가 됨)
@@ -46,6 +52,21 @@ public class GameManager : MonoBehaviour
     {
         CurrentState = GameState.Playing;
         roundManager.BeginFirstRound();
+    }
+
+    // 플레이어 사망 — 흐름 정지 + 게임플레이 UI 숨김(틸트 전). 패널 표시는 연출 완료 후.
+    private void HandlePlayerDied()
+    {
+        StopGame();
+        if (gameOverUI != null)
+            gameOverUI.HideGameplayUI();
+    }
+
+    // 사망 연출(틸트) 완료 — 게임오버 패널 표시
+    private void HandleDeathPresented()
+    {
+        if (gameOverUI != null)
+            gameOverUI.Show();
     }
 
     // 사망 등으로 게임 흐름 정지

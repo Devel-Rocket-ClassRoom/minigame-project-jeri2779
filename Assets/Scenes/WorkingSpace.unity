@@ -5860,7 +5860,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5b0030f9f160ba408f952c3b7a83f1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverUI
-  enemySpawner: {fileID: 252777120}
   roundManager: {fileID: 1711922859}
   rewardController: {fileID: 1861354069}
   playingHUD: {fileID: 573013145}
@@ -6227,7 +6226,6 @@ MonoBehaviour:
   - {fileID: 82142517}
   - {fileID: 190607669}
   player: {fileID: 5660011641883840377}
-  rewardController: {fileID: 1861354069}
   maxAliveEnemies: 50
   spawnBatchSize: 2
   spawnStartDelay: 2
@@ -9128,7 +9126,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63c63da7e929d0941ac53e1903a7fede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameClearUI
-  enemySpawner: {fileID: 252777120}
   roundManager: {fileID: 1711922859}
   rewardController: {fileID: 1861354069}
   playingHUD: {fileID: 573013145}
@@ -19364,7 +19361,6 @@ MonoBehaviour:
   characterStats: {fileID: 6689299389957294953}
   weaponInventory: {fileID: 307461093}
   characterMoves: {fileID: 1312475000190588084}
-  enemySpawner: {fileID: 252777120}
   roundManager: {fileID: 1711922859}
   rewardController: {fileID: 1861354069}
   upgradeManager: {fileID: 5846927656521650094}
@@ -38259,6 +38255,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   roundManager: {fileID: 1711922859}
   playerHealth: {fileID: 6942270119648514758}
+  gameOverUI: {fileID: 234577559}
+  deathPresenter: {fileID: 6942270119648514774}
 --- !u!4 &1298758340
 Transform:
   m_ObjectHideFlags: 0
@@ -63589,6 +63587,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4901652546042414281, guid: 26ca269b0473f294cae3a075da323a42,
+        type: 3}
+      propertyPath: enemySpawner
+      value: 
+      objectReference: {fileID: 252777120}
     - target: {fileID: 6042507001176377755, guid: 26ca269b0473f294cae3a075da323a42,
         type: 3}
       propertyPath: rewardController
@@ -63687,6 +63690,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40a2cf4df350ad84b889c3e4aa06b566, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawner
+--- !u!114 &6942270119648514774 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7190066847717367169, guid: 26ca269b0473f294cae3a075da323a42,
+    type: 3}
+  m_PrefabInstance: {fileID: 296247323918007526}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61de37c65c15b624db27166b247b70e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterDead
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

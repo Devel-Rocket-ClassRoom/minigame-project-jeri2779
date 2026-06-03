@@ -35,6 +35,12 @@ public class RoundManager : MonoBehaviour
     private bool isRoundActive = false;
     private bool isShopPhase = false;
 
+    private void Awake()
+    {
+        // 씬(라운드) 재시작 시 정적 처치/생존 상태 초기화
+        EnemyRegistry.Reset();
+    }
+
     private void Start()
     {
         playerSpawner.Freeze();
@@ -47,10 +53,17 @@ public class RoundManager : MonoBehaviour
         roundTimer -= Time.deltaTime;
 
         bool timerExpired = roundTimer <= 0f;
-        bool allCleared = enemySpawner.IsAllCleared;
 
-        if (timerExpired || allCleared)
+        if (timerExpired || IsRoundCleared())
             EndRound();
+    }
+
+    // 라운드 클리어 = 스폰 완료(스포너 없으면 무조건 완료) + 생존 적 0.
+    // 생존수는 EnemyRegistry가 단일 보관 → 수동 배치 적도 동일하게 판정된다.
+    private bool IsRoundCleared()
+    {
+        bool spawnComplete = enemySpawner == null || enemySpawner.IsSpawningComplete;
+        return spawnComplete && EnemyRegistry.AliveCount == 0;
     }
 
     // GameManager가 호출 — 인트로 진입 (플레이어 배치)
@@ -71,7 +84,7 @@ public class RoundManager : MonoBehaviour
         isRoundActive = false;
         isShopPhase = false;
         StopAllCoroutines();
-        enemySpawner.StopSpawning();
+        if (enemySpawner != null) enemySpawner.StopSpawning();
     }
 
     private IEnumerator FirstRoundRoutine()
@@ -102,7 +115,7 @@ public class RoundManager : MonoBehaviour
         isRoundActive = true;
         roundTimer = roundDuration;
 
-        enemySpawner.StartSpawning(currentRound);
+        if (enemySpawner != null) enemySpawner.StartSpawning(currentRound);
 
         Debug.Log($"Round {currentRound}/{totalRounds} 시작 ");
     }
@@ -111,8 +124,8 @@ public class RoundManager : MonoBehaviour
     {
         isRoundActive = false;
 
-        string clearType = enemySpawner.IsAllCleared ? "적 전부 처치" : "시간 만료";
-        enemySpawner.StopSpawning();
+        string clearType = IsRoundCleared() ? "적 전부 처치" : "시간 만료";
+        if (enemySpawner != null) enemySpawner.StopSpawning();
         Debug.Log($" Round {currentRound}/{totalRounds} 클리어 ({clearType})");
 
         if (currentRound >= totalRounds)

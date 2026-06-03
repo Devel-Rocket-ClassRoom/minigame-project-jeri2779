@@ -183,6 +183,10 @@ GameObject:
   - component: {fileID: 8968587446061740606}
   - component: {fileID: 3019186760209208686}
   - component: {fileID: 370449055992854482}
+  - component: {fileID: 4901652546042414281}
+  - component: {fileID: 7169672686601412192}
+  - component: {fileID: 8297815749191455599}
+  - component: {fileID: 4879568384003238585}
   m_Layer: 0
   m_Name: Character_1
   m_TagString: Untagged
@@ -683,6 +687,61 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawner
   spawnPoint: {fileID: 0}
   weaponInventory: {fileID: 9185768798811754486}
+--- !u!114 &4901652546042414281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccafddceee04e3e4788aa4f6b572575d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageCalculator
+  headshotMultiplier: 2
+  critMultiplier: 2
+  lastStandThreshold: 0.3
+  lastStandDamageBonus: 0
+  healthyTargetFalloff: 0.5
+  enemySpawner: {fileID: 0}
+  fightingSpiritFullCount: 10
+--- !u!114 &7169672686601412192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efe4d41d3ee33824589f2db68cfcadef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerLifesteal
+--- !u!114 &8297815749191455599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07489af009616c445a526add1cf1cfe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerExplosive
+--- !u!114 &4879568384003238585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f1a6daf3ec11d0479211ffa4f676154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatEvents
 --- !u!1 &8163671235254392355
 GameObject:
   m_ObjectHideFlags: 0

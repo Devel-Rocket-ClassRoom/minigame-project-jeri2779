@@ -3,12 +3,13 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 // 적 스폰 전담. 라운드 진행은 RoundManager가 명령한다.
+// 처치 보상/흡혈/통계/생존수는 일절 다루지 않는다 — 적이 EnemyRegistry에 스스로 등록/보고한다.
+// 이 컴포넌트가 씬에 없어도(수동 배치) 게임은 정상 동작한다.
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private WaveData waveData;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private Transform player;
-    [SerializeField] private RewardController rewardController;
 
     [Header("스폰 설정")]
     [SerializeField] private int maxAliveEnemies = 15;
@@ -16,22 +17,13 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnStartDelay = 3f;
     [SerializeField] private float spawnInterval = 3f;
 
-    public int KilledCount => totalKilledCount;
-
-    // 대기 스폰 없고 생존 적도 없으면 true
-    public bool IsAllCleared => pendingSpawns.Count == 0 && aliveEnemies.Count == 0;
+    // 대기 스폰이 모두 소진됐는가 (라운드 종료 판정에 RoundManager가 읽음)
+    public bool IsSpawningComplete => pendingSpawns.Count == 0;
 
     private float spawnTimer;
-    private int totalKilledCount;
     private readonly List<GameObject> aliveEnemies = new List<GameObject>();
     private List<EnemySpawnEntry> pendingSpawns = new List<EnemySpawnEntry>();
     private bool isSpawning = false;
-    private CharacterStats characterStats;
-
-    private void Start()
-    {
-        characterStats = player.GetComponent<CharacterStats>();
-    }
 
     private void Update()
     {
@@ -84,7 +76,6 @@ public class EnemySpawner : MonoBehaviour
             Transform sp = spawnPoints[Random.Range(0, spawnPoints.Length)];
             GameObject enemy = Instantiate(pendingSpawns[i].prefab, sp.position, sp.rotation);
             enemy.GetComponent<EnemyController>().Initialize(player);
-            enemy.GetComponent<EnemyHealth>().onKilled += OnEnemyKilled;
             aliveEnemies.Add(enemy);
 
             pendingSpawns[i].count--;
@@ -93,14 +84,6 @@ public class EnemySpawner : MonoBehaviour
 
             count--;
         }
-    }
-
-    private void OnEnemyKilled(EnemyData data)
-    {
-        totalKilledCount++;
-        rewardController.AddMoney(data.moneyReward);
-        rewardController.AddScore(data.scoreReward);
-        characterStats?.RegisterKill();
     }
 
     private List<EnemySpawnEntry> GetEntriesForRound(int round)

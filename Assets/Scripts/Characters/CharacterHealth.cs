@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CharacterHealth : MonoBehaviour, IDamageable
+public class CharacterHealth : MonoBehaviour, IDamageable, IHealthInfo
 {
     public enum CharacterState
     {
@@ -10,6 +10,7 @@ public class CharacterHealth : MonoBehaviour, IDamageable
     }
     public CharacterState State { get; private set; } = CharacterState.Alive;
     public float CurrentHealth => currentHealth;
+    public float HealthRatio => characterStats.MaxHealth > 0f ? currentHealth / characterStats.MaxHealth : 1f;
 
     // 체력/최대체력 변경 시  (current, max)
     public event Action<float, float> OnHealthChanged;

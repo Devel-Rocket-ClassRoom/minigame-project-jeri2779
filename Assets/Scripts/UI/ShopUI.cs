@@ -30,12 +30,16 @@ public class ShopUI : MonoBehaviour
     private StatUpgradeItem[] statItems;
     private CanvasGroup[] categoryNormalCGs;
     private CanvasGroup[] categoryHighlightedCGs;
+    private int openPanelIndex = -1;
 
     private void Awake()
     {
-        atkUpgradeButton.onClick.AddListener(OnAtkUpgrade);
-        hpUpgradeButton.onClick.AddListener(OnHpUpgrade);
-        shopPanel.SetActive(false);
+        if (atkUpgradeButton != null)
+            atkUpgradeButton.onClick.AddListener(OnAtkUpgrade);
+        if (hpUpgradeButton != null)
+            hpUpgradeButton.onClick.AddListener(OnHpUpgrade);
+        if (shopPanel != null)
+            shopPanel.SetActive(false);
 
         categoryNormalCGs = new CanvasGroup[categoryButtons.Length];
         categoryHighlightedCGs = new CanvasGroup[categoryButtons.Length];
@@ -55,67 +59,76 @@ public class ShopUI : MonoBehaviour
         foreach (var panel in categoryPanels)
             panel.SetActive(false);
 
-        shopItems = shopPanel.GetComponentsInChildren<WeaponShopItem>(true);
-        statItems = shopPanel.GetComponentsInChildren<StatUpgradeItem>(true);
+        shopItems = shopPanel != null ? shopPanel.GetComponentsInChildren<WeaponShopItem>(true) : new WeaponShopItem[0];
+        statItems = shopPanel != null ? shopPanel.GetComponentsInChildren<StatUpgradeItem>(true) : new StatUpgradeItem[0];
     }
 
     private void OnAtkUpgrade()
     {
-        upgradeManager.UpgradeAttack();
+        shopController?.UpgradeAttack();
         RefreshAll();
     }
 
     private void OnHpUpgrade()
     {
-        upgradeManager.UpgradeHp();
+        shopController?.UpgradeHp();
         RefreshAll();
     }
 
     private void RefreshAll()
     {
-        foreach (var item in shopItems)
-            item.Refresh(shopController);
+        if (shopController != null)
+        {
+            foreach (var item in shopItems)
+                item.Refresh(shopController);
 
-        foreach (var item in statItems)
-            item.Refresh(shopController);
+            foreach (var item in statItems)
+                item.Refresh(shopController);
+        }
 
-        if (atkLevelText != null) atkLevelText.text = $"LV.{upgradeManager.AtkLevel}";
-        if (hpLevelText != null) hpLevelText.text = $"LV.{upgradeManager.HpLevel}";
-        if (atkPriceText != null) atkPriceText.text = $"{upgradeManager.UpgradePrice}$";
-        if (hpPriceText != null) hpPriceText.text = $"{upgradeManager.UpgradePrice}$";
+        if (upgradeManager == null)
+            return;
+
+        if (atkLevelText != null)
+            atkLevelText.text = $"LV.{upgradeManager.AtkLevel}";
+        if (hpLevelText != null)
+            hpLevelText.text = $"LV.{upgradeManager.HpLevel}";
+        if (atkPriceText != null)
+            atkPriceText.text = $"{upgradeManager.UpgradePrice}$";
+        if (hpPriceText != null)
+            hpPriceText.text = $"{upgradeManager.UpgradePrice}$";
     }
-
-    private int openPanelIndex = -1;
 
     private void ShowPanel(int index)
     {
         bool isAlreadyOpen = categoryPanels[index].activeSelf;
         for (int i = 0; i < categoryPanels.Length; i++)
-        {
             categoryPanels[i].SetActive(!isAlreadyOpen && i == index);
-        }
+
         openPanelIndex = isAlreadyOpen ? -1 : index;
         UpdateCategorySelection();
         RefreshAll();
     }
 
-     
     public void ClosePanel()
     {
-        if (openPanelIndex < 0) return;
+        if (openPanelIndex < 0)
+            return;
+
         categoryPanels[openPanelIndex].SetActive(false);
         openPanelIndex = -1;
         UpdateCategorySelection();
     }
 
-    //선택한 카테고리 버튼의 highligted상태 유지용.
+     //선택한 카테고리 버튼의 highligted상태 유지용.
     private void UpdateCategorySelection()
     {
         for (int i = 0; i < categoryButtons.Length; i++)
         {
             CanvasGroup normalCG = categoryNormalCGs[i];
             CanvasGroup highlightedCG = categoryHighlightedCGs[i];
-            if (normalCG == null || highlightedCG == null) continue;
+            if (normalCG == null || highlightedCG == null)
+                continue;
 
             bool selected = i == openPanelIndex;
             normalCG.alpha = selected ? 0f : 1f;
@@ -126,7 +139,7 @@ public class ShopUI : MonoBehaviour
 
     public void TryBuy(WeaponData data)
     {
-        if (shopController.BuyWeapon(data))
+        if (shopController != null && shopController.BuyWeapon(data))
         {
             RefreshAll();
             Close();
@@ -137,29 +150,32 @@ public class ShopUI : MonoBehaviour
 
     public void HideWeaponInfo() => weaponInfoPanel?.Hide();
 
-    /// <summary>StatUpgradeItem에서 호출. 강화 시도 후 UI 갱신.</summary>
     public void TryStatUpgrade(StatType statType, int price, float bonusPerLevel, int maxLevel)
     {
-        if (shopController.UpgradeStat(statType, price, bonusPerLevel, maxLevel))
+        if (shopController != null && shopController.UpgradeStat(statType, price, bonusPerLevel, maxLevel))
             RefreshAll();
     }
 
     private void Update()
     {
-        if (shopPanel.activeSelf)
+        if (shopPanel != null && shopPanel.activeSelf)
         {
-            if (!shopController.CanShop)
+            if (shopController == null || !shopController.CanShop)
             {
-                if (gameManager.IsStopped) SoftClose();
-                else Close();
+                if (gameManager != null && gameManager.IsStopped)
+                    SoftClose();
+                else
+                    Close();
                 return;
             }
+
             UpdateInfoTexts();
         }
 
-        if (Keyboard.current == null) return;
+        if (Keyboard.current == null || shopController == null)
+            return;
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame && shopPanel.activeSelf)
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && shopPanel != null && shopPanel.activeSelf)
         {
             if (openPanelIndex >= 0)
                 ClosePanel();
@@ -168,10 +184,12 @@ public class ShopUI : MonoBehaviour
             return;
         }
 
-        if (!Keyboard.current.bKey.wasPressedThisFrame) return;
-        if (!shopController.CanShop) return;
+        if (!Keyboard.current.bKey.wasPressedThisFrame)
+            return;
+        if (!shopController.CanShop)
+            return;
 
-        if (shopPanel.activeSelf)
+        if (shopPanel != null && shopPanel.activeSelf)
             Close();
         else
             Open();
@@ -179,9 +197,10 @@ public class ShopUI : MonoBehaviour
 
     private void UpdateInfoTexts()
     {
-        if (shopMoneyText != null)
-            shopMoneyText.text = $"{rewardController.Money}G";
-        if (shopTimeText != null)
+        if (shopMoneyText != null && rewardController != null)
+            shopMoneyText.text = $"{rewardController.Money}$";
+
+        if (shopTimeText != null && roundManager != null && shopController != null)
         {
             float display = roundManager.IsShopPhase ? roundManager.ShopTimer : shopController.PurchaseTimeRemaining;
             shopTimeText.text = $"{Mathf.FloorToInt(display)}초";
@@ -199,8 +218,8 @@ public class ShopUI : MonoBehaviour
         SoftClose();
         UIManager.EnsureInstance().RegisterOverlayClosed(this);
     }
-
-    // 게임 중단 등 외부 상태로 인한 닫힘. 커서 잠금 안 함.
+    
+     // 게임 중단 등 외부 상태로 인한 닫힘. 커서 잠금 안 함.
     private void SoftClose()
     {
         if (openPanelIndex >= 0)
@@ -208,6 +227,8 @@ public class ShopUI : MonoBehaviour
         openPanelIndex = -1;
         UpdateCategorySelection();
         weaponInfoPanel?.Hide();
-        shopPanel.SetActive(false);
+
+        if (shopPanel != null)
+            shopPanel.SetActive(false);
     }
 }

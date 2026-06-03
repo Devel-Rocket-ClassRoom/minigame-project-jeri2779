@@ -17,6 +17,23 @@ public class RewardController : MonoBehaviour
         money = startingMoney;
     }
 
+    private void OnEnable()
+    {
+        EnemyRegistry.OnEnemyKilled += HandleEnemyKilled;
+    }
+
+    private void OnDisable()
+    {
+        EnemyRegistry.OnEnemyKilled -= HandleEnemyKilled;
+    }
+
+    // 적 처치 보상 (EnemyRegistry 구독). 적은 보상을 모른다.
+    private void HandleEnemyKilled(EnemyData data)
+    {
+        AddMoney(data.moneyReward);
+        AddScore(data.scoreReward);
+    }
+
     public void AddMoney(int amount)
     {
         float multiplier = characterStats != null ? characterStats.MoneyGainMultiplier : 1f;

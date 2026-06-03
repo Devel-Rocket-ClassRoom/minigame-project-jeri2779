@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-100)]
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
@@ -14,10 +15,6 @@ public class UIManager : MonoBehaviour
 
     public static UIManager EnsureInstance()
     {
-        if (Instance != null)
-            return Instance;
-
-        Instance = FindAnyObjectByType<UIManager>();
         if (Instance != null)
             return Instance;
 

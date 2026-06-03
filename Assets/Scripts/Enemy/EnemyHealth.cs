@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class EnemyHealth : MonoBehaviour, IDamageable
+public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
 {
     //enemy는 enemydata값 받아옴
     [SerializeField] private EnemyData enemyData;
@@ -10,10 +10,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private float hitFlashDuration = 0.1f;
 
-    public System.Action<EnemyData> onKilled;
-
     private float currentHealth;
     private bool isDead;
+
+    public float HealthRatio => enemyData.maxHealth > 0f ? currentHealth / enemyData.maxHealth : 1f;
     private float hitFlashTimer;
     private Material hitMaterial;
 
@@ -22,6 +22,16 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         currentHealth = enemyData.maxHealth;
         hitMaterial = hitRenderer.material;
         hitMaterial.color = normalColor;
+    }
+
+    private void OnEnable()
+    {
+        EnemyRegistry.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        EnemyRegistry.Unregister(this);
     }
 
     private void Update()
@@ -52,7 +62,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void Die()
     {
         Debug.Log($"{gameObject.name} died.");
-        onKilled?.Invoke(enemyData);
+        EnemyRegistry.ReportKilled(this, enemyData);
 
         var controller = GetComponent<EnemyController>();
         if (controller != null)

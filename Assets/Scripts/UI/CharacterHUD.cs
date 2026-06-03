@@ -3,20 +3,16 @@ using UnityEngine;
 
 public class CharacterHUD : MonoBehaviour
 {
-   
     [SerializeField] private CharacterHealth characterHealth;
     [SerializeField] private CharacterStats characterStats;
     [SerializeField] private WeaponInventoryNew weaponInventory;
     [SerializeField] private CharacterMoves characterMoves;
-    [SerializeField] private EnemySpawner enemySpawner;
     [SerializeField] private RoundManager roundManager;
     [SerializeField] private RewardController rewardController;
     [SerializeField] private UpgradeManager upgradeManager;
 
     [SerializeField] private TextMeshProUGUI hpText;
-
     [SerializeField] private TextMeshProUGUI ammoText;
-
     [SerializeField] private TextMeshProUGUI waveText;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI shopCountdownText;
@@ -27,7 +23,6 @@ public class CharacterHUD : MonoBehaviour
     [SerializeField] private TextMeshProUGUI atkLvText;
     [SerializeField] private TextMeshProUGUI hpLvText;
 
-
     private void OnEnable()
     {
         if (characterHealth != null)
@@ -36,7 +31,8 @@ public class CharacterHUD : MonoBehaviour
             upgradeManager.OnUpgradeLevelChanged += HandleUpgradeLevelChanged;
         if (roundManager != null)
             roundManager.OnRoundChanged += HandleRoundChanged;
-        UpdateHP(); // 구독 전 초기값 1회 갱신
+
+        UpdateHP();
         UpdateUpgradeLevels();
         UpdateWaveText();
     }
@@ -53,24 +49,22 @@ public class CharacterHUD : MonoBehaviour
 
     private void HandleHealthChanged(float current, float max)
     {
-        if (hpText != null) hpText.text = $"{(int)current} / {(int)max}";
+        if (hpText != null)
+            hpText.text = $"{(int)current} / {(int)max}";
     }
 
     private void HandleUpgradeLevelChanged(int atkLevel, int hpLevel)
     {
-        if (atkLvText != null) atkLvText.text = $"{atkLevel}";
-        if (hpLvText != null) hpLvText.text = $"{hpLevel}";
+        if (atkLvText != null)
+            atkLvText.text = $"{atkLevel}";
+        if (hpLvText != null)
+            hpLvText.text = $"{hpLevel}";
     }
 
     private void HandleRoundChanged(int current, int total)
     {
-        if (waveText != null) waveText.text = $"{current} / {total}";
-    }
-
-    private void UpdateWaveText()
-    {
-        if (waveText == null || roundManager == null) return;
-        waveText.text = $"{roundManager.CurrentRound} / {roundManager.TotalRounds}";
+        if (waveText != null)
+            waveText.text = $"{current} / {total}";
     }
 
     private void Update()
@@ -82,38 +76,58 @@ public class CharacterHUD : MonoBehaviour
         UpdateStamina();
     }
 
+    private void UpdateWaveText()
+    {
+        if (waveText == null || roundManager == null)
+            return;
+
+        waveText.text = $"{roundManager.CurrentRound} / {roundManager.TotalRounds}";
+    }
+
     private void UpdateUpgradeLevels()
     {
-        if (upgradeManager == null) return;
-        if (atkLvText != null) atkLvText.text = $"{upgradeManager.AtkLevel}";
-        if (hpLvText != null) hpLvText.text = $"{upgradeManager.HpLevel}";
+        if (upgradeManager == null)
+            return;
+
+        if (atkLvText != null)
+            atkLvText.text = $"{upgradeManager.AtkLevel}";
+        if (hpLvText != null)
+            hpLvText.text = $"{upgradeManager.HpLevel}";
     }
 
     private void UpdateHP()
     {
-        if (hpText == null) return;
+        if (hpText == null || characterHealth == null || characterStats == null)
+            return;
+
         hpText.text = $"{(int)characterHealth.CurrentHealth} / {(int)characterStats.MaxHealth}";
     }
 
     private void UpdateAmmo()
     {
-        if (ammoText == null) return;
-        var w = weaponInventory.CurrentWeapon;
-        if (w == null || w.CurrentAmmo == -1)
-            ammoText.text = "— / —";
+        if (ammoText == null || weaponInventory == null)
+            return;
+
+        var weapon = weaponInventory.CurrentWeapon;
+        if (weapon == null || weapon.CurrentAmmo == -1)
+            ammoText.text = "-- / --";
         else
-            ammoText.text = $"{w.CurrentAmmo} / {w.ReserveAmmo}";
+            ammoText.text = $"{weapon.CurrentAmmo} / {weapon.ReserveAmmo}";
     }
 
     private void UpdateKill()
     {
-        if (killText == null) return;
-        killText.text = $"{enemySpawner.KilledCount}";
+        if (killText == null)
+            return;
+
+        killText.text = $"{EnemyRegistry.KilledCount}";
     }
 
     private void UpdateSession()
     {
-        if (rewardController == null) return;
+        if (rewardController == null)
+            return;
+
         if (moneyText != null)
             moneyText.text = $"{rewardController.Money}";
         if (scoreText != null)
@@ -122,12 +136,17 @@ public class CharacterHUD : MonoBehaviour
 
     private void UpdateStamina()
     {
-        if (staminaText == null) return;
+        if (staminaText == null || characterMoves == null)
+            return;
+
         staminaText.text = $"{(int)characterMoves.CurrentStamina}";
     }
 
     private void UpdateWave()
     {
+        if (roundManager == null)
+            return;
+
         if (timerText != null)
         {
             if (roundManager.IsRoundActive)
@@ -138,7 +157,9 @@ public class CharacterHUD : MonoBehaviour
                 timerText.text = $"{min:00}:{sec:00}";
             }
             else
+            {
                 timerText.text = "00:00";
+            }
         }
 
         if (shopCountdownText != null)
@@ -146,7 +167,7 @@ public class CharacterHUD : MonoBehaviour
             bool isShopPhase = roundManager.IsShopPhase;
             shopCountdownText.gameObject.SetActive(isShopPhase);
             if (isShopPhase)
-                shopCountdownText.text = $"라운드 시작까지\n{Mathf.FloorToInt(roundManager.ShopTimer)}초";
+                shopCountdownText.text = $"라운드 시작 대기까지\n{Mathf.FloorToInt(roundManager.ShopTimer)}초";
         }
     }
 }

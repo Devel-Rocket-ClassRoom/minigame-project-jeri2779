@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 public class GameOverUI : MonoBehaviour
 {
     
-    [SerializeField] private EnemySpawner enemySpawner;
     [SerializeField] private RoundManager roundManager;
     [SerializeField] private RewardController rewardController;
 
@@ -96,7 +95,7 @@ public class GameOverUI : MonoBehaviour
         {
             killResultText.SetActive(true);
             killResultText.GetComponent<TextMeshProUGUI>().text =
-                $"처치 수  {enemySpawner.KilledCount}";
+                $"처치 수  {EnemyRegistry.KilledCount}";
         }
         if (scoreResultText != null)
         {

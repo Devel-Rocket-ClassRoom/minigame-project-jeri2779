@@ -1,19 +1,30 @@
- using UnityEngine;
-
+using UnityEngine;
 
 public class RangedWeapon : MonoBehaviour, IWeapon
 {
     [SerializeField] private RangedWeaponData data;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private Animator weaponAnimator;
+    [SerializeField] private LayerMask headLayer;
+
+    private static readonly int FireSpeedHash = Animator.StringToHash("FireSpeed");
+    private static readonly int ReloadSpeedHash = Animator.StringToHash("ReloadSpeed");
+    private static readonly int IsAimingHash = Animator.StringToHash("IsAiming");
+    private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private static readonly int IsSprintingHash = Animator.StringToHash("IsSprinting");
+    private static readonly int DrawTrigger = Animator.StringToHash("Draw");
+    private static readonly int ReloadTrigger = Animator.StringToHash("Reload");
+    private static readonly int AimShootTrigger = Animator.StringToHash("AimShoot");
+    private static readonly int FireState = Animator.StringToHash("Fire");
 
     private CharacterStats stats;
+    private PlayerDamageCalculator damageCalc;
+    private PlayerCombatEvents combatEvents;
     private int currentAmmo;
     private int reserveAmmo;
     private bool isReloading;
     private float reloadEndTime;
     private float nextFireTime;
-    private int headLayer;
     private bool isAiming;
     // SyncAnimationSpeed에서 계산한 기준 애니메이션 속도 저장
     private float baseFireAnimSpeed = 1f;
@@ -29,16 +40,15 @@ public class RangedWeapon : MonoBehaviour, IWeapon
 
     private void Awake()
     {
-        headLayer = LayerMask.NameToLayer("Head");
         currentAmmo = data.magazineSize;
         reserveAmmo = data.maxReserveAmmo;
-      
+
         SyncAnimationSpeed();
     }
 
     private void OnEnable()
     {
-        weaponAnimator.SetTrigger("Draw");
+        weaponAnimator.SetTrigger(DrawTrigger);
     }
 
     private void SyncAnimationSpeed()
@@ -47,8 +57,8 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         if (weaponAnimator.runtimeAnimatorController == null) return;
 
         // 파라미터가 존재할 경우 기본값 1.0 보장 (클립 검색 실패 시 애니메이션 멈춤 방지)
-        weaponAnimator.SetFloat("FireSpeed", 1f);
-        weaponAnimator.SetFloat("ReloadSpeed", 1f);
+        weaponAnimator.SetFloat(FireSpeedHash, 1f);
+        weaponAnimator.SetFloat(ReloadSpeedHash, 1f);
 
         float fireLen = 0f;
         float reloadLen = 0f;
@@ -67,11 +77,11 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             hasFireClip = true;
             baseFireAnimSpeed = Mathf.Max(fireLen / data.fireRate, 1f);
         }
-        weaponAnimator.SetFloat("FireSpeed", baseFireAnimSpeed);
+        weaponAnimator.SetFloat(FireSpeedHash, baseFireAnimSpeed);
         if (reloadLen > 0f && data.reloadTime > 0f)
         {
             baseReloadAnimSpeed = reloadLen / data.reloadTime;
-            weaponAnimator.SetFloat("ReloadSpeed", baseReloadAnimSpeed);
+            weaponAnimator.SetFloat(ReloadSpeedHash, baseReloadAnimSpeed);
         }
     }
 
@@ -92,15 +102,17 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     public void Init(CharacterStats stats)
     {
         this.stats = stats;
+        damageCalc = stats.GetComponent<PlayerDamageCalculator>();
+        combatEvents = stats.GetComponent<PlayerCombatEvents>();
     }
 
     public void Tick(FireContext ctx)
     {
         isAiming = ctx.isAiming;
         if (weaponAnimator == null) return;
-        weaponAnimator.SetBool("IsAiming", isAiming);
-        weaponAnimator.SetBool("IsMoving", ctx.isMoving);
-        weaponAnimator.SetBool("IsSprinting", ctx.isSprinting);
+        weaponAnimator.SetBool(IsAimingHash, isAiming);
+        weaponAnimator.SetBool(IsMovingHash, ctx.isMoving);
+        weaponAnimator.SetBool(IsSprintingHash, ctx.isSprinting);
     }
 
     public bool Use(FireContext ctx)
@@ -116,23 +128,25 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         for (int i = 0; i < data.pelletCount; i++)
         {
             Vector3 dir = ApplySpread(ctx.ray.direction);
-            Debug.DrawRay(ctx.ray.origin, dir * data.range, Color.red, 1f);
             float range = data.range + (stats != null ? stats.RangeBonus : 0f);
             if (!Physics.Raycast(ctx.ray.origin, dir, out RaycastHit hit, range, ctx.layer))
                 continue;
 
-            Debug.DrawLine(ctx.ray.origin, hit.point, Color.yellow, 1f);
-            Debug.DrawRay(hit.point, Vector3.up * 0.3f, Color.green, 1f);
-            bool isHeadshot = hit.collider.gameObject.layer == headLayer;
-            float critMult = (stats != null && Random.value < stats.CritChance) ? 2f : 1f;
-            float damage = data.damage * (stats != null ? stats.AttackMultiplier : 1f) * (isHeadshot ? 2f : 1f) * critMult;
-            hit.collider.GetComponentInParent<IDamageable>()?.TakeDamage(damage);
-
-            if (stats != null && stats.IsExplosiveReady)
+            bool isHeadshot = (headLayer.value & (1 << hit.collider.gameObject.layer)) != 0;
+            var target = hit.collider.GetComponentInParent<IDamageable>();
+            if (target != null)
             {
-                TriggerExplosion(hit.point);
-                stats.ConsumeExplosive();
+                target.TakeDamage(damageCalc.Compute(new DamageContext
+                {
+                    baseDamage = data.damage,
+                    isHeadshot = isHeadshot,
+                    isMelee = false,
+                    weaponMultiplier = 1f,
+                    targetHealthRatio = (target as IHealthInfo)?.HealthRatio ?? 1f,
+                }));
             }
+
+            combatEvents?.RaiseRangedHit(hit.point);
         }
         return true;
     }
@@ -152,9 +166,9 @@ public class RangedWeapon : MonoBehaviour, IWeapon
 
         // 애니메이션도 동일 배율로 빠르게
         if (weaponAnimator != null && baseReloadAnimSpeed > 0f)
-            weaponAnimator.SetFloat("ReloadSpeed", baseReloadAnimSpeed * multiplier);
+            weaponAnimator.SetFloat(ReloadSpeedHash, baseReloadAnimSpeed * multiplier);
 
-        weaponAnimator.SetTrigger("Reload");
+        weaponAnimator.SetTrigger(ReloadTrigger);
     }
 
     public void CancelAction()
@@ -178,29 +192,13 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         }
         if (isAiming)
         {
-            weaponAnimator.SetTrigger("AimShoot");
+            weaponAnimator.SetTrigger(AimShootTrigger);
         }
         else if (hasFireClip)
         {
             float multiplier = stats != null ? stats.FireRateMultiplier : 1f;
-            weaponAnimator.SetFloat("FireSpeed", baseFireAnimSpeed * multiplier);
-            weaponAnimator.Play("Fire", 0, 0f);
-        }
-    }
-
-    private void TriggerExplosion(Vector3 point)
-    {
-        if (stats.ExplosionVFX != null)
-            Destroy(Instantiate(stats.ExplosionVFX, point, Quaternion.identity), 3f);
-
-        var hitSet = new System.Collections.Generic.HashSet<IDamageable>();
-        Collider[] cols = Physics.OverlapSphere(point, stats.ExplosiveRadius);
-        foreach (var col in cols)
-        {
-            var target = col.GetComponentInParent<IDamageable>();
-            if (target == null || hitSet.Contains(target)) continue;
-            target.TakeDamage(stats.ExplosiveDamage);
-            hitSet.Add(target);
+            weaponAnimator.SetFloat(FireSpeedHash, baseFireAnimSpeed * multiplier);
+            weaponAnimator.Play(FireState, 0, 0f);
         }
     }
 

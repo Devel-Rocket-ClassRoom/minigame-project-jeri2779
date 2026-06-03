@@ -24,19 +24,18 @@ public class CharacterStats : MonoBehaviour
     private float critChanceBonus = 0f;
     private float bonusAmmoBonus = 0f;
     private float meleeDamageBonus = 0f;
+    private float healthyTargetBonus = 0f;
+    private float fightingSpiritBonus = 0f;
 
     [Header("폭발탄")]
     [SerializeField] private GameObject explosionVFX;
     [SerializeField] private float explosiveInterval = 8f;
     [SerializeField] private float explosiveRadius = 3f;
     private float explosiveDamage;
-    private float nextExplosiveTime = float.MaxValue;
 
     [Header("흡혈")]
     [SerializeField] private int lifestealKillThreshold = 5;
     private float lifestealHealAmount;
-    private int killCounter;
-    private CharacterHealth health;
 
     public float MaxHealth => maxHealth + hpBonus;
     public float MoveSpeed => moveSpeed + mspBonus;
@@ -53,15 +52,23 @@ public class CharacterStats : MonoBehaviour
     public float FireRateMultiplier => 1f + fireRateBonus * 0.01f;
     public float RangeBonus => rangeBonus;
     public float MoneyGainMultiplier => 1f + moneyGainBonus * 0.01f;
-    public bool IsExplosiveReady => explosiveDamage > 0f && Time.time >= nextExplosiveTime;
+    // 폭발탄 수치: 피해/반경/간격/VFX. 쿨다운·폭발 실행은 PlayerExplosive가 한다.
     public float ExplosiveDamage => explosiveDamage;
     public float ExplosiveRadius => explosiveRadius;
+    public float ExplosiveInterval => explosiveInterval;
     public GameObject ExplosionVFX => explosionVFX;
 
     public int ExtraJumpCount => extraJumpCount;
     public float CritChance => Mathf.Clamp01(critChanceBonus * 0.01f);
     public float BonusAmmoPercent => bonusAmmoBonus * 0.01f;
     public float MeleeDamageMultiplier => 1f + meleeDamageBonus * 0.01f;
+    // 건강한 적 추가뎀의 "최대 보너스"(타겟 HP 100%일 때). 적용 곡선은 PlayerDamageCalculator가 결정.
+    public float HealthyTargetBonus => healthyTargetBonus * 0.01f;
+    // 투지: 생존 적 수가 많을수록 추가뎀의 "최대 보너스"(만원일 때). 곡선은 PlayerDamageCalculator가 결정.
+    public float FightingSpiritBonus => fightingSpiritBonus * 0.01f;
+    // 흡혈 수치: 1회 회복량 / 발동 처치 임계. 행동(카운트·회복)은 PlayerLifesteal이 한다.
+    public float LifestealHealAmount => lifestealHealAmount;
+    public int LifestealKillThreshold => lifestealKillThreshold;
 
     public void ApplyAtkBonus(float amount) => atkBonus += amount;
     public void ApplyHpBonus(float amount) => hpBonus += amount;
@@ -78,25 +85,10 @@ public class CharacterStats : MonoBehaviour
     public void ApplyCritChanceBonus(float amount) => critChanceBonus += amount;
     public void ApplyBonusAmmoBonus(float amount) => bonusAmmoBonus += amount;
     public void ApplyMeleeDamageBonus(float amount) => meleeDamageBonus += amount;
+    public void ApplyHealthyTargetBonus(float amount) => healthyTargetBonus += amount;
+    public void ApplyFightingSpiritBonus(float amount) => fightingSpiritBonus += amount;
 
-    public void ConsumeExplosive() => nextExplosiveTime = Time.time + explosiveInterval;
-    public void ApplyExplosiveDamageBonus(float amount)
-    {
-        explosiveDamage += amount;
-        if (nextExplosiveTime == float.MaxValue)
-            nextExplosiveTime = Time.time + explosiveInterval;
-    }
+    public void ApplyExplosiveDamageBonus(float amount) => explosiveDamage += amount;
 
     public void ApplyLifestealBonus(float amount) => lifestealHealAmount += amount;
-    public void RegisterKill()
-    {
-        if (lifestealHealAmount <= 0f) return;
-        killCounter++;
-        if (killCounter >= lifestealKillThreshold)
-        {
-            if (health == null) health = GetComponent<CharacterHealth>();
-            health?.AddHealth(lifestealHealAmount);
-            killCounter = 0;
-        }
-    }
 }
