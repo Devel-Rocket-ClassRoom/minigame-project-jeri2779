@@ -80,6 +80,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeWeapon
   data: {fileID: 11400000, guid: 09aa3ac31a7153c4382094b2e62c67fd, type: 2}
   weaponAnimator: {fileID: 0}
+  headLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!95 &6970926759871322994
 Animator:
   serializedVersion: 7

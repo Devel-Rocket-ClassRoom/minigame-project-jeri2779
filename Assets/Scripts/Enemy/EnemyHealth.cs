@@ -48,7 +48,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     {
         if (isDead) return;
         currentHealth -= damage;
-        Debug.Log($"{damage} damage.health: {currentHealth}");
         hitMaterial.color = hitColor;
         hitFlashTimer = hitFlashDuration;
 
@@ -61,7 +60,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     }
     private void Die()
     {
-        Debug.Log($"{gameObject.name} died.");
         EnemyRegistry.ReportKilled(this, enemyData);
 
         var controller = GetComponent<EnemyController>();

@@ -48,7 +48,6 @@ public class CharacterHealth : MonoBehaviour, IDamageable, IHealthInfo
     {
         if (State == CharacterState.Dead) return;
         currentHealth -= damage * (1f - characterStats.DamageReduction);
-        Debug.Log($"{gameObject.name}{damage} damage. health: {currentHealth}");
         RaiseHealthChanged();
 
         if (currentHealth <= 0)
@@ -61,7 +60,6 @@ public class CharacterHealth : MonoBehaviour, IDamageable, IHealthInfo
     {
         State = CharacterState.Dead;
         OnDied?.Invoke();
-        Debug.Log($"{gameObject.name} died.");
         //캐릭터 컨트롤러 비활성화 처리
         CharacterController controller = GetComponent<CharacterController>();
         if (controller != null)

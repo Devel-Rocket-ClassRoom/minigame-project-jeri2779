@@ -5467,6 +5467,9 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: 60121842685300545bfed7eecc9a0f49, type: 2}
   muzzleFlash: {fileID: 3523633393285627101}
   weaponAnimator: {fileID: 8368382569050827153}
+  headLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!95 &8368382569050827153
 Animator:
   serializedVersion: 7

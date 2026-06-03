@@ -271,6 +271,9 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: fc4bc1272038fe94fbdf59394b3e3a4c, type: 2}
   muzzleFlash: {fileID: 3622766451361670186}
   weaponAnimator: {fileID: 3914200256509217693}
+  headLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &836573062822366545
 GameObject:
   m_ObjectHideFlags: 0

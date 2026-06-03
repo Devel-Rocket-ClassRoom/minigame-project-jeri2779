@@ -106,27 +106,20 @@ public class RoundManager : MonoBehaviour
     {
         isShopPhase = false;
         if (currentRound > totalRounds)
-        {
-            Debug.Log("전체 라운드 클리어!");
             return;
-        }
 
         playerSpawner.Unfreeze();
         isRoundActive = true;
         roundTimer = roundDuration;
 
         if (enemySpawner != null) enemySpawner.StartSpawning(currentRound);
-
-        Debug.Log($"Round {currentRound}/{totalRounds} 시작 ");
     }
 
     private void EndRound()
     {
         isRoundActive = false;
 
-        string clearType = IsRoundCleared() ? "적 전부 처치" : "시간 만료";
         if (enemySpawner != null) enemySpawner.StopSpawning();
-        Debug.Log($" Round {currentRound}/{totalRounds} 클리어 ({clearType})");
 
         if (currentRound >= totalRounds)
         {

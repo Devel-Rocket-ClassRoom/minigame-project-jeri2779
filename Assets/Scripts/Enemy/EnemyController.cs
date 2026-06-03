@@ -224,7 +224,6 @@ public class EnemyController : MonoBehaviour
         attackTimer += Time.deltaTime;
         if (attackTimer >= enemyData.attackInterval)
         {
-            Debug.Log($"{gameObject.name} is attacking the player!");
             if (playerDamageable != null)
                 playerDamageable.TakeDamage(enemyData.attackDamage);
             attackTimer = 0f;

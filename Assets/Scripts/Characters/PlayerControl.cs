@@ -63,7 +63,6 @@ public class PlayerControl : MonoBehaviour
         if (ControlState == next)
             return;
         ControlState = next;
-        Debug.Log($"[PlayerControl] {ControlState} 전환");
         OnControlStateChanged?.Invoke(next);
     }
 }
