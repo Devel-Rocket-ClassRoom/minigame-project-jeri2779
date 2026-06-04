@@ -16,6 +16,7 @@ public class CharacterMoves : MonoBehaviour
 
     private bool isSprinting = false;
     private bool sprintHeld = false;
+    private bool sprintToggle = false; // false=홀드, true=토글
     private bool isJumping = false;
     private bool prevJumping = false;
     private int airJumpsRemaining = 0;
@@ -30,10 +31,12 @@ public class CharacterMoves : MonoBehaviour
     private float xRotation;
 
     public float CurrentStamina => currentStamina;
-    // 설정창 마우스 감도 seam (SettingsController가 SaveData 값으로 호출)
+    // 설정창 마우스 감도 
     public void SetMouseSensitivity(float value) => mouseSensitivity = value;
-    // 설정창 마우스 Y축 반전 seam
+    // 설정창 마우스 Y축 반전 
     public void SetInvertY(bool value) => invertMouseY = value;
+    // 설정창 달리기 토글 방식
+    public void SetSprintToggle(bool value) => sprintToggle = value;
     public bool CanMove => playerControl.ControlState == PlayerControlState.Active;
     public bool IsMoving => CanMove && moveInput.sqrMagnitude > 0.01f;
     public bool IsSprinting => isSprinting;
@@ -121,6 +124,12 @@ public class CharacterMoves : MonoBehaviour
 
     public void OnSprint(InputAction.CallbackContext context)
     {
+        if (sprintToggle)
+        {
+            if (context.started) sprintHeld = !sprintHeld;
+            return;
+        }
+
         if (context.started)
             sprintHeld = true;
         else if (context.canceled)

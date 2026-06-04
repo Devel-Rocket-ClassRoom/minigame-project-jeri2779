@@ -24,11 +24,13 @@ public class PlayerShooter : MonoBehaviour
     private bool firedThisPress;
     private bool isAiming;
     private bool altFiredThisPress;
+    private bool aimToggle; // false=홀드, true=토글
     private IWeapon cachedWeapon;
 
     public bool IsAiming => isAiming;
+    public void SetAimToggle(bool value) => aimToggle = value;
     public bool IsFirePressed => isFiring;
-    // 설정창 FOV seam (SettingsController가 SaveData 값으로 호출) — 힙파이어 기준 FOV
+    // 설정창 FOV (SettingsController가 SaveData 값으로 호출) — 힙파이어 기준 FOV
     public void SetDefaultFOV(float value) => defaultFOV = value;
     private Vector3 originWpLocalPosition;
 
@@ -72,6 +74,16 @@ public class PlayerShooter : MonoBehaviour
 
     public void OnRightClick(InputAction.CallbackContext context)
     {
+        if (aimToggle)
+        {
+            if (context.started)
+            {
+                isAiming = !isAiming;
+                altFiredThisPress = false;
+            }
+            return;
+        }
+
         if (context.started)
         {
             isAiming = true;

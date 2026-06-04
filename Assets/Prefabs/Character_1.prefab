@@ -225,7 +225,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7677870271825320051}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -531,6 +531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoves
   mouseSensitivity: 0.1
+  invertMouseY: 0
   jumpHeight: 1.2
   playerCamera: {fileID: 934043769406895343}
   weaponInventory: {fileID: 9185768798811754486}
@@ -583,7 +584,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterDead
   characterHealth: {fileID: 8703008233461567453}
   characterMoves: {fileID: 9182838733724328703}
-  gameOverUI: {fileID: 0}
   tiltDuration: 1.5
 --- !u!114 &6042507001176377755
 MonoBehaviour:
@@ -600,7 +600,6 @@ MonoBehaviour:
   characterStats: {fileID: 5045063764107414857}
   characterHealth: {fileID: 8703008233461567453}
   characterMoves: {fileID: 9182838733724328703}
-  rewardController: {fileID: 0}
   atkUpgradePercent: 0.2
   hpUpgradeAmount: 20
   upgradePrice: 300
@@ -704,7 +703,6 @@ MonoBehaviour:
   lastStandThreshold: 0.3
   lastStandDamageBonus: 0
   healthyTargetFalloff: 0.5
-  enemySpawner: {fileID: 0}
   fightingSpiritFullCount: 10
 --- !u!114 &7169672686601412192
 MonoBehaviour:

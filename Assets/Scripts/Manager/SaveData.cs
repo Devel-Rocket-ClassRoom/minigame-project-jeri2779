@@ -14,6 +14,10 @@ public class SaveData
     public int resolutionHeight = 0;
     public bool fullscreen = true;
     public bool hudVisible = true;
+    public int crosshairIndex = 0; // 크로스헤어 모양 프리셋 인덱스
+    public int crosshairColorIndex = 0; // 크로스헤어 색 프리셋 인덱스 (0=흰색)
+    public bool aimToggle = false; // 조준: false=홀드, true=토글
+    public bool sprintToggle = false; // 달리기: false=홀드, true=토글
     public string keyBindings = ""; // New Input System 바인딩 오버라이드(JSON)
 
     // ── 누적 통계 ──

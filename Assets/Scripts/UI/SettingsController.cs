@@ -13,6 +13,8 @@ public class SettingsController : MonoBehaviour
     [Header("Controls")]
     [SerializeField] private Slider mouseSensitivitySlider;
     [SerializeField] private Toggle invertYToggle;
+    [SerializeField] private Toggle aimToggleUI;    // on=토글 조준, off=홀드
+    [SerializeField] private Toggle sprintToggleUI; // on=토글 달리기, off=홀드
 
     [Header("Graphics")]
     [SerializeField] private HorizontalSelector fpsSelector; // 0:30 1:60 2:120 3:무제한
@@ -24,6 +26,14 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private Slider fovSlider;
     [SerializeField] private Toggle hudToggle;
     [SerializeField] private GameObject playingHud;
+
+    [Header("Crosshair")]
+    [SerializeField] private HorizontalSelector crosshairSelector;
+    [SerializeField] private Image crosshairImage;   // 게임플레이 실제 크로스헤어
+    [SerializeField] private Image crosshairPreview; // 설정창 내 미리보기
+    [SerializeField] private Sprite[] crosshairSprites;
+    [SerializeField] private HorizontalSelector crosshairColorSelector;
+    [SerializeField] private Color[] crosshairColors;
 
     [Header("Player Seams ")]
     [SerializeField] private CharacterMoves characterMoves;
@@ -45,6 +55,14 @@ public class SettingsController : MonoBehaviour
         BuildResolutionDropdown();
         if (windowModeSelector != null)
             windowModeSelector.onValueChanged.AddListener(SetWindowModeByIndex);
+        if (crosshairSelector != null)
+            crosshairSelector.onValueChanged.AddListener(SetCrosshairByIndex);
+        if (crosshairColorSelector != null)
+            crosshairColorSelector.onValueChanged.AddListener(SetCrosshairColorByIndex);
+        if (aimToggleUI != null)
+            aimToggleUI.onValueChanged.AddListener(SetAimToggle);
+        if (sprintToggleUI != null)
+            sprintToggleUI.onValueChanged.AddListener(SetSprintToggle);
         ApplySettingData();
     }
 
@@ -87,6 +105,20 @@ public class SettingsController : MonoBehaviour
         if (isInitialized) return;
         if (characterMoves != null) characterMoves.SetInvertY(value);
         if (SaveManager.Instance != null) SaveManager.Instance.CurrentData.invertMouseY = value;
+    }
+
+    public void SetAimToggle(bool value)
+    {
+        if (isInitialized) return;
+        if (playerShooter != null) playerShooter.SetAimToggle(value);
+        if (SaveManager.Instance != null) SaveManager.Instance.CurrentData.aimToggle = value;
+    }
+
+    public void SetSprintToggle(bool value)
+    {
+        if (isInitialized) return;
+        if (characterMoves != null) characterMoves.SetSprintToggle(value);
+        if (SaveManager.Instance != null) SaveManager.Instance.CurrentData.sprintToggle = value;
     }
 
     public void SetFov(float value)
@@ -196,6 +228,42 @@ public class SettingsController : MonoBehaviour
         Screen.SetResolution(w, h, mode);
     }
 
+    // 크로스헤어 셀렉터 onValueChanged 에 연결
+    public void SetCrosshairByIndex(int index)
+    {
+        if (isInitialized) return;
+        ApplyCrosshair(index);
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.CurrentData.crosshairIndex = index;
+    }
+
+    private void ApplyCrosshair(int index)
+    {
+        if (crosshairSprites == null || crosshairSprites.Length == 0) return;
+        index = Mathf.Clamp(index, 0, crosshairSprites.Length - 1);
+        Sprite sp = crosshairSprites[index];
+        if (crosshairImage != null) crosshairImage.sprite = sp;
+        if (crosshairPreview != null) crosshairPreview.sprite = sp;
+    }
+
+    // 크로스헤어 색 셀렉터 onValueChanged 에 연결
+    public void SetCrosshairColorByIndex(int index)
+    {
+        if (isInitialized) return;
+        ApplyCrosshairColor(index);
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.CurrentData.crosshairColorIndex = index;
+    }
+
+    private void ApplyCrosshairColor(int index)
+    {
+        if (crosshairColors == null || crosshairColors.Length == 0) return;
+        index = Mathf.Clamp(index, 0, crosshairColors.Length - 1);
+        Color c = crosshairColors[index];
+        if (crosshairImage != null) crosshairImage.color = c;
+        if (crosshairPreview != null) crosshairPreview.color = c;
+    }
+
     public void ResetSettings()
     {
         if (SaveManager.Instance == null) return;
@@ -228,6 +296,11 @@ public class SettingsController : MonoBehaviour
         }
         if (mouseSensitivitySlider != null) mouseSensitivitySlider.value = data.mouseSensitivity;
         if (invertYToggle != null) invertYToggle.isOn = data.invertMouseY;
+
+        if (playerShooter != null) playerShooter.SetAimToggle(data.aimToggle);
+        if (aimToggleUI != null) aimToggleUI.isOn = data.aimToggle;
+        if (characterMoves != null) characterMoves.SetSprintToggle(data.sprintToggle);
+        if (sprintToggleUI != null) sprintToggleUI.isOn = data.sprintToggle;
 
         // Graphics
         Application.targetFrameRate = data.targetFPS;
@@ -262,6 +335,22 @@ public class SettingsController : MonoBehaviour
         if (fovSlider != null) fovSlider.value = data.fov;
         if (playingHud != null) playingHud.SetActive(data.hudVisible);
         if (hudToggle != null) hudToggle.isOn = data.hudVisible;
+
+        // Crosshair (모양 + 색)
+        ApplyCrosshair(data.crosshairIndex);
+        if (crosshairSelector != null && crosshairSelector.itemList.Count > 0)
+        {
+            crosshairSelector.index = Mathf.Clamp(data.crosshairIndex, 0, crosshairSelector.itemList.Count - 1);
+            crosshairSelector.defaultIndex = crosshairSelector.index;
+            crosshairSelector.UpdateUI();
+        }
+        ApplyCrosshairColor(data.crosshairColorIndex);
+        if (crosshairColorSelector != null && crosshairColorSelector.itemList.Count > 0)
+        {
+            crosshairColorSelector.index = Mathf.Clamp(data.crosshairColorIndex, 0, crosshairColorSelector.itemList.Count - 1);
+            crosshairColorSelector.defaultIndex = crosshairColorSelector.index;
+            crosshairColorSelector.UpdateUI();
+        }
 
         totalPlayTime = data.totalPlayTime;
         UpdateTimeText();
