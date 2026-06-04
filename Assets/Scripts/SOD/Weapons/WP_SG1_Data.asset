@@ -32,3 +32,4 @@ MonoBehaviour:
   pelletCount: 8
   spreadAngle: 8
   useScope: 0
+  shellReload: 1

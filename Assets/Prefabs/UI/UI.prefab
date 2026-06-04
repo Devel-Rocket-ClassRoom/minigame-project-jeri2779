@@ -22206,7 +22206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonIcon: {fileID: 21300000, guid: bd190f341a63ae7449752d80a3a8ef73, type: 3}
-  buttonText: "\uC77C\uB2F9\uBC31"
+  buttonText: "\uC120\uC81C \uD0C0\uACA9"
   clickEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -22315,12 +22315,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e55a60af361cb0448e4cd2b56884176, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatUpgradeItem
-  displayName: 
+  displayName: "선제 타격"
   statType: 16
   price: 500
   maxLevel: 5
   bonusPerLevel: 50
-  isPercentage: 0
+  isPercentage: 1
   levelText: {fileID: 6664687211908218611}
   priceText: {fileID: 3277116397481976107}
 --- !u!1 &2738091927988929356
@@ -53930,7 +53930,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC77C\uB2F9\uBC31"
+  m_text: "\uC120\uC81C \uD0C0\uACA9"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 870b5ccd87bd73044af2d66ab8d9b211, type: 2}
   m_sharedMaterial: {fileID: 7418539778921895371, guid: 870b5ccd87bd73044af2d66ab8d9b211,
@@ -56820,7 +56820,7 @@ MonoBehaviour:
   price: 3000
   maxLevel: 10
   bonusPerLevel: 5
-  isPercentage: 0
+  isPercentage: 1
   levelText: {fileID: 8776353359384641183}
   priceText: {fileID: 3837535852574408158}
 --- !u!1 &6828041425208206692

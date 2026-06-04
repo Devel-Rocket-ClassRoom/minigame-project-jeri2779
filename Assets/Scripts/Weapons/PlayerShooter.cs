@@ -142,7 +142,7 @@ public class PlayerShooter : MonoBehaviour
     {
         var weapon = inventory.CurrentWeapon;
         if (weapon == null) return;
-        weapon.Tick(new FireContext { ray = BuildAimRay(), layer = shootableLayer, isFiring = isFiring, isAiming = isAiming, isMoving = characterMoves.IsMoving, isSprinting = characterMoves.IsSprinting });
+        weapon.Tick(new FireContext { ray = BuildAimRay(), layer = shootableLayer, isFiring = isFiring, isAiming = isAiming && !characterMoves.IsSprinting, isMoving = characterMoves.IsMoving, isSprinting = characterMoves.IsSprinting });
         if (weapon.Data.category == WeaponCategory.Throwable && weapon.CurrentAmmo == 0)
             inventory.DiscardSlot((int)WeaponCategory.Throwable);
     }

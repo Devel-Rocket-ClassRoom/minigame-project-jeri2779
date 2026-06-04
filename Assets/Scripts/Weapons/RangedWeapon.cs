@@ -245,8 +245,8 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         }
     }
 
-    // 샷건류는 1발씩 장전 (펠릿 다발 = 샷건으로 식별)
-    private bool IsShellReload => data.pelletCount > 1;
+    // 1발씩 순차 장전 여부 — 데이터 플래그로 결정 (펠릿 수와 분리)
+    private bool IsShellReload => data.shellReload;
 
     // 1발 장전 간격 = 전체 장전 시간 / 탄창 크기 (전체 체감 시간은 기존과 동일)
     private float PerShellTime()

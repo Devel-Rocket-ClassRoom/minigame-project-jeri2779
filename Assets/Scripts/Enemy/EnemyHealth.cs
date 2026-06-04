@@ -19,14 +19,25 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     private float EffectiveMaxHealth => enemyData.maxHealth * healthMultiplier;
 
     public float HealthRatio => EffectiveMaxHealth > 0f ? currentHealth / EffectiveMaxHealth : 1f;
+
+    // 이 적 타입의 기준색(식별용). EnemyController가 prepare/사망 후 복원 기준으로 읽는다.
+    public Color NormalColor => normalColor;
+
     private float hitFlashTimer;
-    private Material hitMaterial;
+    private Renderer[] renderers;
 
     private void Start()
     {
         currentHealth = EffectiveMaxHealth;
-        hitMaterial = hitRenderer.material;
-        hitMaterial.color = normalColor;
+        renderers = GetComponentsInChildren<Renderer>();
+        ApplyColor(normalColor);
+    }
+
+    // 모든 몸통 렌더러에 틴트 적용 (타입색/히트색 공통)
+    private void ApplyColor(Color c)
+    {
+        foreach (var r in renderers)
+            r.material.color = c;
     }
 
     private void OnEnable()
@@ -45,7 +56,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
         {
             hitFlashTimer -= Time.deltaTime;
             if (hitFlashTimer <= 0f)
-                hitMaterial.color = normalColor;
+                ApplyColor(normalColor);
         }
     }
 
@@ -53,7 +64,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     {
         if (isDead) return;
         currentHealth -= damage;
-        hitMaterial.color = hitColor;
+        ApplyColor(hitColor);
         hitFlashTimer = hitFlashDuration;
 
         if (currentHealth <= 0)

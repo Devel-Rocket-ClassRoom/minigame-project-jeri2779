@@ -110,6 +110,9 @@ public class UpgradeManager : MonoBehaviour
             case StatType.MoneyGain:
                 characterStats.ApplyMoneyGainBonus(bonusPerLevel);
                 break;
+            case StatType.HealthRegen:
+                characterStats.ApplyHealthRegenBonus(bonusPerLevel);
+                break;
             case StatType.DoubleJump:
                 characterStats.AddExtraJump();
                 break;

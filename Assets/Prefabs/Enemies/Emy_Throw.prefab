@@ -68,7 +68,7 @@ MonoBehaviour:
   enemyData: {fileID: 11400000, guid: 86a173e9706943b448055875864d6562, type: 2}
   hitRenderer: {fileID: 5836091239407726440}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
-  normalColor: {r: 0, g: 0.43529412, b: 0.105882354, a: 1}
+  normalColor: {r: 0, g: 0.8392157, b: 0.20392157, a: 1}
   hitFlashDuration: 0.1
 --- !u!195 &6297647272974216334
 NavMeshAgent:

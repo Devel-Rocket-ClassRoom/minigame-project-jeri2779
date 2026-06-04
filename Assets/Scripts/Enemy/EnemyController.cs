@@ -25,7 +25,7 @@ public class EnemyController : MonoBehaviour
     private CharacterHealth playerHealth;
     private NavMeshAgent agent;
     private Renderer[] renderers;
-    private Color originalColor;
+    private Color baseColor;
 
     // 라운드별 공격력 배율 (스폰 시 EnemySpawner가 주입)
     private float damageMultiplier = 1f;
@@ -43,8 +43,8 @@ public class EnemyController : MonoBehaviour
         playerDamageable = character.GetComponent<IDamageable>();
         playerHealth = character.GetComponent<CharacterHealth>();
         renderers = GetComponentsInChildren<Renderer>();
-        if (renderers.Length > 0)
-            originalColor = renderers[0].sharedMaterial.color;
+        var enemyHealth = GetComponent<EnemyHealth>();
+        baseColor = enemyHealth != null ? enemyHealth.NormalColor : Color.white;
     }
 
     void Update()
@@ -213,7 +213,7 @@ public class EnemyController : MonoBehaviour
         recoverTimer = 0f;
         if (!agent.enabled) agent.enabled = true;
         if (agent.isOnNavMesh) agent.isStopped = true;
-        SetTint(originalColor);
+        SetTint(baseColor);
     }
 
     private void HandleRecover()
@@ -239,7 +239,7 @@ public class EnemyController : MonoBehaviour
         currentState = EnemyState.Dead;
         if (!agent.enabled) agent.enabled = true;
         if (agent.isOnNavMesh) agent.isStopped = true;
-        SetTint(originalColor);
+        SetTint(baseColor);
         animator.SetBool(IsDead1Hash, true);
         animator.SetBool(IsWalkingHash, false);
         animator.SetBool(IsRunningHash, false);
