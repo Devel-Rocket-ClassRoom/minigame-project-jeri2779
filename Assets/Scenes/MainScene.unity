@@ -15,18 +15,18 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
   m_Fog: 0
-  m_FogColor: {r: 0.8000001, g: 0.5372549, b: 0.43921572, a: 1}
+  m_FogColor: {r: 0.3301887, g: 0.14484692, b: 0.17334735, a: 0.25490198}
   m_FogMode: 2
   m_FogDensity: 0.29
   m_LinearFogStart: 100
   m_LinearFogEnd: 800
-  m_AmbientSkyColor: {r: 0.54, g: 0.62, b: 0.75, a: 1}
+  m_AmbientSkyColor: {r: 0.1, g: 0.11, b: 0.14, a: 1}
   m_AmbientEquatorColor: {r: 0.38, g: 0.4, b: 0.38, a: 1}
   m_AmbientGroundColor: {r: 0.22, g: 0.2, b: 0.18, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 1
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 21bf580181fa19d4da075066337f7aaf, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -156731,6 +156731,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1360876594595564603, guid: 1ae7536f56922c34593a5dfb71c3a584,
+        type: 3}
+      propertyPath: m_text
+      value: 00/00
+      objectReference: {fileID: 0}
     - target: {fileID: 1368029479589893461, guid: 1ae7536f56922c34593a5dfb71c3a584,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -158519,7 +158524,7 @@ PrefabInstance:
     - target: {fileID: 6521164985518045697, guid: 1ae7536f56922c34593a5dfb71c3a584,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1.5
+      value: -20.190002
       objectReference: {fileID: 0}
     - target: {fileID: 6521164985518045697, guid: 1ae7536f56922c34593a5dfb71c3a584,
         type: 3}
@@ -196554,13 +196559,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 970507423}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.010820135, y: 0.82973665, z: -0.47984803, w: 0.28489646}
+  m_LocalRotation: {x: 0.5098532, y: -0.25412884, z: 0.16075608, w: 0.80599374}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1636860873}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 64.633, y: -35, z: 0}
 --- !u!108 &970507425
 Light:
   m_ObjectHideFlags: 0
@@ -196571,7 +196576,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 1
-  m_Color: {r: 1, g: 0.84129643, b: 0.5955882, a: 1}
+  m_Color: {r: 0.9056604, g: 0.16660747, b: 0.16660735, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -196610,8 +196615,8 @@ Light:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_RenderingLayerMask: 4294967295
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -196646,7 +196651,7 @@ MonoBehaviour:
   m_SoftShadowQuality: 0
   m_RenderingLayersMask:
     serializedVersion: 0
-    m_Bits: 1
+    m_Bits: 4294967295
   m_ShadowRenderingLayersMask:
     serializedVersion: 0
     m_Bits: 1
