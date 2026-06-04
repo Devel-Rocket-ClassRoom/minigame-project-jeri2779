@@ -1,9 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// 설정창 탭 전환: 탭 토글 ↔ 내용 패널 1:1. ToggleGroup에 의존하지 않고 직접 라디오 동작을 강제한다.
-// (MUIP CustomToggle이 Toggle.group 할당을 무시하는 문제 회피)
-// 전환 시 isOn을 알림과 함께 변경하되 자기 리스너만 suppress로 무시 → MUIP 토글의 On/Off 강조 애니메이션은 정상 갱신.
 public class SettingsTabController : MonoBehaviour
 {
     [SerializeField] private Toggle[] tabToggles;
