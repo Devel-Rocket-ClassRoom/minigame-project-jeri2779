@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Michsky.UI.ModernUIPack;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,8 @@ public class SettingsController : MonoBehaviour
     [Header("Graphics")]
     [SerializeField] private HorizontalSelector fpsSelector; // 0:30 1:60 2:120 3:무제한
     [SerializeField] private HorizontalSelector qualitySelector; // QualitySettings 단계
+    [SerializeField] private CustomDropdown resolutionDropdown; // 런타임에 기기 해상도로 채움
+    [SerializeField] private HorizontalSelector windowModeSelector; // 0:전체화면 1:창모드
 
     [Header("Gameplay")]
     [SerializeField] private Slider fovSlider;
@@ -31,6 +34,7 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playTimeTextPause;
 
     private static readonly int[] FpsByIndex = { 30, 60, 120, -1 };
+    private List<Vector2Int> availableResolutions; // 드롭다운 인덱스 → 해상도 매핑
 
     private float totalPlayTime;
     private bool isPlaying;
@@ -38,6 +42,9 @@ public class SettingsController : MonoBehaviour
 
     private void Start()
     {
+        BuildResolutionDropdown();
+        if (windowModeSelector != null)
+            windowModeSelector.onValueChanged.AddListener(SetWindowModeByIndex);
         ApplySettingData();
     }
 
@@ -113,6 +120,82 @@ public class SettingsController : MonoBehaviour
         if (SaveManager.Instance != null) SaveManager.Instance.CurrentData.qualityLevel = index;
     }
 
+    // 해상도 드롭다운을 기기에서 쓸 수 있는 해상도로 채운다(런타임 동적). Start에서 ApplySettingData 전에 호출.
+    private void BuildResolutionDropdown()
+    {
+        if (resolutionDropdown == null) return;
+
+        availableResolutions = new List<Vector2Int>();
+        foreach (Resolution r in Screen.resolutions)
+        {
+            var res = new Vector2Int(r.width, r.height);
+            if (!availableResolutions.Contains(res)) availableResolutions.Add(res); // 주사율 중복 제거
+        }
+
+        resolutionDropdown.enableIcon = false; // 닫힌 상태 선택 아이콘 제거
+        resolutionDropdown.dropdownItems.Clear();
+        foreach (var res in availableResolutions)
+            resolutionDropdown.CreateNewItemFast($"{res.x} x {res.y}", null);
+        resolutionDropdown.SetupDropdown();
+
+        // 항목 아이콘 제거: itemObject 템플릿이 공유 prefab(Imported)이라 prefab 대신
+        // 생성된 항목들의 Icon만 끈다(이 드롭다운 한정).
+        if (resolutionDropdown.itemParent != null)
+            foreach (Transform itemTr in resolutionDropdown.itemParent)
+            {
+                Transform icon = itemTr.Find("Icon");
+                if (icon != null) icon.gameObject.SetActive(false);
+            }
+
+        resolutionDropdown.dropdownEvent.AddListener(SetResolutionByIndex);
+    }
+
+    // 저장된 해상도(없거나 목록에 없으면 현재 해상도)에 해당하는 드롭다운 인덱스
+    private int ResolveResolutionIndex(SaveData data)
+    {
+        if (availableResolutions == null || availableResolutions.Count == 0) return -1;
+        if (data.resolutionWidth > 0)
+        {
+            int i = availableResolutions.IndexOf(new Vector2Int(data.resolutionWidth, data.resolutionHeight));
+            if (i >= 0) return i;
+        }
+        return availableResolutions.IndexOf(new Vector2Int(Screen.currentResolution.width, Screen.currentResolution.height));
+    }
+
+    // 드롭다운 dropdownEvent 에 연결
+    public void SetResolutionByIndex(int index)
+    {
+        if (isInitialized) return;
+        if (availableResolutions == null || index < 0 || index >= availableResolutions.Count) return;
+        var res = availableResolutions[index];
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.CurrentData.resolutionWidth = res.x;
+            SaveManager.Instance.CurrentData.resolutionHeight = res.y;
+        }
+        ApplyScreen();
+    }
+
+    // 창모드 셀렉터 onValueChanged 에 연결 (0:전체화면 1:창모드)
+    public void SetWindowModeByIndex(int index)
+    {
+        if (isInitialized) return;
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.CurrentData.fullscreen = (index == 0);
+        ApplyScreen();
+    }
+
+    // 해상도+창모드를 함께 적용(한쪽만 바꿔도 다른 쪽 보존). ※ 빌드에서만 실제 반영됨(에디터 무효).
+    private void ApplyScreen()
+    {
+        if (SaveManager.Instance == null) return;
+        SaveData data = SaveManager.Instance.CurrentData;
+        int w = data.resolutionWidth > 0 ? data.resolutionWidth : Screen.currentResolution.width;
+        int h = data.resolutionHeight > 0 ? data.resolutionHeight : Screen.currentResolution.height;
+        var mode = data.fullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+        Screen.SetResolution(w, h, mode);
+    }
+
     public void ResetSettings()
     {
         if (SaveManager.Instance == null) return;
@@ -161,6 +244,18 @@ public class SettingsController : MonoBehaviour
             qualitySelector.defaultIndex = qualitySelector.index;
             qualitySelector.UpdateUI();
         }
+
+        // Screen (해상도 + 창모드)
+        int resIndex = ResolveResolutionIndex(data);
+        if (resolutionDropdown != null && resIndex >= 0)
+            resolutionDropdown.ChangeDropdownInfo(resIndex); // 이벤트 미발생 → Set* 재호출 안 됨
+        if (windowModeSelector != null && windowModeSelector.itemList.Count > 0)
+        {
+            windowModeSelector.index = data.fullscreen ? 0 : 1;
+            windowModeSelector.defaultIndex = windowModeSelector.index;
+            windowModeSelector.UpdateUI();
+        }
+        ApplyScreen();
 
         // Gameplay
         if (playerShooter != null) playerShooter.SetDefaultFOV(data.fov);

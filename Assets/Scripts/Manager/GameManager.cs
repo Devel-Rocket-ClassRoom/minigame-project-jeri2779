@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// 게임 흐름 조율자. 진행/정지 상태를 소유하고, 라운드 실행은 RoundManager에 명령한다.
+ 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private RoundManager roundManager;
