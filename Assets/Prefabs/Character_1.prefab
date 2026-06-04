@@ -644,9 +644,9 @@ MonoBehaviour:
   blockedWpOffset: {x: 0, y: -0.2, z: -0.25}
   wpSwaySpeed: 12
   defaultFOV: 60
-  adsFOV: 30
+  adsFOV: 40
   adsSpeed: 10
-  scopeFOV: 15
+  scopeFOV: 20
 --- !u!114 &8968587446061740606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -703,7 +703,7 @@ MonoBehaviour:
   headshotMultiplier: 2.5
   critMultiplier: 1.5
   lastStandThreshold: 0.3
-  lastStandDamageBonus: 0
+  lastStandDamageBonus: 20
   healthyTargetFalloff: 0.5
   fightingSpiritFullCount: 30
 --- !u!114 &7169672686601412192
