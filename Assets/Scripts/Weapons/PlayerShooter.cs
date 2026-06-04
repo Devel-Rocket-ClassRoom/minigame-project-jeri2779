@@ -28,6 +28,8 @@ public class PlayerShooter : MonoBehaviour
 
     public bool IsAiming => isAiming;
     public bool IsFirePressed => isFiring;
+    // 설정창 FOV seam (SettingsController가 SaveData 값으로 호출) — 힙파이어 기준 FOV
+    public void SetDefaultFOV(float value) => defaultFOV = value;
     private Vector3 originWpLocalPosition;
 
     // 발사/조준 공통 차단 조건 (이동 가능 + 비질주 + 비드로우)

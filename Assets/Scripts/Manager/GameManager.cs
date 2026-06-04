@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
             deathPresenter.OnDeathPresented -= HandleDeathPresented;
     }
 
-    // 최종 클리어 → 게임 전체 상태를 Clear로 (IsStopped 파생도 true가 됨)
+    // 최종 클리어 → 게임 전체 상태를 Clear
     private void HandleAllRoundsCleared()
     {
         CurrentState = GameState.Clear;

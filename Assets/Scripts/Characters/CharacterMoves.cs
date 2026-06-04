@@ -9,6 +9,7 @@ using Quaternion = UnityEngine.Quaternion;
 public class CharacterMoves : MonoBehaviour
 {
     [SerializeField] private float mouseSensitivity = 1f;
+    [SerializeField] private bool invertMouseY = false;
     [SerializeField] private float jumpHeight = 1.2f;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private WeaponInventoryNew weaponInventory;
@@ -29,6 +30,10 @@ public class CharacterMoves : MonoBehaviour
     private float xRotation;
 
     public float CurrentStamina => currentStamina;
+    // 설정창 마우스 감도 seam (SettingsController가 SaveData 값으로 호출)
+    public void SetMouseSensitivity(float value) => mouseSensitivity = value;
+    // 설정창 마우스 Y축 반전 seam
+    public void SetInvertY(bool value) => invertMouseY = value;
     public bool CanMove => playerControl.ControlState == PlayerControlState.Active;
     public bool IsMoving => CanMove && moveInput.sqrMagnitude > 0.01f;
     public bool IsSprinting => isSprinting;
@@ -153,6 +158,7 @@ public class CharacterMoves : MonoBehaviour
         if (Cursor.lockState != CursorLockMode.Locked) return;
         float mouseX = lookInput.x * mouseSensitivity;
         float mouseY = lookInput.y * mouseSensitivity;
+        if (invertMouseY) mouseY = -mouseY;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
