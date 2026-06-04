@@ -15,6 +15,8 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button quitButton;
     [SerializeField] private ModalWindowManager quitModal;
     [SerializeField] private Button quitConfirmButton;
+    [SerializeField] private Button settingsButton;
+    [SerializeField] private GameObject settingsPanel;
     [SerializeField] private float introDelay = 2f;
 
     private void Awake()
@@ -24,6 +26,8 @@ public class MainMenuUI : MonoBehaviour
             quitButton.onClick.AddListener(OnQuitClicked);
         if (quitConfirmButton != null)
             quitConfirmButton.onClick.AddListener(OnQuitClicked);
+        if (settingsButton != null)
+            settingsButton.onClick.AddListener(OpenSettings);
 
         mainMenuPanel.SetActive(true);
         playingHUD.SetActive(false);
@@ -65,6 +69,12 @@ public class MainMenuUI : MonoBehaviour
 
         gameStartText.gameObject.SetActive(false);
         gameManager.StartGame();
+    }
+
+    public void OpenSettings()
+    {
+        if (settingsPanel != null)
+            settingsPanel.SetActive(true);
     }
 
     private void OnQuitClicked()

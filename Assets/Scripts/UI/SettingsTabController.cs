@@ -7,7 +7,10 @@ public class SettingsTabController : MonoBehaviour
     [SerializeField] private GameObject[] tabPanels;
     [SerializeField] private int defaultTab = 0;
 
-    private bool suppress;
+
+    private const string AnimStateOn = "Toggle On";
+    private const string AnimStateOff = "Toggle Off";
+
 
     private void Awake()
     {
@@ -17,16 +20,7 @@ public class SettingsTabController : MonoBehaviour
             if (tabToggles[i] == null) continue;
             tabToggles[i].onValueChanged.AddListener(on =>
             {
-                if (suppress) return;
-                if (on)
-                    SelectTab(index);
-                else
-                {
-                    // 활성 탭을 끄려는 클릭 → 다시 켬(최소 1개 유지)
-                    suppress = true;
-                    tabToggles[index].isOn = true;
-                    suppress = false;
-                }
+                if (on) SelectTab(index);
             });
         }
     }
@@ -38,10 +32,21 @@ public class SettingsTabController : MonoBehaviour
 
     public void SelectTab(int index)
     {
-        suppress = true;
+        
+        if (index >= 0 && index < tabToggles.Length && tabToggles[index] != null)
+            tabToggles[index].isOn = true;
+
         for (int i = 0; i < tabToggles.Length; i++)
-            if (tabToggles[i] != null) tabToggles[i].isOn = (i == index); // 알림 발생 → CustomToggle 애니메이션 갱신
-        suppress = false;
+        {
+            if (tabToggles[i] == null) continue;
+            var anim = tabToggles[i].GetComponent<Animator>();
+            if (anim == null) continue;
+
+            if (i == index)
+                anim.Play(AnimStateOn); // 선택: 강조 애니 재생
+            else
+                anim.Play(AnimStateOff, 0, 1f); // 해제: 끝 프레임으로 즉시(애니 무처리)
+        }
 
         for (int i = 0; i < tabPanels.Length; i++)
             if (tabPanels[i] != null) tabPanels[i].SetActive(i == index);
