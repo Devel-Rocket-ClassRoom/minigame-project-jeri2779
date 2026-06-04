@@ -532,6 +532,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoves
   mouseSensitivity: 0.1
   invertMouseY: 0
+  impactKickAmount: 20
+  kickSmoothing: 12
   jumpHeight: 1.2
   playerCamera: {fileID: 934043769406895343}
   weaponInventory: {fileID: 9185768798811754486}
@@ -553,7 +555,7 @@ MonoBehaviour:
   staminaDrainRate: 10
   staminaRegenRate: 10
   attackMultiplier: 1.2
-  explosionVFX: {fileID: 8008228959439112381, guid: 26ee4bcb4f6a0404eaaf6bf1351ac2f1,
+  explosionVFX: {fileID: 5481530993414605263, guid: 7a12b40fb78f3694ea3ba5830db032b4,
     type: 3}
   explosiveInterval: 8
   explosiveRadius: 3
@@ -698,12 +700,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccafddceee04e3e4788aa4f6b572575d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageCalculator
-  headshotMultiplier: 2
-  critMultiplier: 2
+  headshotMultiplier: 2.5
+  critMultiplier: 1.5
   lastStandThreshold: 0.3
   lastStandDamageBonus: 0
   healthyTargetFalloff: 0.5
-  fightingSpiritFullCount: 10
+  fightingSpiritFullCount: 30
 --- !u!114 &7169672686601412192
 MonoBehaviour:
   m_ObjectHideFlags: 0

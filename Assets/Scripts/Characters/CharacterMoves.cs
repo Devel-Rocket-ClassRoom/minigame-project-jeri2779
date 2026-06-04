@@ -6,10 +6,14 @@ using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
 
-public class CharacterMoves : MonoBehaviour
+public class CharacterMoves : MonoBehaviour, IImpactReceiver
 {
     [SerializeField] private float mouseSensitivity = 1f;
     [SerializeField] private bool invertMouseY = false;
+    [SerializeField] private float impactKickAmount = 8f; // 적 투사체 피격 시 시점 강제 이동량(도)
+    [SerializeField] private float kickSmoothing = 12f;   // 피격 킥이 목표치까지 가는 속도(클수록 빠름/즉각에 가까움)
+    private float pendingKickPitch; // 아직 시점에 반영 안 된 킥 잔량(상하)
+    private float pendingKickYaw;   // 아직 시점에 반영 안 된 킥 잔량(좌우)
     [SerializeField] private float jumpHeight = 1.2f;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private WeaponInventoryNew weaponInventory;
@@ -37,6 +41,15 @@ public class CharacterMoves : MonoBehaviour
     public void SetInvertY(bool value) => invertMouseY = value;
     // 설정창 달리기 토글 방식
     public void SetSprintToggle(bool value) => sprintToggle = value;
+
+   
+    // 적 투사체 피격 — 시점을 무작위로 틀어 조준을 흐트러뜨린다(잔량 누적, HandleLook이 부드럽게 흘려보냄).
+    public void ApplyImpact()
+    {
+        pendingKickPitch += Random.Range(impactKickAmount * 0.5f, impactKickAmount) * (Random.value < 0.5f ? -1f : 1f);
+        pendingKickYaw += Random.Range(impactKickAmount * 0.5f, impactKickAmount) * (Random.value < 0.5f ? -1f : 1f);
+    }
+
     public bool CanMove => playerControl.ControlState == PlayerControlState.Active;
     public bool IsMoving => CanMove && moveInput.sqrMagnitude > 0.01f;
     public bool IsSprinting => isSprinting;
@@ -172,8 +185,16 @@ public class CharacterMoves : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
+        // 피격 킥 잔량을 목표치까지 부드럽게 흘려보냄(프레임 독립 지수 감속, 복귀 없음)
+        float kickStep = 1f - Mathf.Exp(-kickSmoothing * Time.deltaTime);
+        float stepPitch = pendingKickPitch * kickStep;
+        float stepYaw = pendingKickYaw * kickStep;
+        xRotation = Mathf.Clamp(xRotation + stepPitch, -90f, 90f);
+        pendingKickPitch -= stepPitch;
+        pendingKickYaw -= stepYaw;
+
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation - RecoilPitch, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
+        transform.Rotate(Vector3.up * (mouseX + stepYaw));
     }
 
     private void HandleSprint()

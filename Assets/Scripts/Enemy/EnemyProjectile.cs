@@ -45,6 +45,8 @@ public class EnemyProjectile : MonoBehaviour
             if (damageable == null || damaged.Contains(damageable)) continue;
             damaged.Add(damageable);
             damageable.TakeDamage(damage);
+            hit.GetComponentInParent<IImpactReceiver>()?.ApplyImpact(); // 투사체 피격 시 시점 교란
+
         }
 
         Destroy(gameObject);
