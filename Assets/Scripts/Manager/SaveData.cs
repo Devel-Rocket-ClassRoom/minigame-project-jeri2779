@@ -13,6 +13,7 @@ public class SaveData
     public int resolutionWidth = 0; // 0 = 현재 해상도 사용
     public int resolutionHeight = 0;
     public bool fullscreen = true;
+    
     public bool hudVisible = true;
     public int crosshairIndex = 0; // 크로스헤어 모양 프리셋 인덱스
     public int crosshairColorIndex = 0; // 크로스헤어 색 프리셋 인덱스 (0=흰색)

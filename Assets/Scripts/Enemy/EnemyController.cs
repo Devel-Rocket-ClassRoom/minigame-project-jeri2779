@@ -27,6 +27,10 @@ public class EnemyController : MonoBehaviour
     private Renderer[] renderers;
     private Color originalColor;
 
+    // 라운드별 공격력 배율 (스폰 시 EnemySpawner가 주입)
+    private float damageMultiplier = 1f;
+    public void SetDamageMultiplier(float multiplier) => damageMultiplier = multiplier;
+
     public void Initialize(Transform player)
     {
         character = player;
@@ -177,7 +181,7 @@ public class EnemyController : MonoBehaviour
         if (GetSqrFlatDist() <= enemyData.attackRange * enemyData.attackRange
             && contactYDiff <= enemyData.attackHeightRange)
         {
-            playerDamageable.TakeDamage(enemyData.chargeContactDamage);
+            playerDamageable.TakeDamage(enemyData.chargeContactDamage * damageMultiplier);
             EnterRecover();
         }
     }
@@ -197,7 +201,7 @@ public class EnemyController : MonoBehaviour
         Vector3 spawnPos = transform.position + Vector3.up * 1.5f;
 
         var go = Instantiate(enemyData.projectilePrefab, spawnPos, Quaternion.LookRotation(dir));
-        go.GetComponent<EnemyProjectile>().Init(enemyData.projectileDamage, enemyData.fuseTime, enemyData.explosionRadius, GetComponentsInChildren<Collider>());
+        go.GetComponent<EnemyProjectile>().Init(enemyData.projectileDamage * damageMultiplier, enemyData.fuseTime, enemyData.explosionRadius, GetComponentsInChildren<Collider>());
 
         var rb = go.GetComponent<Rigidbody>();
         if (rb != null) rb.linearVelocity = dir * enemyData.throwForce;
@@ -225,7 +229,7 @@ public class EnemyController : MonoBehaviour
         if (attackTimer >= enemyData.attackInterval)
         {
             if (playerDamageable != null)
-                playerDamageable.TakeDamage(enemyData.attackDamage);
+                playerDamageable.TakeDamage(enemyData.attackDamage * damageMultiplier);
             attackTimer = 0f;
         }
     }

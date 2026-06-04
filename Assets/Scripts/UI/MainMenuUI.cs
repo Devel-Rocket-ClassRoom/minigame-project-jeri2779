@@ -47,8 +47,16 @@ public class MainMenuUI : MonoBehaviour
         if (!mainMenuPanel.activeSelf) return;
         if (Keyboard.current == null) return;
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
-            quitModal.AnimateWindow();
+        if (!Keyboard.current.escapeKey.wasPressedThisFrame) return;
+
+        // 설정창이 열려 있으면 esc는 설정창을 닫는다 (종료 모달 대신)
+        if (settingsPanel != null && settingsPanel.activeSelf)
+        {
+            settingsPanel.SetActive(false);
+            return;
+        }
+
+        quitModal.AnimateWindow();
     }
 
     private void OnStartClicked()

@@ -30,6 +30,8 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     private float baseFireAnimSpeed = 1f;
     private bool hasFireClip = false;
     private float baseReloadAnimSpeed;
+    // 재장전 클립 원본 길이 (샷건 1발 장전 모션 속도 계산용)
+    private float reloadClipLen;
 
     public WeaponData Data => data;
     public int CurrentAmmo => currentAmmo;
@@ -68,8 +70,14 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             bool isAimShot = clip.name.IndexOf("AimShoot", System.StringComparison.OrdinalIgnoreCase) >= 0;
             if (isFire && !isAimShot)
                 fireLen = clip.length;
-            else if (clip.name.Contains("Reload") && !clip.name.Contains("NoAmmo"))
-                reloadLen = clip.length;
+            else if (clip.name.Contains("Reload"))
+            {
+                // 일반 Reload 우선, 없으면 ReloadNoAmmo로 폴백(SG1처럼 Reload 클립이 없는 무기)
+                if (!clip.name.Contains("NoAmmo"))
+                    reloadLen = clip.length;
+                else if (reloadLen <= 0f)
+                    reloadLen = clip.length;
+            }
         }
 
         if (fireLen > 0f && data.fireRate > 0f)
@@ -78,6 +86,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             baseFireAnimSpeed = Mathf.Max(fireLen / data.fireRate, 1f);
         }
         weaponAnimator.SetFloat(FireSpeedHash, baseFireAnimSpeed);
+        reloadClipLen = reloadLen;
         if (reloadLen > 0f && data.reloadTime > 0f)
         {
             baseReloadAnimSpeed = reloadLen / data.reloadTime;
@@ -89,6 +98,24 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     {
         if (!isReloading) return;
         if (Time.time < reloadEndTime) return;
+
+        // 샷건(pelletCount>1)은 1발씩 장전 — 발사 입력 시 Use에서 중단된다(펌프식).
+        if (IsShellReload)
+        {
+            currentAmmo++;
+            reserveAmmo--;
+            int shellBonus = (stats != null && stats.BonusAmmoPercent > 0f)
+                ? Mathf.RoundToInt(data.magazineSize * stats.BonusAmmoPercent)
+                : 0;
+            if (currentAmmo >= data.magazineSize + shellBonus || reserveAmmo <= 0)
+            {
+                isReloading = false;
+                return;
+            }
+            reloadEndTime = Time.time + PerShellTime();
+            TriggerShellReloadAnim();
+            return;
+        }
 
         isReloading = false;
         int needed = data.magazineSize - currentAmmo;
@@ -117,7 +144,14 @@ public class RangedWeapon : MonoBehaviour, IWeapon
 
     public bool Use(FireContext ctx)
     {
-        if (isReloading) return false;
+        if (isReloading)
+        {
+            // 샷건: 1발씩 장전 중 발사 입력 → 장전 중단하고 이미 장전된 탄으로 즉시 발사(펌프식)
+            if (IsShellReload && currentAmmo > 0)
+                isReloading = false;
+            else
+                return false;
+        }
         if (currentAmmo <= 0) return false;
         if (Time.time < nextFireTime) return false;
 
@@ -136,14 +170,16 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             var target = hit.collider.GetComponentInParent<IDamageable>();
             if (target != null)
             {
-                target.TakeDamage(damageCalc.Compute(new DamageContext
+                float dmg = damageCalc.Compute(new DamageContext
                 {
                     baseDamage = data.damage,
                     isHeadshot = isHeadshot,
                     isMelee = false,
                     weaponMultiplier = 1f,
                     targetHealthRatio = (target as IHealthInfo)?.HealthRatio ?? 1f,
-                }));
+                });
+                target.TakeDamage(dmg);
+                damageCalc.ReportDamage(dmg);
             }
 
             combatEvents?.RaiseRangedHit(hit.point);
@@ -161,8 +197,15 @@ public class RangedWeapon : MonoBehaviour, IWeapon
 
         // stats.ReloadSpeedMultiplier 로 재장전 시간 단축 (강화 없을 때 1.0 → 변화 없음)
         float multiplier = stats != null ? stats.ReloadSpeedMultiplier : 1f;
-        float actualReloadTime = data.reloadTime / multiplier;
-        reloadEndTime = Time.time + actualReloadTime;
+        // 샷건은 1발 장전 간격, 그 외는 전체 장전 시간
+        reloadEndTime = Time.time + (IsShellReload ? PerShellTime() : data.reloadTime / multiplier);
+
+        if (IsShellReload)
+        {
+            // 샷건: 첫 발 장전 모션 (이후 발은 Update에서 매 발 트리거)
+            TriggerShellReloadAnim();
+            return;
+        }
 
         // 애니메이션도 동일 배율로 빠르게
         if (weaponAnimator != null && baseReloadAnimSpeed > 0f)
@@ -200,6 +243,26 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             weaponAnimator.SetFloat(FireSpeedHash, baseFireAnimSpeed * multiplier);
             weaponAnimator.Play(FireState, 0, 0f);
         }
+    }
+
+    // 샷건류는 1발씩 장전 (펠릿 다발 = 샷건으로 식별)
+    private bool IsShellReload => data.pelletCount > 1;
+
+    // 1발 장전 간격 = 전체 장전 시간 / 탄창 크기 (전체 체감 시간은 기존과 동일)
+    private float PerShellTime()
+    {
+        float multiplier = stats != null ? stats.ReloadSpeedMultiplier : 1f;
+        return (data.reloadTime / multiplier) / Mathf.Max(1, data.magazineSize);
+    }
+
+    // 샷건 1발 장전 모션: 클립이 1발 간격(PerShellTime) 동안 1회 완주하도록 속도를 맞춰 매 발 재생
+    private void TriggerShellReloadAnim()
+    {
+        if (weaponAnimator == null) return;
+        float shellTime = PerShellTime();
+        if (reloadClipLen > 0f && shellTime > 0f)
+            weaponAnimator.SetFloat(ReloadSpeedHash, reloadClipLen / shellTime);
+        weaponAnimator.SetTrigger(ReloadTrigger);
     }
 
     private Vector3 ApplySpread(Vector3 direction)

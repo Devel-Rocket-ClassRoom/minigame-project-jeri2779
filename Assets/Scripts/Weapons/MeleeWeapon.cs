@@ -85,14 +85,16 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
             var target = hit.collider.GetComponentInParent<IDamageable>();
             if (target != null)
             {
-                target.TakeDamage(damageCalc.Compute(new DamageContext
+                float dmg = damageCalc.Compute(new DamageContext
                 {
                     baseDamage = data.damage,
                     isHeadshot = isHead,
                     isMelee = true,
                     weaponMultiplier = dmgMult,
                     targetHealthRatio = (target as IHealthInfo)?.HealthRatio ?? 1f,
-                }));
+                });
+                target.TakeDamage(dmg);
+                damageCalc.ReportDamage(dmg);
                 hitSet.Add(target);
             }
         }
@@ -116,14 +118,16 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
             float vertAngle = Mathf.Abs(Mathf.Atan2(local.y, local.z) * Mathf.Rad2Deg);
             if (horizAngle > angleX || vertAngle > angleY) continue;
 
-            target.TakeDamage(damageCalc.Compute(new DamageContext
+            float dmg2 = damageCalc.Compute(new DamageContext
             {
                 baseDamage = data.damage,
                 isHeadshot = false,
                 isMelee = true,
                 weaponMultiplier = dmgMult,
                 targetHealthRatio = (target as IHealthInfo)?.HealthRatio ?? 1f,
-            }));
+            });
+            target.TakeDamage(dmg2);
+            damageCalc.ReportDamage(dmg2);
             hitSet.Add(target);
         }
     }

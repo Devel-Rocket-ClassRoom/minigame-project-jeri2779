@@ -1,10 +1,14 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-// 상태 기반 피해 계산의 단일 집결지.  
+// 상태 기반 피해 계산의 단일 집결지.
 // 무기는 상황(DamageContext)만 넘기고, 최종 피해 = 기본 × 스탯 × 헤드샷/치명타
 [RequireComponent(typeof(CharacterHealth))]
 public class PlayerDamageCalculator : MonoBehaviour
 {
+    // 대미지 적용 시 발행 (최종 대미지). HUD 등이 구독.
+    public event Action<float> OnDamageDealt;
     [SerializeField]
     private float headshotMultiplier = 2f;
 
@@ -69,5 +73,11 @@ public class PlayerDamageCalculator : MonoBehaviour
 
         dmg *= 1f + conditional;
         return dmg;
+    }
+
+    // 대미지 적용 후 호출 — HUD에 알림
+    public void ReportDamage(float damage)
+    {
+        OnDamageDealt?.Invoke(damage);
     }
 }

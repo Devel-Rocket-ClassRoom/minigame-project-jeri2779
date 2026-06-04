@@ -17,6 +17,10 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnStartDelay = 3f;
     [SerializeField] private float spawnInterval = 3f;
 
+    [Header("라운드별 스탯 증가 (라운드당 비율, 0.15 = 라운드마다 +15%)")]
+    [SerializeField] private float healthGrowthPerRound = 0.15f;
+    [SerializeField] private float damageGrowthPerRound = 0.1f;
+
     // 대기 스폰이 모두 소진됐는가 (라운드 종료 판정에 RoundManager가 읽음)
     public bool IsSpawningComplete => pendingSpawns.Count == 0;
 
@@ -24,6 +28,7 @@ public class EnemySpawner : MonoBehaviour
     private readonly List<GameObject> aliveEnemies = new List<GameObject>();
     private List<EnemySpawnEntry> pendingSpawns = new List<EnemySpawnEntry>();
     private bool isSpawning = false;
+    private int currentRound = 1;
 
     private void Update()
     {
@@ -47,6 +52,7 @@ public class EnemySpawner : MonoBehaviour
     {
         spawnTimer = spawnStartDelay;
         aliveEnemies.Clear();
+        currentRound = round;
         pendingSpawns = GetEntriesForRound(round);
         isSpawning = true;
     }
@@ -71,11 +77,19 @@ public class EnemySpawner : MonoBehaviour
         int remaining = maxAliveEnemies - aliveEnemies.Count;
         int count = Mathf.Min(spawnBatchSize, remaining);
 
+        // 라운드별 스탯 배율 (라운드 1 = 1.0, 증가 없음)
+        float healthMult = 1f + (currentRound - 1) * healthGrowthPerRound;
+        float damageMult = 1f + (currentRound - 1) * damageGrowthPerRound;
+
         for (int i = pendingSpawns.Count - 1; i >= 0 && count > 0; i--)
         {
             Transform sp = spawnPoints[Random.Range(0, spawnPoints.Length)];
             GameObject enemy = Instantiate(pendingSpawns[i].prefab, sp.position, sp.rotation);
-            enemy.GetComponent<EnemyController>().Initialize(player);
+            var ctrl = enemy.GetComponent<EnemyController>();
+            ctrl.Initialize(player);
+            ctrl.SetDamageMultiplier(damageMult);
+            var health = enemy.GetComponent<EnemyHealth>();
+            if (health != null) health.SetHealthMultiplier(healthMult);
             aliveEnemies.Add(enemy);
 
             pendingSpawns[i].count--;

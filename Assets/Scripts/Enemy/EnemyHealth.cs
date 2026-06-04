@@ -13,13 +13,18 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     private float currentHealth;
     private bool isDead;
 
-    public float HealthRatio => enemyData.maxHealth > 0f ? currentHealth / enemyData.maxHealth : 1f;
+    // 라운드별 체력 배율 (스폰 시 EnemySpawner가 Start 전에 주입)
+    private float healthMultiplier = 1f;
+    public void SetHealthMultiplier(float multiplier) => healthMultiplier = multiplier;
+    private float EffectiveMaxHealth => enemyData.maxHealth * healthMultiplier;
+
+    public float HealthRatio => EffectiveMaxHealth > 0f ? currentHealth / EffectiveMaxHealth : 1f;
     private float hitFlashTimer;
     private Material hitMaterial;
 
     private void Start()
     {
-        currentHealth = enemyData.maxHealth;
+        currentHealth = EffectiveMaxHealth;
         hitMaterial = hitRenderer.material;
         hitMaterial.color = normalColor;
     }

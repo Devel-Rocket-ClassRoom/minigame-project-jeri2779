@@ -26,10 +26,20 @@ public class PausePanel : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame
-            && (shopPanel == null || !shopPanel.activeSelf)
-            && (mainMenuPanel == null || !mainMenuPanel.activeSelf))
-            SetPause(!isPaused);
+        if (!Keyboard.current.escapeKey.wasPressedThisFrame) return;
+
+        // 메인메뉴 표시 중에는 MainMenuUI가, 상점 열림 중에는 ShopUI가 esc를 전담한다
+        if (mainMenuPanel != null && mainMenuPanel.activeSelf) return;
+        if (shopPanel != null && shopPanel.activeSelf) return;
+
+        // 설정창이 열려 있으면 esc는 설정창만 닫는다 (pause는 그대로 유지)
+        if (settingsPanel != null && settingsPanel.activeSelf)
+        {
+            settingsPanel.SetActive(false);
+            return;
+        }
+
+        SetPause(!isPaused);
     }
 
     private void SetPause(bool pause)

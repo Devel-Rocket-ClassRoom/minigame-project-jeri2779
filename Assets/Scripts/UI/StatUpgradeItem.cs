@@ -47,12 +47,17 @@ public class StatUpgradeItem : MonoBehaviour
         int level = shop.GetStatLevel(statType);
         bool maxed = level >= maxLevel;
 
+        // MAX 도달 시 상점 목록에서 숨긴다. 스크롤 목록이 자동으로 채워지고,
+        // 완료된 강화는 UpgradeBoard(현황판)에 표시된다.
+        gameObject.SetActive(!maxed);
+        if (maxed) return;
+
         button.interactable = shop.CanUpgradeStat(statType, price, maxLevel);
 
         if (levelText != null)
             levelText.text = $"{level}/{maxLevel}";
 
         if (priceText != null)
-            priceText.text = maxed ? "MAX" : $"{price}G";
+            priceText.text = $"{price}G";
     }
 }

@@ -22,6 +22,13 @@ public class CharacterHUD : MonoBehaviour
     [SerializeField] private TextMeshProUGUI staminaText;
     [SerializeField] private TextMeshProUGUI atkLvText;
     [SerializeField] private TextMeshProUGUI hpLvText;
+    [SerializeField] private TextMeshProUGUI totalDamageText;
+    [SerializeField] private TextMeshProUGUI lastDamageText;
+    [SerializeField] private float lastDamageDisplayTime = 1.5f;
+    [SerializeField] private PlayerDamageCalculator damageCalculator;
+
+    private float totalDamageDealt;
+    private float lastDamageTimer;
 
     private void OnEnable()
     {
@@ -31,10 +38,13 @@ public class CharacterHUD : MonoBehaviour
             upgradeManager.OnUpgradeLevelChanged += HandleUpgradeLevelChanged;
         if (roundManager != null)
             roundManager.OnRoundChanged += HandleRoundChanged;
+        if (damageCalculator != null)
+            damageCalculator.OnDamageDealt += HandleDamageDealt;
 
         UpdateHP();
         UpdateUpgradeLevels();
         UpdateWaveText();
+        UpdateTotalDamage();
     }
 
     private void OnDisable()
@@ -45,6 +55,8 @@ public class CharacterHUD : MonoBehaviour
             upgradeManager.OnUpgradeLevelChanged -= HandleUpgradeLevelChanged;
         if (roundManager != null)
             roundManager.OnRoundChanged -= HandleRoundChanged;
+        if (damageCalculator != null)
+            damageCalculator.OnDamageDealt -= HandleDamageDealt;
     }
 
     private void HandleHealthChanged(float current, float max)
@@ -74,6 +86,7 @@ public class CharacterHUD : MonoBehaviour
         UpdateKill();
         UpdateSession();
         UpdateStamina();
+        UpdateLastDamage();
     }
 
     private void UpdateWaveText()
@@ -140,6 +153,65 @@ public class CharacterHUD : MonoBehaviour
             return;
 
         staminaText.text = $"{(int)characterMoves.CurrentStamina}";
+    }
+
+    private float lastDamageHomeY;
+    private bool lastDamageHomeCaptured;
+
+    private void HandleDamageDealt(float damage)
+    {
+        totalDamageDealt += damage;
+        UpdateTotalDamage();
+
+        if (lastDamageText != null)
+        {
+            var rt = lastDamageText.rectTransform;
+
+            // 최초 1회만 원점(홈) 좌표 저장 — 이후 항상 이 위치에서 시작
+            if (!lastDamageHomeCaptured)
+            {
+                lastDamageHomeY = rt.anchoredPosition.y;
+                lastDamageHomeCaptured = true;
+            }
+
+            lastDamageText.text = $"{(int)damage}";
+            lastDamageText.gameObject.SetActive(true);
+            lastDamageTimer = lastDamageDisplayTime;
+
+            // 원점으로 리셋 후 알파 복구
+            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, lastDamageHomeY);
+            var c = lastDamageText.color;
+            lastDamageText.color = new Color(c.r, c.g, c.b, 1f);
+        }
+    }
+
+    private void UpdateTotalDamage()
+    {
+        if (totalDamageText == null) return;
+        totalDamageText.text = $"{(int)totalDamageDealt}";
+    }
+
+    [SerializeField] private float lastDamageFloatDistance = 40f;
+
+    private void UpdateLastDamage()
+    {
+        if (lastDamageText == null) return;
+        if (lastDamageTimer <= 0f) return;
+
+        lastDamageTimer -= Time.deltaTime;
+        float t = 1f - Mathf.Clamp01(lastDamageTimer / lastDamageDisplayTime);
+
+        // 위로 떠오름 (항상 원점 기준)
+        var rt = lastDamageText.rectTransform;
+        rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, lastDamageHomeY + lastDamageFloatDistance * t);
+
+        // 후반 절반에서 페이드아웃
+        float alpha = t < 0.5f ? 1f : 1f - (t - 0.5f) * 2f;
+        var c = lastDamageText.color;
+        lastDamageText.color = new Color(c.r, c.g, c.b, alpha);
+
+        if (lastDamageTimer <= 0f)
+            lastDamageText.gameObject.SetActive(false);
     }
 
     private void UpdateWave()
