@@ -17,8 +17,8 @@ MonoBehaviour:
   attackRange: 1.5
   attackHeightRange: 1.2
   attackDamage: 0
-  attackInterval: 1
-  moneyReward: 50
+  attackInterval: 2
+  moneyReward: 250
   scoreReward: 150
   deathDelay: 3
   behaviorType: 1

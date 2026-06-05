@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: EnemyDataFast
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   maxHealth: 70
-  moveSpeed: 5.5
+  moveSpeed: 6
   attackRange: 1.5
   attackHeightRange: 1.2
   attackDamage: 12
-  attackInterval: 0.8
-  moneyReward: 40
+  attackInterval: 2
+  moneyReward: 250
   scoreReward: 150
   deathDelay: 3
   behaviorType: 0

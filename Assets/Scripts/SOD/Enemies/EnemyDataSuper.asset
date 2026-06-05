@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: EnemyDataSuper
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   maxHealth: 10000
-  moveSpeed: 10
+  moveSpeed: 8
   attackRange: 3
   attackHeightRange: 1.2
   attackDamage: 50
-  attackInterval: 1
+  attackInterval: 2
   moneyReward: 10000
   scoreReward: 10000
   deathDelay: 3

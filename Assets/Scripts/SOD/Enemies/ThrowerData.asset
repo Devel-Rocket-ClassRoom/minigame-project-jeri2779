@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: ThrowerData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   maxHealth: 80
-  moveSpeed: 2
+  moveSpeed: 3
   attackRange: 1.5
   attackHeightRange: 1.2
   attackDamage: 0
-  attackInterval: 1
-  moneyReward: 60
+  attackInterval: 3
+  moneyReward: 300
   scoreReward: 200
   deathDelay: 3
   behaviorType: 2
