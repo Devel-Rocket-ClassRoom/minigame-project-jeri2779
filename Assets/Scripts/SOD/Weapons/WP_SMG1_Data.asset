@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: WP_SMG1_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: MicroGun
-  damage: 12
+  damage: 15
   fireRate: 0.07
   range: 60
   weaponModelPrefab: {fileID: 5523747399004965609, guid: 8cffe7168aec9a14888e357772233a88,
     type: 3}
-  price: 400
+  price: 2100
   verticalRecoil: 1
   category: 0
   isAutomatic: 1
@@ -32,3 +32,6 @@ MonoBehaviour:
   pelletCount: 1
   spreadAngle: 3
   useScope: 0
+  shellReload: 0
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}

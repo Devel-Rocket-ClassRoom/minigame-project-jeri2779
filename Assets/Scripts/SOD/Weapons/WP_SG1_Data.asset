@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: WP_SG1_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: PumpShotgun
-  damage: 15
+  damage: 30
   fireRate: 1
   range: 30
   weaponModelPrefab: {fileID: 4863911552761343938, guid: 487fbb33440f4e84a8bcb1da86e3f3ff,
     type: 3}
-  price: 400
+  price: 3800
   verticalRecoil: 4
   category: 0
   isAutomatic: 0
@@ -33,3 +33,5 @@ MonoBehaviour:
   spreadAngle: 8
   useScope: 0
   shellReload: 1
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}

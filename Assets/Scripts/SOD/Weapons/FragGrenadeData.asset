@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: FragGrenadeData
   m_EditorClassIdentifier: Assembly-CSharp::ThrowableWeaponData
   displayName: HEGreanade
-  damage: 25
+  damage: 100
   fireRate: 0.1
   range: 100
   weaponModelPrefab: {fileID: 1395159897861994593, guid: 4c88afe0d1f92f844bdfe7220a2a1390,
     type: 3}
-  price: 300
+  price: 500
   verticalRecoil: 0
   category: 3
   isAutomatic: 0

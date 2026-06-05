@@ -11,4 +11,8 @@ public class RangedWeaponData : WeaponData
     public bool useScope = false;
     // 한 발씩 순차 장전(펌프식). false면 탄창 통째 장전. 펠릿 수와 무관하게 장전 방식만 결정.
     public bool shellReload = false;
+
+    [Header("사운드 (미할당 시 무음)")]
+    public AudioClip fireSound;
+    public AudioClip reloadSound;
 }

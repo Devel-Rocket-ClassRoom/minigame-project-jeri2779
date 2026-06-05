@@ -18,8 +18,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnInterval = 3f;
 
     [Header("라운드별 스탯 증가 (라운드당 비율, 0.15 = 라운드마다 +15%)")]
-    [SerializeField] private float healthGrowthPerRound = 0.15f;
-    [SerializeField] private float damageGrowthPerRound = 0.1f;
+    [SerializeField] private float healthGrowthPerRound = 0.08f;
+    [SerializeField] private float damageGrowthPerRound = 0.05f;
 
     // 대기 스폰이 모두 소진됐는가 (라운드 종료 판정에 RoundManager가 읽음)
     public bool IsSpawningComplete => pendingSpawns.Count == 0;

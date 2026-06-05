@@ -19,7 +19,7 @@ MonoBehaviour:
   weaponModelPrefab: {fileID: 8015022732572061936, guid: 3a98835c0331d624f9e7156d9045ed9c,
     type: 3}
   price: 1500
-  verticalRecoil: 1.5
+  verticalRecoil: 1
   category: 1
   isAutomatic: 1
   viewModelPosition: {x: 0, y: -0.5, z: 0}
@@ -32,3 +32,6 @@ MonoBehaviour:
   pelletCount: 1
   spreadAngle: 0
   useScope: 0
+  shellReload: 0
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}

@@ -212,6 +212,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             weaponAnimator.SetFloat(ReloadSpeedHash, baseReloadAnimSpeed * multiplier);
 
         weaponAnimator.SetTrigger(ReloadTrigger);
+        AudioManager.Instance?.PlaySE(data.reloadSound);
     }
 
     public void CancelAction()
@@ -228,6 +229,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
 
     private void PlayFireFx()
     {
+        AudioManager.Instance?.PlaySE(data.fireSound);
         if (muzzleFlash != null)
         {
             muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -258,6 +260,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     // 샷건 1발 장전 모션: 클립이 1발 간격(PerShellTime) 동안 1회 완주하도록 속도를 맞춰 매 발 재생
     private void TriggerShellReloadAnim()
     {
+        AudioManager.Instance?.PlaySE(data.reloadSound);
         if (weaponAnimator == null) return;
         float shellTime = PerShellTime();
         if (reloadClipLen > 0f && shellTime > 0f)

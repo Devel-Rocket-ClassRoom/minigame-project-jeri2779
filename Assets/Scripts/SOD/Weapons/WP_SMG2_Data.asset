@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: WP_SMG2_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: MPG
-  damage: 14
+  damage: 22
   fireRate: 0.08
   range: 65
   weaponModelPrefab: {fileID: 722216443202466222, guid: 3c5e6375c713b874181348415041bedb,
     type: 3}
-  price: 450
+  price: 2500
   verticalRecoil: 1
   category: 0
   isAutomatic: 1
@@ -32,3 +32,6 @@ MonoBehaviour:
   pelletCount: 1
   spreadAngle: 3
   useScope: 0
+  shellReload: 0
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}

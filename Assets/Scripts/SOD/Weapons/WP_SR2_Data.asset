@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: WP_SR2_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: BASniper
-  damage: 150
+  damage: 200
   fireRate: 1.5
-  range: 350
+  range: 500
   weaponModelPrefab: {fileID: 2098045051187760901, guid: e7051aede9f97a048aefbd906bb2e09b,
     type: 3}
-  price: 800
-  verticalRecoil: 5
+  price: 6500
+  verticalRecoil: 4
   category: 0
   isAutomatic: 0
   viewModelPosition: {x: 0, y: -0.5, z: 0}
@@ -32,3 +32,6 @@ MonoBehaviour:
   pelletCount: 1
   spreadAngle: 0
   useScope: 1
+  shellReload: 0
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}

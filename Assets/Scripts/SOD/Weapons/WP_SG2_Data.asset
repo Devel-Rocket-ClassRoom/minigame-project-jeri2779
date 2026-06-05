@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: WP_SG2_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: AutoShotgun
-  damage: 18
+  damage: 20
   fireRate: 0.5
   range: 35
   weaponModelPrefab: {fileID: 1144810847374534087, guid: b2dc342eb51f53d4b93be27e212b737a,
     type: 3}
-  price: 500
+  price: 4700
   verticalRecoil: 4
   category: 0
   isAutomatic: 1
@@ -33,3 +33,5 @@ MonoBehaviour:
   spreadAngle: 7
   useScope: 0
   shellReload: 0
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}

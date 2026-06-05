@@ -14,12 +14,15 @@ public class StatUpgradeItem : MonoBehaviour
     [SerializeField] private int maxLevel = 5;
     [SerializeField] private float bonusPerLevel = 1f;
     [SerializeField] private bool isPercentage;
+    // 조건부 강화(선제타격·투지): 표기값이 "최대치"임을 현황판에서 "최대 +N%"로 명시
+    [SerializeField] private bool isMaxBonus;
 
     // SO 마이그레이션 시 아래 프로퍼티의 반환값만 SO 필드로 교체하면 됨
     public string DisplayName => displayName;
     public StatType StatType => statType;
     public float BonusPerLevel => bonusPerLevel;
     public bool IsPercentage => isPercentage;
+    public bool IsMaxBonus => isMaxBonus;
 
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private TMP_Text priceText;

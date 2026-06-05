@@ -10,19 +10,20 @@ public class UpgradeBoardRow : MonoBehaviour
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private TMP_Text valueText;
 
-    public void Show(string displayName, int level, float bonusPerLevel, bool isPercentage = false)
+    public void Show(string displayName, int level, float bonusPerLevel, bool isPercentage = false, bool isMaxBonus = false)
     {
         gameObject.SetActive(true);
         if (nameText != null) nameText.text = displayName;
         if (levelText != null) levelText.text = $"Lv.{level}";
         if (valueText != null)
         {
+            string prefix = isMaxBonus ? "최대 " : "";
             if (bonusPerLevel <= 0f)
                 valueText.text = string.Empty;
             else if (isPercentage)
-                valueText.text = $"+{bonusPerLevel * level:F0}%";
+                valueText.text = $"{prefix}+{bonusPerLevel * level:F0}%";
             else
-                valueText.text = $"+{bonusPerLevel * level:F1}";
+                valueText.text = $"{prefix}+{bonusPerLevel * level:F1}";
         }
     }
 

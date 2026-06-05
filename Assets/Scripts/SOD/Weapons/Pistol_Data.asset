@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pistol_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: DefaultPistol
-  damage: 1000
+  damage: 20
   fireRate: 0.25
   range: 50
   weaponModelPrefab: {fileID: 2588208364163622316, guid: 4fab788ed3a428b49bbe030ed1b4a213,
@@ -32,3 +32,6 @@ MonoBehaviour:
   pelletCount: 1
   spreadAngle: 0
   useScope: 0
+  shellReload: 0
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}

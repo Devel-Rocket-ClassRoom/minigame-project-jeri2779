@@ -58,7 +58,7 @@ public class UpgradeBoardUI : MonoBehaviour
         {
             int level = upgradeManager.GetLevel(items[i].StatType);
             if (level > 0)
-                rows[i].Show(items[i].DisplayName, level, items[i].BonusPerLevel, items[i].IsPercentage);
+                rows[i].Show(items[i].DisplayName, level, items[i].BonusPerLevel, items[i].IsPercentage, items[i].IsMaxBonus);
             else
                 rows[i].Hide();
         }

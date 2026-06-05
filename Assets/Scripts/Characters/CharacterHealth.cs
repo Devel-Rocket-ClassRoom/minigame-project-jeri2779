@@ -26,15 +26,6 @@ public class CharacterHealth : MonoBehaviour, IDamageable, IHealthInfo
         currentHealth = characterStats.MaxHealth;
     }
 
-    private void Update()
-    {
-        if (State == CharacterState.Dead) return;
-        float rate = characterStats.HealthRegenRate;
-        if (rate <= 0f) return;
-        if (currentHealth >= characterStats.MaxHealth) return;
-        AddHealth(rate * Time.deltaTime);
-    }
-
     private void RaiseHealthChanged()
     {
         OnHealthChanged?.Invoke(currentHealth, characterStats.MaxHealth);

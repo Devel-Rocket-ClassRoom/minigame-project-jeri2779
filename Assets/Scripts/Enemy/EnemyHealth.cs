@@ -6,9 +6,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     //enemy는 enemydata값 받아옴
     [SerializeField] private EnemyData enemyData;
     [SerializeField] private Renderer hitRenderer;
-    [SerializeField] private Color hitColor = Color.red;
     [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private float hitFlashDuration = 0.1f;
 
     private float currentHealth;
     private bool isDead;
@@ -20,10 +18,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
 
     public float HealthRatio => EffectiveMaxHealth > 0f ? currentHealth / EffectiveMaxHealth : 1f;
 
-    // 이 적 타입의 기준색(식별용). EnemyController가 prepare/사망 후 복원 기준으로 읽는다.
-    public Color NormalColor => normalColor;
-
-    private float hitFlashTimer;
     private Renderer[] renderers;
 
     private void Start()
@@ -33,7 +27,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
         ApplyColor(normalColor);
     }
 
-    // 모든 몸통 렌더러에 틴트 적용 (타입색/히트색 공통)
+    // 모든 몸통 렌더러에 타입 식별색 적용
     private void ApplyColor(Color c)
     {
         foreach (var r in renderers)
@@ -50,22 +44,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
         EnemyRegistry.Unregister(this);
     }
 
-    private void Update()
-    {
-        if (hitFlashTimer > 0f)
-        {
-            hitFlashTimer -= Time.deltaTime;
-            if (hitFlashTimer <= 0f)
-                ApplyColor(normalColor);
-        }
-    }
-
     public void TakeDamage(float damage)
     {
         if (isDead) return;
         currentHealth -= damage;
-        ApplyColor(hitColor);
-        hitFlashTimer = hitFlashDuration;
 
         if (currentHealth <= 0)
         {

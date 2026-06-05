@@ -6752,6 +6752,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 50
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 4720365929328978881}
   priceText: {fileID: 6521135926327678046}
 --- !u!1 &886785444572592130
@@ -7993,6 +7994,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 20
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 8426180454958041810}
   priceText: {fileID: 3808112473368641834}
 --- !u!1 &1023485879030053577
@@ -12228,6 +12230,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 10
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 3384495459512927789}
   priceText: {fileID: 7665707630010049017}
 --- !u!1 &1597210352978796733
@@ -14282,6 +14285,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 20
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 783835231405378919}
   priceText: {fileID: 5793374576816871050}
 --- !u!1 &1870044694275166148
@@ -21085,6 +21089,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 5
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 595096911411669124}
   priceText: {fileID: 2379105837986493883}
 --- !u!1 &2587436203058152824
@@ -22315,12 +22320,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e55a60af361cb0448e4cd2b56884176, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatUpgradeItem
-  displayName: "선제 타격"
+  displayName: "\uC120\uC81C \uD0C0\uACA9"
   statType: 16
   price: 500
   maxLevel: 5
   bonusPerLevel: 50
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 6664687211908218611}
   priceText: {fileID: 3277116397481976107}
 --- !u!1 &2738091927988929356
@@ -24731,6 +24737,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 100
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 5846317060007001710}
   priceText: {fileID: 5206145398968569231}
 --- !u!1 &2924927960621031744
@@ -26144,6 +26151,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 5
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 4947628305854145365}
   priceText: {fileID: 1362188440596038896}
 --- !u!1 &3055456815255994843
@@ -29636,6 +29644,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 5
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 3517416584901688749}
   priceText: {fileID: 2403274003408261661}
 --- !u!1 &3553155346112826252
@@ -30984,6 +30993,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 1
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 2757994676624092614}
   priceText: {fileID: 7383607563372120632}
 --- !u!1 &3701583989910096687
@@ -33845,6 +33855,7 @@ MonoBehaviour:
   maxLevel: 1
   bonusPerLevel: 1
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 3406988917959408821}
   priceText: {fileID: 3261816347748391152}
 --- !u!1 &4004269968924705788
@@ -34197,7 +34208,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 32.34558, y: -70.57263}
+  m_AnchoredPosition: {x: 32.345703, y: -70.57263}
   m_SizeDelta: {x: -511.652, y: -141.1453}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4067253925956619770
@@ -36497,6 +36508,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 10
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 3615621573995178097}
   priceText: {fileID: 8425974301746066955}
 --- !u!1 &4407546987754093957
@@ -51735,6 +51747,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 20
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 3279109811631719354}
   priceText: {fileID: 398394130030076517}
 --- !u!1 &6091863290005872807
@@ -56821,6 +56834,7 @@ MonoBehaviour:
   maxLevel: 10
   bonusPerLevel: 5
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 8776353359384641183}
   priceText: {fileID: 3837535852574408158}
 --- !u!1 &6828041425208206692
@@ -58988,6 +59002,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 30
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 2032693944493174535}
   priceText: {fileID: 4425973104134528506}
 --- !u!1 &7132597653855220716
@@ -59663,6 +59678,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 5
   isPercentage: 1
+  isMaxBonus: 0
   levelText: {fileID: 7167482370780147736}
   priceText: {fileID: 8867577838684744290}
 --- !u!1 &7215795477503991808
@@ -65230,6 +65246,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 5
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 8794776317458922002}
   priceText: {fileID: 2262710882853040895}
 --- !u!1 &7988377357973084785
@@ -71869,6 +71886,7 @@ MonoBehaviour:
   maxLevel: 5
   bonusPerLevel: 1
   isPercentage: 0
+  isMaxBonus: 0
   levelText: {fileID: 5500363942737286748}
   priceText: {fileID: 5193267130155880239}
 --- !u!1 &8645763694618128652

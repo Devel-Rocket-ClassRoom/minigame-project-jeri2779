@@ -24,8 +24,6 @@ public class EnemyController : MonoBehaviour
     private IDamageable playerDamageable;
     private CharacterHealth playerHealth;
     private NavMeshAgent agent;
-    private Renderer[] renderers;
-    private Color baseColor;
 
     // 라운드별 공격력 배율 (스폰 시 EnemySpawner가 주입)
     private float damageMultiplier = 1f;
@@ -42,9 +40,6 @@ public class EnemyController : MonoBehaviour
         agent.speed = enemyData.moveSpeed;
         playerDamageable = character.GetComponent<IDamageable>();
         playerHealth = character.GetComponent<CharacterHealth>();
-        renderers = GetComponentsInChildren<Renderer>();
-        var enemyHealth = GetComponent<EnemyHealth>();
-        baseColor = enemyHealth != null ? enemyHealth.NormalColor : Color.white;
     }
 
     void Update()
@@ -134,7 +129,6 @@ public class EnemyController : MonoBehaviour
         lockedTargetPos = character.position;
         prepareTimer = 0f;
         if (agent.isOnNavMesh) agent.isStopped = true;
-        SetTint(enemyData.prepareColor);
     }
 
     private void HandlePrepare()
@@ -213,7 +207,6 @@ public class EnemyController : MonoBehaviour
         recoverTimer = 0f;
         if (!agent.enabled) agent.enabled = true;
         if (agent.isOnNavMesh) agent.isStopped = true;
-        SetTint(baseColor);
     }
 
     private void HandleRecover()
@@ -239,7 +232,6 @@ public class EnemyController : MonoBehaviour
         currentState = EnemyState.Dead;
         if (!agent.enabled) agent.enabled = true;
         if (agent.isOnNavMesh) agent.isStopped = true;
-        SetTint(baseColor);
         animator.SetBool(IsDead1Hash, true);
         animator.SetBool(IsWalkingHash, false);
         animator.SetBool(IsRunningHash, false);
@@ -251,11 +243,5 @@ public class EnemyController : MonoBehaviour
         Vector3 d = character.position - transform.position;
         d.y = 0f;
         return d.sqrMagnitude;
-    }
-
-    private void SetTint(Color colors)
-    {
-        foreach (var ren in renderers)
-            ren.material.color = colors;
     }
 }

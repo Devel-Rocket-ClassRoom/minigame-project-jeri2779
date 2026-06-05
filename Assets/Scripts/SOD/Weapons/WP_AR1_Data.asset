@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WP_AR1_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: ARS
-  damage: 31
+  damage: 27
   fireRate: 0.1
   range: 100
   weaponModelPrefab: {fileID: 4484158918520316832, guid: ab34f41808ca7d346a9a945d7d0e40fb,
@@ -32,3 +32,6 @@ MonoBehaviour:
   pelletCount: 1
   spreadAngle: 0
   useScope: 0
+  shellReload: 0
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}

@@ -19,7 +19,7 @@ MonoBehaviour:
   attackDamage: 15
   attackInterval: 1.2
   moneyReward: 80
-  scoreReward: 200
+  scoreReward: 1000
   deathDelay: 3
   behaviorType: 0
   prepareDistance: 8

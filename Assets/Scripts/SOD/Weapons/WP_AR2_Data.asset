@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: WP_AR2_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: CVM
-  damage: 22
+  damage: 32
   fireRate: 0.1
-  range: 100
+  range: 3100
   weaponModelPrefab: {fileID: 3051007511966890975, guid: d9a86bb645364ab458d52d79e95c138a,
     type: 3}
   price: 500
@@ -32,3 +32,6 @@ MonoBehaviour:
   pelletCount: 1
   spreadAngle: 2
   useScope: 0
+  shellReload: 0
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}
