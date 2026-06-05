@@ -67,9 +67,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   enemyData: {fileID: 11400000, guid: b4a07aeee4fbc29449b0c3b1bce57a89, type: 2}
   hitRenderer: {fileID: 5836091239407726440}
-  hitColor: {r: 1, g: 0, b: 0, a: 1}
   normalColor: {r: 0.90588236, g: 0.3019608, b: 0.0627451, a: 1}
-  hitFlashDuration: 0.1
+  bloodVFX: {fileID: 8088104400394845313, guid: ccba8628e5ff435418a72d02f1ec300f,
+    type: 3}
 --- !u!195 &6297647272974216334
 NavMeshAgent:
   m_ObjectHideFlags: 0

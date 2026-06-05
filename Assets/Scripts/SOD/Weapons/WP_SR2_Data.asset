@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WP_SR2_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: BASniper
-  damage: 200
+  damage: 500
   fireRate: 1.5
   range: 500
   weaponModelPrefab: {fileID: 2098045051187760901, guid: e7051aede9f97a048aefbd906bb2e09b,

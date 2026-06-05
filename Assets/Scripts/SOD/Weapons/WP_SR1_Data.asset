@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WP_SR1_Data
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: AutoSniper
-  damage: 95
+  damage: 200
   fireRate: 0.5
   range: 300
   weaponModelPrefab: {fileID: 160425108020041947, guid: 67484856f6f52314b9a2eca42b65604d,

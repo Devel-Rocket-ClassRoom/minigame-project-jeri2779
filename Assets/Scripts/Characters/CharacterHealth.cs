@@ -14,6 +14,8 @@ public class CharacterHealth : MonoBehaviour, IDamageable, IHealthInfo
 
     // 체력/최대체력 변경 시  (current, max)
     public event Action<float, float> OnHealthChanged;
+    // 실제 피해를 입었을 때 1회 발행(회복 제외). 피격 시각 피드백이 구독.
+    public event Action OnDamaged;
     // 사망 시 1회 발행
     public event Action OnDied;
 
@@ -47,8 +49,10 @@ public class CharacterHealth : MonoBehaviour, IDamageable, IHealthInfo
     public void TakeDamage(float damage)
     {
         if (State == CharacterState.Dead) return;
-        currentHealth -= damage * (1f - characterStats.DamageReduction);
+        float applied = damage * (1f - characterStats.DamageReduction);
+        currentHealth -= applied;
         RaiseHealthChanged();
+        if (applied > 0f) OnDamaged?.Invoke();
 
         if (currentHealth <= 0)
         {

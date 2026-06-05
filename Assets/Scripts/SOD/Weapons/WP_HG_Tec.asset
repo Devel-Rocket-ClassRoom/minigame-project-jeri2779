@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WP_HG_Tec
   m_EditorClassIdentifier: Assembly-CSharp::RangedWeaponData
   displayName: AutoHandGun
-  damage: 20
+  damage: 30
   fireRate: 0.1
   range: 70
   weaponModelPrefab: {fileID: 8015022732572061936, guid: 3a98835c0331d624f9e7156d9045ed9c,

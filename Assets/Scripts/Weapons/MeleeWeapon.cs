@@ -95,6 +95,7 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
                 });
                 target.TakeDamage(dmg);
                 damageCalc.ReportDamage(dmg);
+                (target as EnemyHealth)?.SpawnBloodAt(hit.point);
                 hitSet.Add(target);
             }
         }
@@ -128,6 +129,7 @@ public class MeleeWeapon : MonoBehaviour, IWeapon
             });
             target.TakeDamage(dmg2);
             damageCalc.ReportDamage(dmg2);
+            (target as EnemyHealth)?.SpawnBloodAt(col.bounds.center);
             hitSet.Add(target);
         }
     }

@@ -187,6 +187,7 @@ GameObject:
   - component: {fileID: 7169672686601412192}
   - component: {fileID: 8297815749191455599}
   - component: {fileID: 4879568384003238585}
+  - component: {fileID: 7109430351167306948}
   m_Layer: 0
   m_Name: Character_1
   m_TagString: Untagged
@@ -531,6 +532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMoves
   mouseSensitivity: 0.1
+  invertMouseX: 0
   invertMouseY: 0
   impactKickAmount: 20
   kickSmoothing: 12
@@ -602,9 +604,9 @@ MonoBehaviour:
   characterStats: {fileID: 5045063764107414857}
   characterHealth: {fileID: 8703008233461567453}
   characterMoves: {fileID: 9182838733724328703}
-  atkUpgradePercent: 0.2
+  atkUpgradePercent: 0.05
   hpUpgradeAmount: 20
-  upgradePrice: 300
+  upgradePrice: 3000
 --- !u!114 &9185768798811754486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -703,7 +705,7 @@ MonoBehaviour:
   headshotMultiplier: 2.5
   critMultiplier: 1.5
   lastStandThreshold: 0.3
-  lastStandDamageBonus: 20
+  lastStandDamageBonus: 0.2
   healthyTargetFalloff: 0.5
   fightingSpiritFullCount: 30
 --- !u!114 &7169672686601412192
@@ -742,6 +744,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f1a6daf3ec11d0479211ffa4f676154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatEvents
+--- !u!114 &7109430351167306948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e89e0651abb65ac41a2c5ae7ff9afc34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHitFeedback
+  vignette: {fileID: 0}
+  flashAlpha: 0.6
+  fadeDuration: 0.5
 --- !u!1 &8163671235254392355
 GameObject:
   m_ObjectHideFlags: 0

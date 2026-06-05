@@ -59,7 +59,6 @@ public class RoundManager : MonoBehaviour
     }
 
     // 라운드 클리어 = 스폰 완료(스포너 없으면 무조건 완료) + 생존 적 0.
-    // 생존수는 EnemyRegistry가 단일 보관 → 수동 배치 적도 동일하게 판정된다.
     private bool IsRoundCleared()
     {
         bool spawnComplete = enemySpawner == null || enemySpawner.IsSpawningComplete;

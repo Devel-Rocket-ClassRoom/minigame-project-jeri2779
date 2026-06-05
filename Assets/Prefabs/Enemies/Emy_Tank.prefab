@@ -68,6 +68,8 @@ MonoBehaviour:
   enemyData: {fileID: 11400000, guid: 0b68f8e2c820e624d8880bfb1b85a445, type: 2}
   hitRenderer: {fileID: 5832851638560466720}
   normalColor: {r: 1, g: 0.35686275, b: 0.03137255, a: 1}
+  bloodVFX: {fileID: 8088104400394845313, guid: ccba8628e5ff435418a72d02f1ec300f,
+    type: 3}
 --- !u!195 &6297647272974216334
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -64,6 +64,7 @@ public class PlayerExplosive : MonoBehaviour
             if (target == null || hitSet.Contains(target))
                 continue;
             target.TakeDamage(stats.ExplosiveDamage);
+            (target as EnemyHealth)?.SpawnBloodAt(col.bounds.center);
             hitSet.Add(target);
         }
 

@@ -9,6 +9,7 @@ using Quaternion = UnityEngine.Quaternion;
 public class CharacterMoves : MonoBehaviour, IImpactReceiver
 {
     [SerializeField] private float mouseSensitivity = 1f;
+    [SerializeField] private bool invertMouseX = false;
     [SerializeField] private bool invertMouseY = false;
     [SerializeField] private float impactKickAmount = 8f; // 적 투사체 피격 시 시점 강제 이동량(도)
     [SerializeField] private float kickSmoothing = 12f;   // 피격 킥이 목표치까지 가는 속도(클수록 빠름/즉각에 가까움)
@@ -37,7 +38,9 @@ public class CharacterMoves : MonoBehaviour, IImpactReceiver
     public float CurrentStamina => currentStamina;
     // 설정창 마우스 감도 
     public void SetMouseSensitivity(float value) => mouseSensitivity = value;
-    // 설정창 마우스 Y축 반전 
+    // 설정창 마우스 X축 반전
+    public void SetInvertX(bool value) => invertMouseX = value;
+    // 설정창 마우스 Y축 반전
     public void SetInvertY(bool value) => invertMouseY = value;
     // 설정창 달리기 토글 방식
     public void SetSprintToggle(bool value) => sprintToggle = value;
@@ -180,6 +183,7 @@ public class CharacterMoves : MonoBehaviour, IImpactReceiver
         if (Cursor.lockState != CursorLockMode.Locked) return;
         float mouseX = lookInput.x * mouseSensitivity;
         float mouseY = lookInput.y * mouseSensitivity;
+        if (invertMouseX) mouseX = -mouseX;
         if (invertMouseY) mouseY = -mouseY;
 
         xRotation -= mouseY;

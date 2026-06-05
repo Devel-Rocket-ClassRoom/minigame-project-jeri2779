@@ -7,6 +7,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     [SerializeField] private EnemyData enemyData;
     [SerializeField] private Renderer hitRenderer;
     [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private GameObject bloodVFX; // 피격 시 몸통에 스폰되는 출혈 이펙트(프리팹)
 
     private float currentHealth;
     private bool isDead;
@@ -42,6 +43,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     private void OnDisable()
     {
         EnemyRegistry.Unregister(this);
+    }
+
+    // 무기가 명중 지점(hit.point)을 주면 그 자리에 출혈 스폰. 데미지 경로와 완전 별개.
+    public void SpawnBloodAt(Vector3 point)
+    {
+        if (bloodVFX == null) return;
+        Destroy(Instantiate(bloodVFX, point, Quaternion.identity), 2f);
     }
 
     public void TakeDamage(float damage)

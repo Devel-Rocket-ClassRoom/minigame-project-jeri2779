@@ -8,6 +8,7 @@ public class SaveData
     public int targetFPS = 60;
     public float fov = 60f;
     public float mouseSensitivity = 0.1f;
+    public bool invertMouseX = false;
     public bool invertMouseY = false;
     public int qualityLevel = -1; // -1 = 프로젝트 기본값 사용
     public int resolutionWidth = 0; // 0 = 현재 해상도 사용

@@ -12,6 +12,7 @@ public class SettingsController : MonoBehaviour
 
     [Header("Controls")]
     [SerializeField] private Slider mouseSensitivitySlider;
+    [SerializeField] private Toggle invertXToggle;
     [SerializeField] private Toggle invertYToggle;
     [SerializeField] private Toggle aimToggleUI;    // on=토글 조준, off=홀드
     [SerializeField] private Toggle sprintToggleUI; // on=토글 달리기, off=홀드
@@ -34,6 +35,11 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private Sprite[] crosshairSprites;
     [SerializeField] private HorizontalSelector crosshairColorSelector;
     [SerializeField] private Color[] crosshairColors;
+
+    [Header("Reset")]
+    [SerializeField] private Button resetButton;
+    [SerializeField] private ModalWindowManager resetModal;
+    [SerializeField] private Button resetConfirmButton;
 
     [Header("Player Seams ")]
     [SerializeField] private CharacterMoves characterMoves;
@@ -63,6 +69,10 @@ public class SettingsController : MonoBehaviour
             aimToggleUI.onValueChanged.AddListener(SetAimToggle);
         if (sprintToggleUI != null)
             sprintToggleUI.onValueChanged.AddListener(SetSprintToggle);
+        if (resetButton != null && resetModal != null)
+            resetButton.onClick.AddListener(resetModal.OpenWindow);
+        if (resetConfirmButton != null)
+            resetConfirmButton.onClick.AddListener(OnResetConfirmed);
         ApplySettingData();
     }
 
@@ -98,6 +108,13 @@ public class SettingsController : MonoBehaviour
         if (isInitialized) return;
         if (characterMoves != null) characterMoves.SetMouseSensitivity(value);
         if (SaveManager.Instance != null) SaveManager.Instance.CurrentData.mouseSensitivity = value;
+    }
+
+    public void SetInvertX(bool value)
+    {
+        if (isInitialized) return;
+        if (characterMoves != null) characterMoves.SetInvertX(value);
+        if (SaveManager.Instance != null) SaveManager.Instance.CurrentData.invertMouseX = value;
     }
 
     public void SetInvertY(bool value)
@@ -271,6 +288,13 @@ public class SettingsController : MonoBehaviour
         ApplySettingData();
     }
 
+    // 확인 모달의 '확인' 버튼에 연결 — 초기화 실행 후 모달 닫기
+    private void OnResetConfirmed()
+    {
+        ResetSettings();
+        if (resetModal != null) resetModal.CloseWindow();
+    }
+
     // SaveData → UI/도메인 일괄 반영. 시작 시(Start) + 리셋 시 호출.
     public void ApplySettingData()
     {
@@ -292,9 +316,11 @@ public class SettingsController : MonoBehaviour
         if (characterMoves != null)
         {
             characterMoves.SetMouseSensitivity(data.mouseSensitivity);
+            characterMoves.SetInvertX(data.invertMouseX);
             characterMoves.SetInvertY(data.invertMouseY);
         }
         if (mouseSensitivitySlider != null) mouseSensitivitySlider.value = data.mouseSensitivity;
+        if (invertXToggle != null) invertXToggle.isOn = data.invertMouseX;
         if (invertYToggle != null) invertYToggle.isOn = data.invertMouseY;
 
         if (playerShooter != null) playerShooter.SetAimToggle(data.aimToggle);

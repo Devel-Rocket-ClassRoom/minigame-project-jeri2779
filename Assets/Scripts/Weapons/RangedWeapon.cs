@@ -180,6 +180,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
                 });
                 target.TakeDamage(dmg);
                 damageCalc.ReportDamage(dmg);
+                (target as EnemyHealth)?.SpawnBloodAt(hit.point);
             }
 
             combatEvents?.RaiseRangedHit(hit.point);
