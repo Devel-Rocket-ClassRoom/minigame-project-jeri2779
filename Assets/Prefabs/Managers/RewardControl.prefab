@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf3356c91f6ab08408903addca015315, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSession
-  startingMoney: 32000
+  startingMoney: 7500
   roundClearReward: 5000
   characterStats: {fileID: 0}

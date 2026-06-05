@@ -47,7 +47,7 @@ MonoBehaviour:
   enemySpawner: {fileID: 0}
   playerSpawner: {fileID: 0}
   rewardController: {fileID: 0}
-  totalRounds: 5
+  totalRounds: 10
   roundDuration: 120
-  roundEndDelay: 3
+  roundEndDelay: 2
   ShoppingTimer: 15
