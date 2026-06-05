@@ -18,7 +18,7 @@ MonoBehaviour:
   range: 35
   weaponModelPrefab: {fileID: 1144810847374534087, guid: b2dc342eb51f53d4b93be27e212b737a,
     type: 3}
-  price: 4700
+  price: 3300
   verticalRecoil: 4
   category: 0
   isAutomatic: 1
