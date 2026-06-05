@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 711f17744c6d6594b9118317d7163f53, type: 3}
   m_Name: EnemyDataSuper
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  maxHealth: 300
-  moveSpeed: 4
-  attackRange: 1.5
+  maxHealth: 5000
+  moveSpeed: 10
+  attackRange: 3
   attackHeightRange: 1.2
-  attackDamage: 25
-  attackInterval: 0.8
-  moneyReward: 100
-  scoreReward: 300
+  attackDamage: 50
+  attackInterval: 1
+  moneyReward: 10000
+  scoreReward: 10000
   deathDelay: 3
   behaviorType: 0
   prepareDistance: 8
