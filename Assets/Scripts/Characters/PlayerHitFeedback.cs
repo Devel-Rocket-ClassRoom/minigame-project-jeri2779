@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// 플레이어 피격 시각 피드백 전담. CharacterHealth.OnDamaged 구독 → 화면 비네트 Alpha 페이드.
-// HUD(상태 표시)와 분리된 역할. 비네트 Image는 playingHUD 밑에 두어 사망 시 함께 숨겨진다.
+ 
 [RequireComponent(typeof(CharacterHealth))]
 public class PlayerHitFeedback : MonoBehaviour
 {

@@ -23,6 +23,7 @@ public enum StatType
     Lifesteal,
     HealthyTargetDamage,
     FightingSpirit,
+    LastStand,
 }
 
 public class UpgradeManager : MonoBehaviour
@@ -133,6 +134,9 @@ public class UpgradeManager : MonoBehaviour
                 break;
             case StatType.FightingSpirit:
                 characterStats.ApplyFightingSpiritBonus(bonusPerLevel);
+                break;
+            case StatType.LastStand:
+                characterStats.ApplyLastStandBonus(bonusPerLevel);
                 break;
         }
 

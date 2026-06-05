@@ -15,12 +15,9 @@ public class PlayerDamageCalculator : MonoBehaviour
     [SerializeField]
     private float critMultiplier = 2f;
 
-    [Header("최후저항 (HP 비율이 임계 이하면 피해 증가)")]
+    [Header("최후저항 (HP 비율 임계 이하면 추가뎀) — 수치는 업그레이드, 임계만 여기")]
     [SerializeField, Range(0f, 1f)]
     private float lastStandThreshold = 0.3f; // 이 HP 비율 이하에서 발동
-
-    [SerializeField]
-    private float lastStandDamageBonus = 0f; // 발동 시 추가 배율 (0 = 비활성, 0.5 = +50%)
 
     [Header("건강한 적 추가뎀 (타겟 HP 높을수록) — 수치는 업그레이드, 곡선만 여기")]
     [SerializeField, Range(0f, 1f)]
@@ -53,13 +50,13 @@ public class PlayerDamageCalculator : MonoBehaviour
         // ── 상태 기반 조건부 보너스 풀 (덧셈으로 누적 후 한 번 곱) ──
         float conditional = 0f;
 
-        // 최후저항: 플레이어 HP 비율이 임계 이하면 발동 (인스펙터 튜닝형)
-        if (lastStandDamageBonus > 0f)
+        // 최후저항: 플레이어 HP 비율이 임계 이하면 발동 (수치는 업그레이드, 임계만 여기)
+        if (stats.LastStandBonus > 0f)
         {
             float maxHealth = stats.MaxHealth;
             float playerHpRatio = maxHealth > 0f ? health.CurrentHealth / maxHealth : 1f;
             if (playerHpRatio <= lastStandThreshold)
-                conditional += lastStandDamageBonus;
+                conditional += stats.LastStandBonus;
         }
 
         // 건강한 적: 타겟 HP 높을수록 추가뎀 (업그레이드형). 100%→최대, falloff 이하→0

@@ -48,6 +48,7 @@ public class PlayerShooter : MonoBehaviour
     private void Update()
     {
         if (playerControl.ControlState == PlayerControlState.Dead) return;
+        if (Time.timeScale == 0f) return; // 일시정지 중에는 발사/조준 처리(Animator IsAiming 등) 중단
 
         HandleFire();
         HandleAim();

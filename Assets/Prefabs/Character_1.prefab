@@ -757,7 +757,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHitFeedback
   vignette: {fileID: 0}
-  flashAlpha: 0.6
+  flashAlpha: 1
   fadeDuration: 0.5
 --- !u!1 &8163671235254392355
 GameObject:

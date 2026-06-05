@@ -7,6 +7,7 @@ public class WeaponInfoPanel : MonoBehaviour
     [SerializeField] private Image weaponVisual;
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text priceText;
+    [SerializeField] private TMP_Text damageText;
     [SerializeField] private TMP_Text fireRateText;
     [SerializeField] private TMP_Text recoilText;
     [SerializeField] private TMP_Text rangeText;
@@ -20,6 +21,7 @@ public class WeaponInfoPanel : MonoBehaviour
         if (weaponVisual != null) weaponVisual.sprite = data.weaponIcon;
         if (nameText != null) nameText.text = data.displayName;
         if (priceText != null) priceText.text = $"{data.price}G";
+        if (damageText != null) damageText.text = $"{data.damage:F0}";
         if (fireRateText != null) fireRateText.text = $"{(1f / data.fireRate):F0}/s";
         if (recoilText != null) recoilText.text = $"{data.verticalRecoil:F1}";
         if (rangeText != null) rangeText.text = $"{data.range}";

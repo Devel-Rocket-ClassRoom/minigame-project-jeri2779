@@ -33,5 +33,5 @@ MonoBehaviour:
   spreadAngle: 0
   useScope: 0
   shellReload: 0
-  fireSound: {fileID: 0}
+  fireSound: {fileID: 8300000, guid: b4f2fa69e85e7b546b9e685500aecfc0, type: 3}
   reloadSound: {fileID: 0}

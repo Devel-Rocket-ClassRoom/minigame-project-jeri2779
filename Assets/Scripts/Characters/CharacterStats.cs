@@ -26,6 +26,7 @@ public class CharacterStats : MonoBehaviour
     private float meleeDamageBonus = 0f;
     private float healthyTargetBonus = 0f;
     private float fightingSpiritBonus = 0f;
+    private float lastStandBonus = 0f;
 
     [Header("폭발탄")]
     [SerializeField] private GameObject explosionVFX;
@@ -66,6 +67,8 @@ public class CharacterStats : MonoBehaviour
     public float HealthyTargetBonus => healthyTargetBonus * 0.01f;
     // 투지: 생존 적 수가 많을수록 추가뎀의 "최대 보너스"(만원일 때). 곡선은 PlayerDamageCalculator가 결정.
     public float FightingSpiritBonus => fightingSpiritBonus * 0.01f;
+    // 최후저항: 플레이어 HP가 임계 이하일 때 추가뎀. 발동 임계는 PlayerDamageCalculator가 결정.
+    public float LastStandBonus => lastStandBonus * 0.01f;
     // 흡혈 수치: 1회 회복량 / 발동 처치 임계. 행동(카운트·회복)은 PlayerLifesteal이 한다.
     public float LifestealHealAmount => lifestealHealAmount;
     public int LifestealKillThreshold => lifestealKillThreshold;
@@ -87,6 +90,7 @@ public class CharacterStats : MonoBehaviour
     public void ApplyMeleeDamageBonus(float amount) => meleeDamageBonus += amount;
     public void ApplyHealthyTargetBonus(float amount) => healthyTargetBonus += amount;
     public void ApplyFightingSpiritBonus(float amount) => fightingSpiritBonus += amount;
+    public void ApplyLastStandBonus(float amount) => lastStandBonus += amount;
 
     public void ApplyExplosiveDamageBonus(float amount) => explosiveDamage += amount;
 
