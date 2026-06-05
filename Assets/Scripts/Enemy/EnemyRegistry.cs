@@ -34,12 +34,9 @@ public static class EnemyRegistry
         OnEnemyKilled?.Invoke(data);
     }
 
-    // 씬(라운드) 재시작 시 정적 상태 초기화. RoundManager.Awake가 호출한다.
-    // 구독 이벤트도 비워, 씬 언로드 때 해제 못 된 잔여 구독을 정리한다(새 구독은 이후 OnEnable에서).
     public static void Reset()
     {
         alive.Clear();
         KilledCount = 0;
-        OnEnemyKilled = null;
     }
 }
