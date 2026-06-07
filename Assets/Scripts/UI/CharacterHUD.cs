@@ -158,7 +158,7 @@ public class CharacterHUD : MonoBehaviour
     private float lastDamageHomeY;
     private bool lastDamageHomeCaptured;
 
-    private void HandleDamageDealt(float damage)
+    private void HandleDamageDealt(float damage, bool isHeadshot)
     {
         totalDamageDealt += damage;
         UpdateTotalDamage();

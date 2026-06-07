@@ -24,6 +24,7 @@ public class RoundManager : MonoBehaviour
 
     public int CurrentRound => currentRound;
     public int TotalRounds => totalRounds;
+    public float RunTime => runTime; // 이번 판 진행 시간(라운드+상점, 일시정지 제외). 끝화면이 읽음.
     public float RoundTimer => roundTimer;
     public float ShopTimer => shopTimer;
     public bool IsRoundActive => isRoundActive;
@@ -34,6 +35,7 @@ public class RoundManager : MonoBehaviour
     private float shopTimer;
     private bool isRoundActive = false;
     private bool isShopPhase = false;
+    private float runTime;
 
     private void Awake()
     {
@@ -48,6 +50,8 @@ public class RoundManager : MonoBehaviour
 
     private void Update()
     {
+        if (isRoundActive || isShopPhase) runTime += Time.deltaTime; // 일시정지 시 timeScale=0 → deltaTime 0
+
         if (!isRoundActive) return;
 
         roundTimer -= Time.deltaTime;

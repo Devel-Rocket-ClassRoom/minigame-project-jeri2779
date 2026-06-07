@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6803112921402546320}
   - component: {fileID: 6297647272974216334}
   - component: {fileID: 8206174326409793887}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Emy_Normal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,6 +53,7 @@ MonoBehaviour:
   character: {fileID: 2346187779893796961, guid: 26ca269b0473f294cae3a075da323a42,
     type: 3}
   animator: {fileID: 5786739290960898782}
+  repathInterval: 0.35
 --- !u!114 &6803112921402546320
 MonoBehaviour:
   m_ObjectHideFlags: 0

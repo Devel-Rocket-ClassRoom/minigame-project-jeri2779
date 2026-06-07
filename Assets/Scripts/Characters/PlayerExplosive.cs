@@ -12,6 +12,7 @@ public class PlayerExplosive : MonoBehaviour
     private CharacterStats stats;
     private PlayerCombatEvents combatEvents;
     private UpgradeManager upgradeManager;
+    private PlayerDamageCalculator damageCalc;
     private float nextExplosiveTime = float.MaxValue;
 
     private void Awake()
@@ -19,6 +20,7 @@ public class PlayerExplosive : MonoBehaviour
         stats = GetComponent<CharacterStats>();
         combatEvents = GetComponent<PlayerCombatEvents>();
         upgradeManager = GetComponent<UpgradeManager>();
+        damageCalc = GetComponent<PlayerDamageCalculator>();
     }
 
     private void OnEnable()
@@ -63,7 +65,10 @@ public class PlayerExplosive : MonoBehaviour
             var target = col.GetComponentInParent<IDamageable>();
             if (target == null || hitSet.Contains(target))
                 continue;
+            if (target is CharacterHealth)
+                continue; // 폭발탄: 플레이어는 자해 데미지 제외
             target.TakeDamage(stats.ExplosiveDamage);
+            damageCalc?.ReportDamage(stats.ExplosiveDamage); // totalDamage 집계에 폭발 피해 포함
             (target as EnemyHealth)?.SpawnBloodAt(col.bounds.center);
             hitSet.Add(target);
         }

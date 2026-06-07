@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -9,8 +8,6 @@ public class PausePanel : MonoBehaviour
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private GameObject settingsPanel;
-    [SerializeField] private GameObject shopPanel;
-    [SerializeField] private GameObject mainMenuPanel;
 
     private GameObject panelRoot;
     private bool isPaused = false;
@@ -22,23 +19,13 @@ public class PausePanel : MonoBehaviour
         settingsButton.onClick.AddListener(OpenSettings);
         quitButton.onClick.AddListener(Quit);
         panelRoot.SetActive(false);
+
+        UIManager.EnsureInstance().SetFallbackEscape(HandleEscape);
     }
 
-    private void Update()
+    private void HandleEscape()
     {
-        if (!Keyboard.current.escapeKey.wasPressedThisFrame) return;
-
-        // 메인메뉴 표시 중에는 MainMenuUI가, 상점 열림 중에는 ShopUI가 esc를 전담한다
-        if (mainMenuPanel != null && mainMenuPanel.activeSelf) return;
-        if (shopPanel != null && shopPanel.activeSelf) return;
-
-        // 설정창이 열려 있으면 esc는 설정창만 닫는다 (pause는 그대로 유지)
-        if (settingsPanel != null && settingsPanel.activeSelf)
-        {
-            settingsPanel.SetActive(false);
-            return;
-        }
-
+        // 설정 패널은 열려 있으면 자기 ESC 핸들러(SettingsPanel)가 스택 상단에서 먼저 처리한다.
         SetPause(!isPaused);
     }
 

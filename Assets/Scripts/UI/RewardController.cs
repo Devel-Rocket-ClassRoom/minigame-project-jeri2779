@@ -8,6 +8,8 @@ public class RewardController : MonoBehaviour
 
     public int Money => money;
     public int Score => score;
+    // 이번 판 누적 획득 재화 (씬 리로드 시 0). 끝화면이 읽음.
+    public int TotalEarned { get; private set; }
 
     private int money;
     private int score;
@@ -37,7 +39,9 @@ public class RewardController : MonoBehaviour
     public void AddMoney(int amount)
     {
         float multiplier = characterStats != null ? characterStats.MoneyGainMultiplier : 1f;
-        money += Mathf.RoundToInt(amount * multiplier);
+        int gained = Mathf.RoundToInt(amount * multiplier);
+        money += gained;
+        TotalEarned += gained;
     }
 
     public bool SpendMoney(int amount)

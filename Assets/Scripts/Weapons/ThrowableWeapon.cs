@@ -5,6 +5,7 @@ public class ThrowableWeapon : MonoBehaviour, IWeapon
     [SerializeField] private ThrowableWeaponData data;
 
     private CharacterStats stats;
+    private PlayerDamageCalculator damageCalc;
     private Camera playerCamera;
     private int currentCount;
     private bool pinPulled;
@@ -20,6 +21,7 @@ public class ThrowableWeapon : MonoBehaviour, IWeapon
     public void Init(CharacterStats stats)
     {
         this.stats = stats;
+        damageCalc = stats.GetComponent<PlayerDamageCalculator>();
         playerCamera = stats.GetComponentInChildren<Camera>();
         currentCount = data.maxCount;
     }
@@ -71,7 +73,7 @@ public class ThrowableWeapon : MonoBehaviour, IWeapon
         if (rb != null)
             rb.linearVelocity = playerCamera.transform.forward * data.throwForce;
 
-        go.GetComponent<Grenade>().Init(data);
+        go.GetComponent<Grenade>().Init(data, damageCalc);
 
         currentCount--;
         pinPulled = false;

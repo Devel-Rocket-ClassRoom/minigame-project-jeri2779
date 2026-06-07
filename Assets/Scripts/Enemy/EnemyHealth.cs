@@ -11,6 +11,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
 
     private float currentHealth;
     private bool isDead;
+    private Collider bodyCollider;
 
     // 라운드별 체력 배율 (스폰 시 EnemySpawner가 Start 전에 주입)
     private float healthMultiplier = 1f;
@@ -21,11 +22,25 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
 
     private Renderer[] renderers;
 
+    private void Awake()
+    {
+        renderers = GetComponentsInChildren<Renderer>();
+        bodyCollider = GetComponent<Collider>();
+        ApplyColor(normalColor);
+    }
+
     private void Start()
     {
+        // 수동 배치 적도 자체 초기화 (스포너 없이 동작 보존). 풀 재사용 시엔 스포너가 직접 호출.
+        ResetForSpawn();
+    }
+
+    // 최초 스폰/풀 재사용 공통 상태 초기화. 체력 배율 주입 후 호출돼야 함(EffectiveMaxHealth 의존).
+    public void ResetForSpawn()
+    {
         currentHealth = EffectiveMaxHealth;
-        renderers = GetComponentsInChildren<Renderer>();
-        ApplyColor(normalColor);
+        isDead = false;
+        if (bodyCollider != null) bodyCollider.enabled = true;
     }
 
     // 모든 몸통 렌더러에 타입 식별색 적용
@@ -60,7 +75,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
         if (currentHealth <= 0)
         {
             isDead = true;
-            GetComponent<Collider>().enabled = false; 
+            if (bodyCollider != null) bodyCollider.enabled = false;
             Die();
         }
     }
@@ -77,9 +92,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
 
     private IEnumerator DeactivateAfterDelay(float delay)
     {
-        
         yield return new WaitForSeconds(delay);
-        Destroy(gameObject);
+        // 풀 반환: Destroy 대신 비활성화. 비활성=free → 다음 스폰에서 재사용.
+        // (수동 배치 적은 풀이 없어 그대로 비활성 상태로 남는다 — 게임 동작엔 무영향)
+        gameObject.SetActive(false);
     }
      
 }

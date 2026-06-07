@@ -16,6 +16,8 @@ public class StatUpgradeItem : MonoBehaviour
     [SerializeField] private bool isPercentage;
     // 조건부 강화(선제타격·투지): 표기값이 "최대치"임을 현황판에서 "최대 +N%"로 명시
     [SerializeField] private bool isMaxBonus;
+    // 현황판 % 표시용: max레벨에서 보여줄 % (예: 50, 100). 회복/흡혈/폭발/더블점프는 미사용(특수표시)
+    [SerializeField] private float displayMaxPercent;
 
     // SO 마이그레이션 시 아래 프로퍼티의 반환값만 SO 필드로 교체하면 됨
     public string DisplayName => displayName;
@@ -23,6 +25,8 @@ public class StatUpgradeItem : MonoBehaviour
     public float BonusPerLevel => bonusPerLevel;
     public bool IsPercentage => isPercentage;
     public bool IsMaxBonus => isMaxBonus;
+    public int MaxLevel => maxLevel;
+    public float DisplayMaxPercent => displayMaxPercent;
 
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private TMP_Text priceText;

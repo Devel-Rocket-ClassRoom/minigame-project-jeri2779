@@ -29,6 +29,7 @@ public class EnemySpawner : MonoBehaviour
     private List<EnemySpawnEntry> pendingSpawns = new List<EnemySpawnEntry>();
     private bool isSpawning = false;
     private int currentRound = 1;
+    private readonly EnemyPool pool = new EnemyPool();
 
     private void Update()
     {
@@ -84,12 +85,20 @@ public class EnemySpawner : MonoBehaviour
         for (int i = pendingSpawns.Count - 1; i >= 0 && count > 0; i--)
         {
             Transform sp = spawnPoints[Random.Range(0, spawnPoints.Length)];
-            GameObject enemy = Instantiate(pendingSpawns[i].prefab, sp.position, sp.rotation);
+            GameObject enemy = pool.Get(pendingSpawns[i].prefab, sp.position, sp.rotation);
+
+            // 멀티플라이어 주입 → ResetForSpawn 순서 필수 (체력 리셋이 EffectiveMaxHealth 의존).
+            // 풀 재사용 시 Start가 안 돌므로 스포너가 직접 ResetForSpawn 호출.
             var ctrl = enemy.GetComponent<EnemyController>();
             ctrl.Initialize(player);
             ctrl.SetDamageMultiplier(damageMult);
+            ctrl.ResetForSpawn();
             var health = enemy.GetComponent<EnemyHealth>();
-            if (health != null) health.SetHealthMultiplier(healthMult);
+            if (health != null)
+            {
+                health.SetHealthMultiplier(healthMult);
+                health.ResetForSpawn();
+            }
             aliveEnemies.Add(enemy);
 
             pendingSpawns[i].count--;

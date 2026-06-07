@@ -9,6 +9,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Transform character;
     [SerializeField] private Animator animator;
 
+    [Header("추적 간격")]
+    [SerializeField] private float repathInterval = 0.2f; // 추격 시 길찾기 재계산 간격(초). 낮을수록 정밀·무거움, 높을수록 가벼움
+
     private static readonly int IsWalkingHash = Animator.StringToHash("isWalking");
     private static readonly int IsRunningHash = Animator.StringToHash("isRunning");
     private static readonly int IsDead1Hash = Animator.StringToHash("isDead1");
@@ -19,6 +22,7 @@ public class EnemyController : MonoBehaviour
     private float prepareTimer;
     private float recoverTimer;
     private float chargeTimer;
+    private float repathTimer;
     private Vector3 lockedTargetPos;
 
     private IDamageable playerDamageable;
@@ -34,12 +38,41 @@ public class EnemyController : MonoBehaviour
         character = player;
     }
 
+    void Awake()
+    {
+        // agent는 의존성 없으므로 Awake에서 캐시 → ResetForSpawn이 Start보다 먼저 불려도 안전
+        agent = GetComponent<NavMeshAgent>();
+    }
+
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
         agent.speed = enemyData.moveSpeed;
         playerDamageable = character.GetComponent<IDamageable>();
         playerHealth = character.GetComponent<CharacterHealth>();
+        // 수동 배치 적도 자체 초기화 (스포너 없이 동작 보존). 풀 재사용 시엔 스포너가 직접 호출.
+        ResetForSpawn();
+    }
+
+    // 최초 스폰/풀 재사용 공통 상태 초기화. 죽으면서 바꿔둔 FSM/타이머/Animator/Agent를 되돌린다.
+    public void ResetForSpawn()
+    {
+        currentState = EnemyState.Idle;
+        attackTimer = 0f;
+        prepareTimer = 0f;
+        recoverTimer = 0f;
+        chargeTimer = 0f;
+        repathTimer = 0f; // 재사용 시 추격 진입 즉시 1회 길찾기
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+        }
+        if (agent != null)
+        {
+            agent.enabled = true;
+            agent.Warp(transform.position); // 재배치는 호출 전 transform로. Warp가 에이전트를 navmesh에 정착시킴
+            agent.isStopped = false;
+        }
     }
 
     void Update()
@@ -50,7 +83,17 @@ public class EnemyController : MonoBehaviour
         switch (currentState)
         {
             case EnemyState.Chasing:
-                if (agent.isOnNavMesh) { agent.isStopped = false; agent.SetDestination(character.position); }
+                if (agent.isOnNavMesh)
+                {
+                    agent.isStopped = false;
+                    // 매 프레임 대신 repathInterval마다 재계산 (다수 적 동시 추격 시 길찾기 부하 절감)
+                    repathTimer -= Time.deltaTime;
+                    if (repathTimer <= 0f)
+                    {
+                        agent.SetDestination(character.position);
+                        repathTimer = repathInterval;
+                    }
+                }
                 animator.SetBool(IsWalkingHash, true);
                 animator.SetBool(IsRunningHash, false);
                 animator.SetBool(IsPunchingHash, false);

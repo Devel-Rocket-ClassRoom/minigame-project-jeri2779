@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [DefaultExecutionOrder(-100)]
 public class UIManager : MonoBehaviour
@@ -9,7 +11,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private bool lockCursorOnGameplay = true;
     [SerializeField] private bool hideCursorOnGameplay = true;
 
-    private readonly HashSet<Object> overlayOwners = new();
+    private readonly HashSet<UnityEngine.Object> overlayOwners = new();
+
+    // ESC 라우팅: 오버레이 스택(상단 우선) → 없으면 폴백(PausePanel 등)
+    private readonly Stack<Action> escapeStack = new();
+    private Action fallbackEscape;
+    private InputAction escapeAction;
 
     public bool HasOpenOverlay => overlayOwners.Count > 0;
 
@@ -32,15 +39,41 @@ public class UIManager : MonoBehaviour
 
         Instance = this;
         ApplyCursorState();
+
+        escapeAction = new InputAction(binding: "<Keyboard>/escape");
+        escapeAction.performed += OnEscapePerformed;
+        escapeAction.Enable();
     }
 
     private void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
+
+        if (escapeAction != null)
+        {
+            escapeAction.performed -= OnEscapePerformed;
+            escapeAction.Disable();
+            escapeAction.Dispose();
+        }
     }
 
-    public void ShowOverlay(GameObject panel, Object owner = null)
+    private void OnEscapePerformed(InputAction.CallbackContext _)
+    {
+        if (escapeStack.TryPeek(out var handler))
+            handler();
+        else
+            fallbackEscape?.Invoke();
+    }
+
+    // 오버레이가 열릴 때 push, 닫힐 때 pop
+    public void PushEscape(Action handler) => escapeStack.Push(handler);
+    public void PopEscape() { if (escapeStack.Count > 0) escapeStack.Pop(); }
+
+    // 항상 활성인 토글용 (PausePanel). 오버레이가 없을 때만 호출됨.
+    public void SetFallbackEscape(Action handler) => fallbackEscape = handler;
+
+    public void ShowOverlay(GameObject panel, UnityEngine.Object owner = null)
     {
         if (panel != null)
             panel.SetActive(true);
@@ -48,7 +81,7 @@ public class UIManager : MonoBehaviour
         RegisterOverlayOpened(owner != null ? owner : panel);
     }
 
-    public void HideOverlay(GameObject panel, Object owner = null)
+    public void HideOverlay(GameObject panel, UnityEngine.Object owner = null)
     {
         if (panel != null)
             panel.SetActive(false);
@@ -56,7 +89,7 @@ public class UIManager : MonoBehaviour
         RegisterOverlayClosed(owner != null ? owner : panel);
     }
 
-    public void RegisterOverlayOpened(Object owner)
+    public void RegisterOverlayOpened(UnityEngine.Object owner)
     {
         if (owner == null)
             return;
@@ -65,7 +98,7 @@ public class UIManager : MonoBehaviour
         ApplyCursorState();
     }
 
-    public void RegisterOverlayClosed(Object owner)
+    public void RegisterOverlayClosed(UnityEngine.Object owner)
     {
         if (owner == null)
             return;

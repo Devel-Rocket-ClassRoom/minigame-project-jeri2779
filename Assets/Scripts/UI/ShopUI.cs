@@ -26,8 +26,14 @@ public class ShopUI : MonoBehaviour
     [SerializeField] private TMP_Text shopTimeText;
     [SerializeField] private WeaponInfoPanel weaponInfoPanel;
 
+    [Header("종류별 패시브 설명창 (마우스오버)")]
+    [SerializeField] private GameObject passiveInfoPanel;
+    [SerializeField] private TMP_Text passiveInfoNameText;
+    [SerializeField] private TMP_Text passiveInfoDescText;
+
     private WeaponShopItem[] shopItems;
     private StatUpgradeItem[] statItems;
+    private WeaponTypePassiveItem[] passiveItems;
     private CanvasGroup[] categoryNormalCGs;
     private CanvasGroup[] categoryHighlightedCGs;
     private int openPanelIndex = -1;
@@ -61,6 +67,7 @@ public class ShopUI : MonoBehaviour
 
         shopItems = shopPanel != null ? shopPanel.GetComponentsInChildren<WeaponShopItem>(true) : new WeaponShopItem[0];
         statItems = shopPanel != null ? shopPanel.GetComponentsInChildren<StatUpgradeItem>(true) : new StatUpgradeItem[0];
+        passiveItems = shopPanel != null ? shopPanel.GetComponentsInChildren<WeaponTypePassiveItem>(true) : new WeaponTypePassiveItem[0];
     }
 
     private void OnAtkUpgrade()
@@ -83,6 +90,9 @@ public class ShopUI : MonoBehaviour
                 item.Refresh(shopController);
 
             foreach (var item in statItems)
+                item.Refresh(shopController);
+
+            foreach (var item in passiveItems)
                 item.Refresh(shopController);
         }
 
@@ -150,9 +160,27 @@ public class ShopUI : MonoBehaviour
 
     public void HideWeaponInfo() => weaponInfoPanel?.Hide();
 
+    public void ShowPassiveInfo(string label, string description)
+    {
+        if (passiveInfoPanel != null) passiveInfoPanel.SetActive(true);
+        if (passiveInfoNameText != null) passiveInfoNameText.text = label;
+        if (passiveInfoDescText != null) passiveInfoDescText.text = description;
+    }
+
+    public void HidePassiveInfo()
+    {
+        if (passiveInfoPanel != null) passiveInfoPanel.SetActive(false);
+    }
+
     public void TryStatUpgrade(StatType statType, int price, float bonusPerLevel, int maxLevel)
     {
         if (shopController != null && shopController.UpgradeStat(statType, price, bonusPerLevel, maxLevel))
+            RefreshAll();
+    }
+
+    public void TryUnlockWeaponType(WeaponType type, int price)
+    {
+        if (shopController != null && shopController.UnlockWeaponType(type, price))
             RefreshAll();
     }
 
@@ -170,18 +198,6 @@ public class ShopUI : MonoBehaviour
             }
 
             UpdateInfoTexts();
-        }
-
-        if (Keyboard.current == null || shopController == null)
-            return;
-
-        if (Keyboard.current.escapeKey.wasPressedThisFrame && shopPanel != null && shopPanel.activeSelf)
-        {
-            if (openPanelIndex >= 0)
-                ClosePanel();
-            else
-                Close();
-            return;
         }
 
         if (!Keyboard.current.bKey.wasPressedThisFrame)
@@ -210,11 +226,21 @@ public class ShopUI : MonoBehaviour
     private void Open()
     {
         UIManager.EnsureInstance().ShowOverlay(shopPanel, this);
+        UIManager.EnsureInstance().PushEscape(HandleEscape);
         RefreshAll();
+    }
+
+    private void HandleEscape()
+    {
+        if (openPanelIndex >= 0)
+            ClosePanel();
+        else
+            Close();
     }
 
     private void Close()
     {
+        UIManager.EnsureInstance().PopEscape();
         SoftClose();
         UIManager.EnsureInstance().RegisterOverlayClosed(this);
     }
@@ -227,6 +253,7 @@ public class ShopUI : MonoBehaviour
         openPanelIndex = -1;
         UpdateCategorySelection();
         weaponInfoPanel?.Hide();
+        HidePassiveInfo();
 
         if (shopPanel != null)
             shopPanel.SetActive(false);

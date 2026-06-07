@@ -7,4 +7,5 @@ public struct DamageContext
     public bool isMelee;
     public float weaponMultiplier; // 멜리 스윙/대체공격 배율 (원거리는 1)
     public float targetHealthRatio; // 맞는 대상의 현재 HP 비율 (0~1). 상태 기반 모디파이어용
+    public WeaponType weaponType; // 발사 무기의 종류 (SR 헤드샷 증폭 등 종류별 계산용). 근접/기본은 None
 }

@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using TMPro;
 using Michsky.UI.ModernUIPack;
 
@@ -33,6 +32,7 @@ public class MainMenuUI : MonoBehaviour
         playingHUD.SetActive(false);
 
         UIManager.EnsureInstance().RegisterOverlayOpened(this);
+        UIManager.EnsureInstance().PushEscape(HandleEscape);
     }
 
     private void Start()
@@ -41,22 +41,10 @@ public class MainMenuUI : MonoBehaviour
             UIManager.EnsureInstance().RegisterOverlayOpened(this);
     }
 
-    private void Update()
+    private void HandleEscape()
     {
-        if (quitModal == null) return;
-        if (!mainMenuPanel.activeSelf) return;
-        if (Keyboard.current == null) return;
-
-        if (!Keyboard.current.escapeKey.wasPressedThisFrame) return;
-
-        // 설정창이 열려 있으면 esc는 설정창을 닫는다 (종료 모달 대신)
-        if (settingsPanel != null && settingsPanel.activeSelf)
-        {
-            settingsPanel.SetActive(false);
-            return;
-        }
-
-        quitModal.AnimateWindow();
+        // 설정 패널은 열려 있으면 자기 ESC 핸들러(SettingsPanel)가 스택 상단에서 먼저 처리한다.
+        quitModal?.AnimateWindow();
     }
 
     private void OnStartClicked()
@@ -67,6 +55,7 @@ public class MainMenuUI : MonoBehaviour
     private IEnumerator IntroSequence()
     {
         mainMenuPanel.SetActive(false);
+        UIManager.EnsureInstance().PopEscape();
         UIManager.EnsureInstance().RegisterOverlayClosed(this);
 
         gameManager.BeginIntro();

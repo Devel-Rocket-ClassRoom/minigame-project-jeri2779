@@ -33,5 +33,5 @@ MonoBehaviour:
     type: 3}
   throwForce: 12
   maxCount: 2
-  explosionVFX: {fileID: 1771593784929138387, guid: 85b0d2a4b4d030845aa831018e1bda14,
+  explosionVFX: {fileID: 1995831016165032, guid: c216c8513adf0c144b087feb2f1707b0,
     type: 3}

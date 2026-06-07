@@ -33,5 +33,6 @@ MonoBehaviour:
   spreadAngle: 0
   useScope: 0
   shellReload: 0
-  fireSound: {fileID: 0}
-  reloadSound: {fileID: 0}
+  weaponType: 1
+  fireSound: {fileID: 8300000, guid: e0e5e21c17094c247a1ad6ee11d6dd66, type: 3}
+  reloadSound: {fileID: 8300000, guid: c565065df3907944b8b58f0d27066ba8, type: 3}

@@ -16,7 +16,6 @@ public class SaveData
     public bool fullscreen = true;
     
     public bool hudVisible = true;
-    public bool controlsGuideVisible = true; // 중앙 하단 조작 안내 표시 여부
     public int crosshairIndex = 0; // 크로스헤어 모양 프리셋 인덱스
     public int crosshairColorIndex = 0; // 크로스헤어 색 프리셋 인덱스 (0=흰색)
     public bool aimToggle = false; // 조준: false=홀드, true=토글

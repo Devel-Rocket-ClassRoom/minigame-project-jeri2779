@@ -27,8 +27,6 @@ public class SettingsController : MonoBehaviour
     [SerializeField] private Slider fovSlider;
     [SerializeField] private Toggle hudToggle;
     [SerializeField] private GameObject playingHud;
-    [SerializeField] private Toggle controlsGuideToggle;
-    [SerializeField] private GameObject controlsGuide; // 중앙 하단 조작 안내 패널
 
     [Header("Crosshair")]
     [SerializeField] private HorizontalSelector crosshairSelector;
@@ -152,13 +150,6 @@ public class SettingsController : MonoBehaviour
         if (isInitialized) return;
         if (playingHud != null) playingHud.SetActive(value);
         if (SaveManager.Instance != null) SaveManager.Instance.CurrentData.hudVisible = value;
-    }
-
-    public void SetControlsGuideVisible(bool value)
-    {
-        if (isInitialized) return;
-        if (controlsGuide != null) controlsGuide.SetActive(value);
-        if (SaveManager.Instance != null) SaveManager.Instance.CurrentData.controlsGuideVisible = value;
     }
 
     // HorizontalSelector.onValueChanged(int) 에 연결
@@ -370,8 +361,6 @@ public class SettingsController : MonoBehaviour
         if (fovSlider != null) fovSlider.value = data.fov;
         if (playingHud != null) playingHud.SetActive(data.hudVisible);
         if (hudToggle != null) hudToggle.isOn = data.hudVisible;
-        if (controlsGuide != null) controlsGuide.SetActive(data.controlsGuideVisible);
-        if (controlsGuideToggle != null) controlsGuideToggle.isOn = data.controlsGuideVisible;
 
         // Crosshair (모양 + 색)
         ApplyCrosshair(data.crosshairIndex);

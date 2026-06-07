@@ -188,9 +188,10 @@ GameObject:
   - component: {fileID: 8297815749191455599}
   - component: {fileID: 4879568384003238585}
   - component: {fileID: 7109430351167306948}
+  - component: {fileID: 4522923528855576920}
   m_Layer: 0
   m_Name: Character_1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -559,8 +560,8 @@ MonoBehaviour:
   attackMultiplier: 1.2
   explosionVFX: {fileID: 5481530993414605263, guid: 7a12b40fb78f3694ea3ba5830db032b4,
     type: 3}
-  explosiveInterval: 8
-  explosiveRadius: 3
+  explosiveInterval: 5
+  explosiveRadius: 5
   lifestealKillThreshold: 5
 --- !u!114 &8703008233461567453
 MonoBehaviour:
@@ -703,9 +704,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageCalculator
   headshotMultiplier: 2.5
+  srHeadshotMultiplier: 5
   critMultiplier: 1.5
   lastStandThreshold: 0.3
-  lastStandDamageBonus: 0.2
   healthyTargetFalloff: 0.5
   fightingSpiritFullCount: 30
 --- !u!114 &7169672686601412192
@@ -759,6 +760,28 @@ MonoBehaviour:
   vignette: {fileID: 0}
   flashAlpha: 1
   fadeDuration: 0.5
+--- !u!114 &4522923528855576920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48078b3d8f020cb49bdb444add558de9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponTypePassive
+  hgExecuteThreshold: 0.1
+  sgMaxBonus: 0.5
+  sgFullBonusRange: 10
+  sgFalloffEnd: 20
+  pierceEnemyMask:
+    serializedVersion: 2
+    m_Bits: 65600
+  pierceStopMask:
+    serializedVersion: 2
+    m_Bits: 16384
 --- !u!1 &8163671235254392355
 GameObject:
   m_ObjectHideFlags: 0

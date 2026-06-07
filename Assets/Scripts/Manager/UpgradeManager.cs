@@ -39,6 +39,8 @@ public class UpgradeManager : MonoBehaviour
     public int AtkLevel { get; private set; }
     public int HpLevel { get; private set; }
     public int UpgradePrice => upgradePrice;
+    public float AtkUpgradePercent => atkUpgradePercent;
+    public float HpUpgradeAmount => hpUpgradeAmount;
 
     public event Action<int, int> OnUpgradeLevelChanged;
     public event Action<StatType, int> OnStatUpgradeLevelChanged;

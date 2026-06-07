@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RangedWeapon : MonoBehaviour, IWeapon
@@ -20,6 +21,10 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     private CharacterStats stats;
     private PlayerDamageCalculator damageCalc;
     private PlayerCombatEvents combatEvents;
+    private WeaponTypePassive passive;
+    // 관통(AR) 레이캐스트 결과 버퍼 + 중복 제거 셋 — 단일 플레이어·순차 발사라 정적 공유로 무할당
+    private static readonly RaycastHit[] _pierceHits = new RaycastHit[32];
+    private static readonly HashSet<IDamageable> _piercedTargets = new HashSet<IDamageable>();
     private int currentAmmo;
     private int reserveAmmo;
     private bool isReloading;
@@ -131,6 +136,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         this.stats = stats;
         damageCalc = stats.GetComponent<PlayerDamageCalculator>();
         combatEvents = stats.GetComponent<PlayerCombatEvents>();
+        passive = stats.GetComponent<WeaponTypePassive>();
     }
 
     public void Tick(FireContext ctx)
@@ -155,37 +161,77 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         if (currentAmmo <= 0) return false;
         if (Time.time < nextFireTime) return false;
 
-        nextFireTime = Time.time + data.fireRate / (stats != null ? stats.FireRateMultiplier : 1f);
-        currentAmmo--;
+        float fireInterval = data.fireRate / (stats != null ? stats.FireRateMultiplier : 1f);
+        if (isAiming) fireInterval *= 2f; // ADS 중 모든 무기 연사력 절반
+        nextFireTime = Time.time + fireInterval;
+        // SMG 예비탄 우선: reserve가 남아있으면 탄창 대신 reserve부터 소모(탄창은 가득 유지 → 재장전 무의미).
+        if (passive != null && passive.UsesReserveAmmoFirst(data.weaponType) && reserveAmmo > 0)
+            reserveAmmo--;
+        else
+            currentAmmo--;
         PlayFireFx();
 
         for (int i = 0; i < data.pelletCount; i++)
         {
             Vector3 dir = ApplySpread(ctx.ray.direction);
             float range = data.range + (stats != null ? stats.RangeBonus : 0f);
-            if (!Physics.Raycast(ctx.ray.origin, dir, out RaycastHit hit, range, ctx.layer))
-                continue;
 
-            bool isHeadshot = (headLayer.value & (1 << hit.collider.gameObject.layer)) != 0;
-            var target = hit.collider.GetComponentInParent<IDamageable>();
-            if (target != null)
+            if (passive != null && isAiming && passive.Pierces(data.weaponType))
             {
-                float dmg = damageCalc.Compute(new DamageContext
+                // AR 관통(ADS 전용): 투명벽(PierceStopMask)까지 거리 안의 적을 전부 관통. 실제 지형·엄폐물 통과.
+                float stopDist = range;
+                Vector3 endPoint = ctx.ray.origin + dir * range;
+                if (Physics.Raycast(ctx.ray.origin, dir, out RaycastHit wall, range, passive.PierceStopMask))
                 {
-                    baseDamage = data.damage,
-                    isHeadshot = isHeadshot,
-                    isMelee = false,
-                    weaponMultiplier = 1f,
-                    targetHealthRatio = (target as IHealthInfo)?.HealthRatio ?? 1f,
-                });
-                target.TakeDamage(dmg);
-                damageCalc.ReportDamage(dmg);
-                (target as EnemyHealth)?.SpawnBloodAt(hit.point);
+                    stopDist = wall.distance;
+                    endPoint = wall.point;
+                }
+                int count = Physics.RaycastNonAlloc(ctx.ray.origin, dir, _pierceHits, stopDist, passive.PierceEnemyMask);
+                _piercedTargets.Clear();
+                for (int j = 0; j < count; j++)
+                {
+                    var t = _pierceHits[j].collider.GetComponentInParent<IDamageable>();
+                    if (t == null || !_piercedTargets.Add(t)) continue; // 지형이거나 이미 맞은 적 → 건너뜀
+                    ApplyDamageTo(t, _pierceHits[j]);
+                }
+                combatEvents?.RaiseRangedHit(endPoint);
             }
-
-            combatEvents?.RaiseRangedHit(hit.point);
+            else
+            {
+                if (!Physics.Raycast(ctx.ray.origin, dir, out RaycastHit hit, range, ctx.layer))
+                    continue;
+                var target = hit.collider.GetComponentInParent<IDamageable>();
+                if (target != null) ApplyDamageTo(target, hit);
+                combatEvents?.RaiseRangedHit(hit.point);
+            }
         }
         return true;
+    }
+
+    // 명중 1건 처리(대상은 호출부에서 해결·중복제거). 피해 + HG 처형 + 출혈 적용.
+    private void ApplyDamageTo(IDamageable target, RaycastHit hit)
+    {
+        bool isHeadshot = (headLayer.value & (1 << hit.collider.gameObject.layer)) != 0;
+        float weaponMult = passive != null
+            ? passive.GetDamageMultiplier(data.weaponType, hit.distance)
+            : 1f;
+        float dmg = damageCalc.Compute(new DamageContext
+        {
+            baseDamage = data.damage,
+            isHeadshot = isHeadshot,
+            isMelee = false,
+            weaponMultiplier = weaponMult,
+            targetHealthRatio = (target as IHealthInfo)?.HealthRatio ?? 1f,
+            weaponType = data.weaponType,
+        });
+        target.TakeDamage(dmg);
+        damageCalc.ReportDamage(dmg, isHeadshot);
+        // HG 처형: 정상 피해 후에도 HP 비율이 임계 이하면 즉사. 이미 죽었으면 TakeDamage가 무시됨.
+        // 즉사는 HUD에 보고하지 않음(정상 피해만 집계).
+        if (passive != null && target is IHealthInfo info
+            && passive.ShouldExecute(data.weaponType, info.HealthRatio))
+            target.TakeDamage(float.PositiveInfinity);
+        (target as EnemyHealth)?.SpawnBloodAt(hit.point);
     }
 
     public void TryReload()

@@ -58,21 +58,38 @@ public class UpgradeBoardUI : MonoBehaviour
         {
             int level = upgradeManager.GetLevel(items[i].StatType);
             if (level > 0)
-                rows[i].Show(items[i].DisplayName, level, items[i].BonusPerLevel, items[i].IsPercentage, items[i].IsMaxBonus);
+                rows[i].Show(items[i].DisplayName, level, FormatEffect(items[i], level));
             else
                 rows[i].Hide();
         }
 
         int atkIdx = items.Length;
         if (upgradeManager.AtkLevel > 0)
-            rows[atkIdx].Show("공격력", upgradeManager.AtkLevel, 0f);
+            rows[atkIdx].Show("공격력", upgradeManager.AtkLevel, $"+{upgradeManager.AtkUpgradePercent * 100f * upgradeManager.AtkLevel:F0}%");
         else
             rows[atkIdx].Hide();
 
         int hpIdx = atkIdx + 1;
         if (upgradeManager.HpLevel > 0)
-            rows[hpIdx].Show("체력", upgradeManager.HpLevel, 0f);
+            rows[hpIdx].Show("체력", upgradeManager.HpLevel, $"+{upgradeManager.HpUpgradeAmount * upgradeManager.HpLevel:F0}");
         else
             rows[hpIdx].Hide();
+    }
+
+    // 현황판 효과 문구. 대부분 % (displayMaxPercent 기준), 베이스없는 능력은 실수치, 더블점프는 해금.
+    private string FormatEffect(StatUpgradeItem item, int level)
+    {
+        float flat = item.BonusPerLevel * level; // 누적 실수치 (회복/흡혈/폭발)
+        switch (item.StatType)
+        {
+            case StatType.HealthRegen:     return $"{flat:F0} HP/초";
+            case StatType.Lifesteal:       return $"5킬당 {flat:F0}HP";
+            case StatType.ExplosiveRounds: return $"{flat:F0} 뎀";
+            case StatType.DoubleJump:      return "해금";
+            default:
+                if (item.MaxLevel <= 0) return string.Empty;
+                float pct = item.DisplayMaxPercent * level / item.MaxLevel;
+                return $"{(item.IsMaxBonus ? "최대 " : "")}+{pct:F0}%";
+        }
     }
 }

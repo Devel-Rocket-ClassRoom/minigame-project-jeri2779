@@ -9,6 +9,7 @@ public class ShopController : MonoBehaviour
     [SerializeField] private RewardController rewardController;
     [SerializeField] private WeaponInventoryNew inventory;
     [SerializeField] private UpgradeManager upgradeManager;
+    [SerializeField] private WeaponTypePassive weaponTypePassive;
     [SerializeField] private float purchaseWindowDuration = 90f;
 
     // 라운드 중 구매창 남은 시간 (UI 표시용)
@@ -101,6 +102,27 @@ public class ShopController : MonoBehaviour
             return false;
 
         upgradeManager.UpgradeHp();
+        return true;
+    }
+
+    // ─── 종류별 무기 패시브 해금 (레벨 없는 단발 해금) ───
+    public bool IsWeaponTypeUnlocked(WeaponType type) =>
+        weaponTypePassive != null && weaponTypePassive.IsUnlocked(type);
+
+    public bool CanUnlockWeaponType(WeaponType type, int price) =>
+        weaponTypePassive != null
+        && rewardController != null
+        && !weaponTypePassive.IsUnlocked(type)
+        && rewardController.Money >= price;
+
+    public bool UnlockWeaponType(WeaponType type, int price)
+    {
+        if (!CanUnlockWeaponType(type, price))
+            return false;
+        if (!rewardController.SpendMoney(price))
+            return false;
+
+        weaponTypePassive.Unlock(type);
         return true;
     }
 }
