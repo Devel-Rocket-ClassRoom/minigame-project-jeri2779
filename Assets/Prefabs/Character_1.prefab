@@ -558,7 +558,7 @@ MonoBehaviour:
   staminaDrainRate: 10
   staminaRegenRate: 10
   attackMultiplier: 1.2
-  explosionVFX: {fileID: 5481530993414605263, guid: 7a12b40fb78f3694ea3ba5830db032b4,
+  explosionVFX: {fileID: 9221948553123449317, guid: b81f5c862a2279142b8c4f8d53d6e607,
     type: 3}
   explosiveInterval: 5
   explosiveRadius: 5
@@ -857,7 +857,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 64887
+    m_Bits: 65015
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
