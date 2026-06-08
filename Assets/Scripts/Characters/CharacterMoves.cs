@@ -17,7 +17,7 @@ public class CharacterMoves : MonoBehaviour, IImpactReceiver
     private float pendingKickYaw;   // 아직 시점에 반영 안 된 킥 잔량(좌우)
     [SerializeField] private float jumpHeight = 1.2f;
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private WeaponInventoryNew weaponInventory;
+    [SerializeField] private WeaponInventory weaponInventory;
 
     private bool isSprinting = false;
     private bool sprintHeld = false;
@@ -189,7 +189,7 @@ public class CharacterMoves : MonoBehaviour, IImpactReceiver
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        // 피격 킥 잔량을 목표치까지 부드럽게 흘려보냄(프레임 독립 지수 감속, 복귀 없음)
+        // 잔량을 목표치까지 부드럽게 흘려보냄(프레임 독립 지수 감속, 복귀 없음)
         float kickStep = 1f - Mathf.Exp(-kickSmoothing * Time.deltaTime);
         float stepPitch = pendingKickPitch * kickStep;
         float stepYaw = pendingKickYaw * kickStep;

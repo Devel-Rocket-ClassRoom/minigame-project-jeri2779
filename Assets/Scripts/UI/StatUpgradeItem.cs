@@ -32,11 +32,13 @@ public class StatUpgradeItem : MonoBehaviour
     [SerializeField] private TMP_Text priceText;
 
     private Button button;
+    private CanvasGroup canvasGroup;
     private ShopUI shopUI;
 
     private void Start()
     {
         button = GetComponent<Button>();
+        canvasGroup = GetComponent<CanvasGroup>();
         shopUI = GetComponentInParent<ShopUI>(true);
         button.onClick.AddListener(OnClick);
     }
@@ -59,7 +61,11 @@ public class StatUpgradeItem : MonoBehaviour
         gameObject.SetActive(!maxed);
         if (maxed) return;
 
-        button.interactable = shop.CanUpgradeStat(statType, price, maxLevel);
+        bool canBuy = shop.CanUpgradeStat(statType, price, maxLevel);
+        button.interactable = canBuy;
+        // 못 사는 경우 버튼 전체(배경·아이콘·텍스트)를 흐리게 (무기 버튼의 비활성 처리와 동일 의도)
+        if (canvasGroup != null)
+            canvasGroup.alpha = canBuy ? 1f : 0.4f;
 
         if (levelText != null)
             levelText.text = $"{level}/{maxLevel}";

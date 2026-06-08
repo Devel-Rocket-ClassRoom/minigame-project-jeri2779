@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 총기 종류별 고유 패시브의 해금 상태 + 정책 단일 보관소 (플레이어 컴포넌트).
-// 값을 "답"할 뿐, 적/무기/탄약을 직접 건드리지 않는다 — 행동은 RangedWeapon이 한다.
-// 잠김 또는 타입 비매칭 = 무효값 반환 → "잠김 = 완전 무동작"(기존 무기 거동 보존).
-// 효과 로직은 단계별로 각 쿼리 메서드에 채워진다.
+// 적/무기/탄약을 직접 건드리지 않는다 — 행동은 RangedWeapon이 한다.
 public class WeaponTypePassive : MonoBehaviour
 {
     [Header("HG 처형 HP비율")]

@@ -5,7 +5,7 @@ public class CharacterHUD : MonoBehaviour
 {
     [SerializeField] private CharacterHealth characterHealth;
     [SerializeField] private CharacterStats characterStats;
-    [SerializeField] private WeaponInventoryNew weaponInventory;
+    [SerializeField] private WeaponInventory weaponInventory;
     [SerializeField] private CharacterMoves characterMoves;
     [SerializeField] private RoundManager roundManager;
     [SerializeField] private RewardController rewardController;

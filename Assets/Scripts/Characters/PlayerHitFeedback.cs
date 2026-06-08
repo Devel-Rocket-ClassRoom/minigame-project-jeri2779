@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CharacterHealth))]
 public class PlayerHitFeedback : MonoBehaviour
 {
-    [SerializeField] private Image vignette;          // 풀스크린 피격 이미지
+    [SerializeField] private Image vignette;          // 피격 이미지
     [SerializeField] private float flashAlpha = 0.6f; // 피격 순간 최대 불투명도
     [SerializeField] private float fadeDuration = 0.5f;
 

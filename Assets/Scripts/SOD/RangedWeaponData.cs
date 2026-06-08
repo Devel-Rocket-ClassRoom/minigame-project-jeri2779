@@ -15,7 +15,7 @@ public class RangedWeaponData : WeaponData
     // 총기 종류별 고유 패시브 식별자. None=미설정(패시브 없음). 에셋마다 Inspector에서 지정.
     public WeaponType weaponType = WeaponType.None;
 
-    [Header("사운드 (미할당 시 무음)")]
+    [Header("사운드")]
     public AudioClip fireSound;
     public AudioClip reloadSound;
 }

@@ -7,7 +7,7 @@ public class ShopController : MonoBehaviour
     [SerializeField] private GameManager gameManager;
     [SerializeField] private RoundManager roundManager;
     [SerializeField] private RewardController rewardController;
-    [SerializeField] private WeaponInventoryNew inventory;
+    [SerializeField] private WeaponInventory inventory;
     [SerializeField] private UpgradeManager upgradeManager;
     [SerializeField] private WeaponTypePassive weaponTypePassive;
     [SerializeField] private float purchaseWindowDuration = 90f;

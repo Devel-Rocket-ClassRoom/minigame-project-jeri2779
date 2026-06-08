@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// 플레이어의 라운드 단위 배치/리셋 전담. 플레이어 GO에 부착.
+
 // RoundManager는 명령(Freeze/PlaceForIntro/ResetForRound)만 내리고,
 // 실제 위치/체력/탄약/스태미너 리셋은 플레이어가 자기 컴포넌트로 처리한다.
 [RequireComponent(typeof(CharacterMoves))]
@@ -11,7 +11,7 @@ public class PlayerSpawner : MonoBehaviour
     private Transform spawnPoint;
 
     [SerializeField]
-    private WeaponInventoryNew weaponInventory;
+    private WeaponInventory weaponInventory;
 
     private CharacterMoves characterMoves;
     private CharacterHealth characterHealth;

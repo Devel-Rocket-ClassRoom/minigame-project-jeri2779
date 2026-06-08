@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 프리팹 종류별 적 인스턴스 풀. 생성/대여만 담당한다.
-// 상태 리셋은 각 적 컴포넌트(ResetForSpawn), 스폰 로직은 EnemySpawner가 한다 — 역할 분리.
-// 비활성(!activeSelf) 인스턴스를 free로 간주해 재사용한다 (DamageNumberSpawner와 동일 관용).
 public class EnemyPool
 {
     private readonly Dictionary<GameObject, List<GameObject>> pools = new();

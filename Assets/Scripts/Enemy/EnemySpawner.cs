@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-// 적 스폰 전담. 라운드 진행은 RoundManager가 명령한다.
-// 처치 보상/흡혈/통계/생존수는 일절 다루지 않는다 — 적이 EnemyRegistry에 스스로 등록/보고한다.
-// 이 컴포넌트가 씬에 없어도(수동 배치) 게임은 정상 동작한다.
+// 적 스폰 전담. 라운드 진행은 RoundManager가 명령.
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private WaveData waveData;

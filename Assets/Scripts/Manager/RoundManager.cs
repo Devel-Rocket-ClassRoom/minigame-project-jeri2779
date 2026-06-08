@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-// 라운드 진행 조율자. 라운드/상점 페이즈 상태기계를 소유하고,
 // 실제 적 스폰은 EnemySpawner에 명령한다. (RoundManager → EnemySpawner 단방향)
 // 클리어 UI는 직접 만지지 않고 이벤트로 알린다 (RoundUIPresenter/GameManager가 소비).
 public class RoundManager : MonoBehaviour
@@ -69,19 +68,19 @@ public class RoundManager : MonoBehaviour
         return spawnComplete && EnemyRegistry.AliveCount == 0;
     }
 
-    // GameManager가 호출 — 인트로 진입 (플레이어 배치)
+    //인트로 진입 (플레이어 배치)
     public void BeginIntro()
     {
         playerSpawner.PlaceForIntro();
     }
 
-    // GameManager가 호출 — 첫 라운드 루프 시작
+    //첫 라운드 루프 시작
     public void BeginFirstRound()
     {
         StartCoroutine(FirstRoundRoutine());
     }
 
-    // GameManager가 호출 — 진행 중인 라운드/코루틴/스폰 정지
+    //진행 중인 라운드/코루틴/스폰 정지
     public void HaltRounds()
     {
         isRoundActive = false;

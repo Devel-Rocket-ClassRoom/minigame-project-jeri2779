@@ -186,6 +186,9 @@ public class ShopUI : MonoBehaviour
 
     private void Update()
     {
+        // 일시정지(Time.timeScale==0) 중에는 상점 입력을 차단한다. 일시정지와 상점은 동시에 열리면 안 된다.
+        if (Time.timeScale == 0f) return;
+
         if (shopPanel != null && shopPanel.activeSelf)
         {
             if (shopController == null || !shopController.CanShop)

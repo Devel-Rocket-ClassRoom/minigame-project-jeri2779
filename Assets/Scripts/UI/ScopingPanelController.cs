@@ -3,7 +3,7 @@ using UnityEngine;
 public class ScopingPanelController : MonoBehaviour
 {
     [SerializeField] private PlayerShooter shooter;
-    [SerializeField] private WeaponInventoryNew inventory;
+    [SerializeField] private WeaponInventory inventory;
     [SerializeField] private GameObject scopePanel;
     [SerializeField] private GameObject crosshair;
 

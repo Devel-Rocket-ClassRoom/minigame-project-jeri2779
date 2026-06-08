@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-// 생존 적 목록·처치 통계의 단일 보관소(정적). 적이 스스로 등록/해제하고, 죽을 때 처치를 보고한다.
-// MonoBehaviour/싱글톤/Find 없는 순수 정적 — 보상·흡혈·통계·투지는 구독/읽기만 한다.
-// EnemySpawner가 씬에 없어도(수동 배치) 적이 직접 등록하므로 모든 계산이 정상 동작한다.
+// 생존 적 목록·처치 통계의 단일 보관소(정적). 적이 스스로 등록/해제하고, 죽을 때 처치를 보고.
 public static class EnemyRegistry
 {
     private static readonly HashSet<EnemyHealth> alive = new HashSet<EnemyHealth>();

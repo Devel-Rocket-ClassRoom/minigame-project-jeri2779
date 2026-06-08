@@ -82,14 +82,14 @@ public class UpgradeBoardUI : MonoBehaviour
         float flat = item.BonusPerLevel * level; // 누적 실수치 (회복/흡혈/폭발)
         switch (item.StatType)
         {
-            case StatType.HealthRegen:     return $"{flat:F0} HP/초";
-            case StatType.Lifesteal:       return $"5킬당 {flat:F0}HP";
-            case StatType.ExplosiveRounds: return $"{flat:F0} 뎀";
+            case StatType.HealthRegen:     return $"{flat:F0}HP/초";
+            case StatType.Lifesteal:       return $"{flat:F0}회복";
+            case StatType.ExplosiveRounds: return $"{flat:F0}대미지";
             case StatType.DoubleJump:      return "해금";
             default:
                 if (item.MaxLevel <= 0) return string.Empty;
                 float pct = item.DisplayMaxPercent * level / item.MaxLevel;
-                return $"{(item.IsMaxBonus ? "최대 " : "")}+{pct:F0}%";
+                return $"{(item.IsMaxBonus ? "최대": "")}+{pct:F0}%";
         }
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class WeaponInventoryNew : MonoBehaviour
+public class WeaponInventory : MonoBehaviour
 {
     [SerializeField] private CharacterStats characterStats;
     [SerializeField] private Transform weaponSocket;

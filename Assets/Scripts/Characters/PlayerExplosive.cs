@@ -2,9 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 폭발탄 행동 전담. 쿨다운 관리 + 명중 지점 폭발(OverlapSphere) 실행.
-// 수치(피해/반경/간격/VFX)는 CharacterStats가 보관하고, 발동은 이벤트 "구독"으로 받는다(직접 명령 안 받음).
-// - 구매: UpgradeManager.OnStatUpgradeLevelChanged 구독 → 최초 폭발탄 강화 시 쿨다운 시작
-// - 명중: PlayerCombatEvents.OnRangedHit 구독 → 폭발 시도
 [RequireComponent(typeof(CharacterStats))]
 [RequireComponent(typeof(PlayerCombatEvents))]
 public class PlayerExplosive : MonoBehaviour

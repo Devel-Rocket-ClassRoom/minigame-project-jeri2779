@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerShooter : MonoBehaviour
 {
-    [SerializeField] private WeaponInventoryNew inventory;
+    [SerializeField] private WeaponInventory inventory;
     [SerializeField] private Camera characterCamera;
     [SerializeField] private LayerMask shootableLayer;
     [SerializeField] private float recoilResetSpeed = 5f;

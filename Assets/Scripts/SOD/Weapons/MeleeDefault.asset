@@ -22,7 +22,7 @@ MonoBehaviour:
   verticalRecoil: 0
   category: 2
   isAutomatic: 1
-  viewModelPosition: {x: 0.2, y: -0.17, z: 0.33}
+  viewModelPosition: {x: 0.2, y: -0.187, z: 0.33}
   viewModelRotation: {x: 0, y: -80, z: 100}
   drawDuration: 0
   weaponIcon: {fileID: 21300000, guid: a3e77b4e92606844883c65065baf704e, type: 3}
