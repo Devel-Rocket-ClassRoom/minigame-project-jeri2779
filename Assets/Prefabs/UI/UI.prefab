@@ -26158,7 +26158,7 @@ MonoBehaviour:
   recoilText: {fileID: 4167116909712488289}
   rangeText: {fileID: 4006163484588120058}
   ammoText: {fileID: 8550717374439067260}
-  reloadText: {fileID: 8550717374439067260}
+  reloadText: {fileID: 2894110008882070838}
 --- !u!1 &2689680308078417212
 GameObject:
   m_ObjectHideFlags: 0
