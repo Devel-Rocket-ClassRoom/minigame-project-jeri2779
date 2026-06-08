@@ -17,6 +17,7 @@ TagManager:
   - Dirt (Static)
   - Wood
   - fireball
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -34,7 +35,7 @@ TagManager:
   - Post Processing Scope
   - Invisible Wall
   - Projectile
-  - 
+  - Enemy
   - 
   - 
   - 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 156660803484482464}
   - component: {fileID: 1733632119620818586}
   - component: {fileID: 2589475080857182331}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FP_Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1192763695223771664}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WeaponAnchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,8 @@ GameObject:
   - component: {fileID: 4879568384003238585}
   - component: {fileID: 7109430351167306948}
   - component: {fileID: 4522923528855576920}
-  m_Layer: 0
+  - component: {fileID: 2252890058290861806}
+  m_Layer: 7
   m_Name: Character_1
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -782,6 +783,21 @@ MonoBehaviour:
   pierceStopMask:
     serializedVersion: 2
     m_Bits: 16384
+--- !u!114 &2252890058290861806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7677870271825320051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e89e0651abb65ac41a2c5ae7ff9afc34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHitFeedback
+  vignette: {fileID: 0}
+  flashAlpha: 0.6
+  fadeDuration: 0.5
 --- !u!1 &8163671235254392355
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,7 +810,7 @@ GameObject:
   - component: {fileID: 934043769406895343}
   - component: {fileID: 6917555405199088705}
   - component: {fileID: 4588859063537377623}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerViewCamera
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -931,7 +947,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7838587551243096564}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CameraRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
