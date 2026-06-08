@@ -103140,6 +103140,11 @@ PrefabInstance:
       propertyPath: rewardController
       value: 
       objectReference: {fileID: 330679489}
+    - target: {fileID: 1894362008880844536, guid: 1ae7536f56922c34593a5dfb71c3a584,
+        type: 3}
+      propertyPath: reloadText
+      value: 
+      objectReference: {fileID: 1879424516}
     - target: {fileID: 2078515138979467315, guid: 1ae7536f56922c34593a5dfb71c3a584,
         type: 3}
       propertyPath: gameManager
@@ -243974,6 +243979,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1878893437}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1879424516 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2894110008882070838, guid: 1ae7536f56922c34593a5dfb71c3a584,
+    type: 3}
+  m_PrefabInstance: {fileID: 777854302}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1879587287
 PrefabInstance:
   m_ObjectHideFlags: 0
