@@ -561,7 +561,7 @@ MonoBehaviour:
   explosionVFX: {fileID: 9221948553123449317, guid: b81f5c862a2279142b8c4f8d53d6e607,
     type: 3}
   explosiveInterval: 5
-  explosiveRadius: 5
+  explosiveRadius: 10
   lifestealKillThreshold: 5
 --- !u!114 &8703008233461567453
 MonoBehaviour:
@@ -778,7 +778,7 @@ MonoBehaviour:
   sgFalloffEnd: 20
   pierceEnemyMask:
     serializedVersion: 2
-    m_Bits: 65600
+    m_Bits: 64
   pierceStopMask:
     serializedVersion: 2
     m_Bits: 16384

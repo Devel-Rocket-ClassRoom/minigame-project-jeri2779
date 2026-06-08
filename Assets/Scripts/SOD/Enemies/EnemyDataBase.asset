@@ -16,7 +16,7 @@ MonoBehaviour:
   moveSpeed: 4
   attackRange: 1.5
   attackHeightRange: 1.2
-  attackDamage: 10
+  attackDamage: 2
   attackInterval: 2
   moneyReward: 100
   scoreReward: 100
