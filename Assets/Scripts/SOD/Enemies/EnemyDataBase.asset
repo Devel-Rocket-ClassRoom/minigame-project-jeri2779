@@ -15,7 +15,7 @@ MonoBehaviour:
   maxHealth: 100
   moveSpeed: 4
   attackRange: 1.5
-  attackHeightRange: 1.2
+  attackHeightRange: 4
   attackDamage: 2
   attackInterval: 2
   moneyReward: 100

@@ -20,7 +20,7 @@ public class EnemyData : ScriptableObject
     public float prepareDistance = 8f;
     public float prepareDuration = 1.0f;
     public float recoverDuration = 1.5f;
-    public Color prepareColor = Color.red;
+   
 
     public float chargeSpeed = 8f;
     public float chargeMaxDuration = 1.5f;
