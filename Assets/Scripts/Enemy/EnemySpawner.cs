@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private WaveData waveData;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private Transform player;
+    [SerializeField] private ProjectilePool projectilePool;
 
     [Header("스폰 설정")]
     [SerializeField] private int maxAliveEnemies = 15;
@@ -65,7 +66,7 @@ public class EnemySpawner : MonoBehaviour
             if (enemy == null || !enemy.activeInHierarchy) continue;
             var ctrl = enemy.GetComponent<EnemyController>();
             if (ctrl != null) ctrl.SetDead();
-            enemy.SetActive(false);
+            pool.Release(enemy);
         }
         aliveEnemies.Clear();
         pendingSpawns.Clear();
@@ -94,6 +95,7 @@ public class EnemySpawner : MonoBehaviour
             var health = enemy.GetComponent<EnemyHealth>();
             if (health != null)
             {
+                health.AssignPool(pool);
                 health.SetHealthMultiplier(healthMult);
                 health.ResetForSpawn();
             }

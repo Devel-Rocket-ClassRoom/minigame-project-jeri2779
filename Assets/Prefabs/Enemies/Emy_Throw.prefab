@@ -53,7 +53,10 @@ MonoBehaviour:
   character: {fileID: 2346187779893796961, guid: 26ca269b0473f294cae3a075da323a42,
     type: 3}
   animator: {fileID: 5786739290960898782}
+  projectilePool: {fileID: 749571260515180455, guid: 4f0deed176171be4d807d095808f2eb1,
+    type: 3}
   repathInterval: 0.35
+  prepareDelayJitter: 1.2
 --- !u!114 &6803112921402546320
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,9 +8,13 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private EnemyData enemyData;
     [SerializeField] private Transform character;
     [SerializeField] private Animator animator;
+    [SerializeField] private ProjectilePool projectilePool;
 
     [Header("추적 간격")]
     [SerializeField] private float repathInterval = 0.2f; // 추격 시 길찾기 재계산 간격(초). 낮을수록 정밀·무거움, 높을수록 가벼움
+
+    [Header("준비 지연 분산")]
+    [SerializeField] private float prepareDelayJitter = 0.6f; // 0~이 값만큼 개체별 prepare 시간 랜덤 추가 → 동시 행동(투척/돌진) 분산
 
     private static readonly int IsWalkingHash = Animator.StringToHash("isWalking");
     private static readonly int IsRunningHash = Animator.StringToHash("isRunning");
@@ -23,6 +27,7 @@ public class EnemyController : MonoBehaviour
     private float recoverTimer;
     private float chargeTimer;
     private float repathTimer;
+    private float prepareDurationThisCycle; // prepare 진입 시 지터 포함해 1회 계산
     private Vector3 lockedTargetPos;
 
     private IDamageable playerDamageable;
@@ -173,13 +178,15 @@ public class EnemyController : MonoBehaviour
         currentState = EnemyState.Prepare;
         lockedTargetPos = character.position;
         prepareTimer = 0f;
+        // 개체마다 prepare 길이를 살짝 랜덤화 → 동시 행동 분산 (진입 시 1회만)
+        prepareDurationThisCycle = enemyData.prepareDuration + Random.Range(0f, prepareDelayJitter);
         if (agent.isOnNavMesh) agent.isStopped = true;
     }
 
     private void HandlePrepare()
     {
         prepareTimer += Time.deltaTime;
-        if (prepareTimer >= enemyData.prepareDuration)
+        if (prepareTimer >= prepareDurationThisCycle)
             EnterAction();
     }
 
@@ -227,7 +234,7 @@ public class EnemyController : MonoBehaviour
 
     private void ThrowProjectile()
     {
-        if (enemyData.projectilePrefab == null) return;
+        if (projectilePool == null && enemyData.projectilePrefab == null) return;
 
         Vector3 toTarget = lockedTargetPos - transform.position;
         Vector3 flatDir = new Vector3(toTarget.x, 0f, toTarget.z);
@@ -239,11 +246,23 @@ public class EnemyController : MonoBehaviour
         Vector3 dir = (flatDir.normalized + Vector3.up * Mathf.Tan(angle * Mathf.Deg2Rad)).normalized;
         Vector3 spawnPos = transform.position + Vector3.up * 1.5f;
 
-        var go = Instantiate(enemyData.projectilePrefab, spawnPos, Quaternion.LookRotation(dir));
-        go.GetComponent<EnemyProjectile>().Init(enemyData.projectileDamage * damageMultiplier, enemyData.fuseTime, enemyData.explosionRadius, GetComponentsInChildren<Collider>());
+        EnemyProjectile projectile = SpawnProjectile(spawnPos, Quaternion.LookRotation(dir));
+        if (projectile == null)
+            return;
 
-        var rb = go.GetComponent<Rigidbody>();
+        projectile.Init(enemyData.projectileDamage * damageMultiplier, enemyData.fuseTime, enemyData.explosionRadius, GetComponentsInChildren<Collider>());
+
+        var rb = projectile.GetComponent<Rigidbody>();
         if (rb != null) rb.linearVelocity = dir * enemyData.throwForce;
+    }
+
+    private EnemyProjectile SpawnProjectile(Vector3 position, Quaternion rotation)
+    {
+        if (projectilePool != null)
+            return projectilePool.Spawn(position, rotation);
+
+        GameObject go = Instantiate(enemyData.projectilePrefab, position, rotation);
+        return go.GetComponent<EnemyProjectile>();
     }
 
     private void EnterRecover()

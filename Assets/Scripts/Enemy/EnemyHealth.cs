@@ -12,6 +12,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     private float currentHealth;
     private bool isDead;
     private Collider bodyCollider;
+    private EnemyPool pool;
+
+    // 스폰 시 EnemySpawner가 주입. 수동 배치 적은 null로 남아 SetActive(false) 폴백.
+    public void AssignPool(EnemyPool pool) => this.pool = pool;
 
     // 라운드별 체력 배율 (스폰 시 EnemySpawner가 Start 전에 주입)
     private float healthMultiplier = 1f;
@@ -93,9 +97,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     private IEnumerator DeactivateAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        // 풀 반환: Destroy 대신 비활성화. 비활성=free → 다음 스폰에서 재사용.
-        // (수동 배치 적은 풀이 없어 그대로 비활성 상태로 남는다 — 게임 동작엔 무영향)
-        gameObject.SetActive(false);
+        // 풀 반환: Release()로 ObjectPool 스택에 되돌린다.
+        // (수동 배치 적은 pool==null → SetActive(false) 폴백, 동작엔 무영향)
+        if (pool != null)
+            pool.Release(gameObject);
+        else
+            gameObject.SetActive(false);
     }
-     
 }
