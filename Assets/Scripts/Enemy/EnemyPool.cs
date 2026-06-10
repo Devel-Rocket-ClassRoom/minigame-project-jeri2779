@@ -20,6 +20,7 @@ public class EnemyPool
         {
             if (inst != null && !inst.activeSelf)
             {
+                
                 inst.transform.SetPositionAndRotation(position, rotation);
                 inst.SetActive(true);
                 return inst;

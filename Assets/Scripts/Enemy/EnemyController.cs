@@ -36,6 +36,8 @@ public class EnemyController : MonoBehaviour
     public void Initialize(Transform player)
     {
         character = player;
+        playerDamageable = player.GetComponent<IDamageable>();
+        playerHealth = player.GetComponent<CharacterHealth>();
     }
 
     void Awake()
