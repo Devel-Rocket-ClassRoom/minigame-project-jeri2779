@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 // 플레이어 사망 연출 전담(카메라 틸트). UI는 직접 만지지 않고, 연출 완료를 이벤트로 알린다.
@@ -40,12 +40,12 @@ public class CharacterDead : MonoBehaviour
             return;
 
         triggered = true;
-        StartCoroutine(DeathMoment());
+        DeathMoment().Forget();
     }
 
-    private IEnumerator DeathMoment()
+    private async UniTaskVoid DeathMoment()
     {
-        yield return StartCoroutine(characterMoves.DeathCameraRotate(tiltDuration));
+        await characterMoves.DeathCameraRotate(tiltDuration);
         OnDeathPresented?.Invoke();
     }
 }

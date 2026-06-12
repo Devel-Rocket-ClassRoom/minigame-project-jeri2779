@@ -1,7 +1,7 @@
 
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
@@ -68,8 +68,9 @@ public class CharacterMoves : MonoBehaviour, IImpactReceiver
         currentStamina = Mathf.Min(currentStamina + amount, stats.MaxStamina);
     }
 
-    public IEnumerator DeathCameraRotate(float duration)
+    public async UniTask DeathCameraRotate(float duration)
     {
+        var token = this.GetCancellationTokenOnDestroy();
         float elapsed = 0f;
         float startY = playerCamera.transform.position.y;
         float targetY = transform.position.y - 0.5f;
@@ -90,7 +91,7 @@ public class CharacterMoves : MonoBehaviour, IImpactReceiver
                 newY,
                 playerCamera.transform.position.z
             );
-            yield return null;
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
 
