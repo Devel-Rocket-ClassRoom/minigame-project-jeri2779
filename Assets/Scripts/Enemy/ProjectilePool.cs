@@ -1,98 +1,77 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class ProjectilePool : MonoBehaviour
+// 적 투사체 풀. EnemyPool과 동일한 순수 C# 클래스 패턴으로 통일.
+// (prefab 키, 위치 확정 후 활성화, 이중 릴리즈 가드 — Unity ObjectPool<T> 기반)
+// 투사체 프리팹의 출처는 EnemyData.projectilePrefab — 적이 Get 시 자기 프리팹을 넘긴다.
+public class ProjectilePool
 {
-    [SerializeField] private EnemyProjectile prefab;
-    [SerializeField] private int defaultCapacity = 16;
-    [SerializeField] private int maxSize = 64;
-    [SerializeField] private int prewarmCount = 0;
+    private readonly Dictionary<GameObject, ObjectPool<EnemyProjectile>> pools = new();
+    private readonly Dictionary<EnemyProjectile, GameObject> instanceToPrefab = new();
+    private readonly Transform parent;
+    private readonly int defaultCapacity;
+    private readonly int maxSize;
 
-    private ObjectPool<EnemyProjectile> pool;
-
-    private void Awake()
+    public ProjectilePool(Transform parent = null, int defaultCapacity = 16, int maxSize = 64)
     {
-        EnsurePool();
-        Prewarm();
+        this.parent = parent;
+        this.defaultCapacity = defaultCapacity;
+        this.maxSize = maxSize;
     }
 
-    public EnemyProjectile Spawn(Vector3 position, Quaternion rotation)
+    // 해당 프리팹 풀에서 투사체를 대여. 위치 확정 후 활성화 (직전 폭발 위치에서 튀어나오는 현상 방지).
+    public EnemyProjectile Get(GameObject prefab, Vector3 position, Quaternion rotation)
     {
         if (prefab == null)
             return null;
 
-        EnsurePool();
-        EnemyProjectile projectile = pool.Get();
-        projectile.transform.SetPositionAndRotation(position, rotation);
-        projectile.AssignPool(this);
-        return projectile;
+        ObjectPool<EnemyProjectile> pool = GetOrCreatePool(prefab);
+        EnemyProjectile instance = pool.Get();
+        instance.transform.SetPositionAndRotation(position, rotation);
+        instance.gameObject.SetActive(true);
+        return instance;
     }
 
-    public void Release(EnemyProjectile projectile)
+    // 투사체를 풀로 반환. 이미 비활성(=반환됨)이면 무시해 이중 반환을 막는다.
+    public void Release(EnemyProjectile instance)
     {
-        if (projectile == null)
+        if (instance == null || !instance.gameObject.activeSelf)
             return;
 
-        EnsurePool();
-        pool.Release(projectile);
+        if (instanceToPrefab.TryGetValue(instance, out var prefab))
+            pools[prefab].Release(instance);
+        else
+            instance.gameObject.SetActive(false); // 풀 밖에서 만들어진 인스턴스 폴백
     }
 
-    private EnemyProjectile CreateProjectile()
+    private ObjectPool<EnemyProjectile> GetOrCreatePool(GameObject prefab)
     {
-        EnemyProjectile projectile = Instantiate(prefab);
-        if (gameObject.scene.IsValid())
-            projectile.transform.SetParent(transform, false);
-        projectile.AssignPool(this);
-        projectile.gameObject.SetActive(false);
-        return projectile;
-    }
-
-    private void OnGetProjectile(EnemyProjectile projectile)
-    {
-        projectile.gameObject.SetActive(true);
-    }
-
-    private void OnReleaseProjectile(EnemyProjectile projectile)
-    {
-        projectile.ResetForPool();
-        projectile.gameObject.SetActive(false);
-    }
-
-    private void OnDestroyProjectile(EnemyProjectile projectile)
-    {
-        if (projectile != null)
-            Destroy(projectile.gameObject);
-    }
-
-    private void Prewarm()
-    {
-        if (prefab == null || prewarmCount <= 0)
-            return;
-
-        EnsurePool();
-        int count = Mathf.Min(prewarmCount, maxSize);
-        EnemyProjectile[] projectiles = new EnemyProjectile[count];
-
-        for (int i = 0; i < count; i++)
-            projectiles[i] = pool.Get();
-
-        for (int i = 0; i < count; i++)
-            pool.Release(projectiles[i]);
-    }
-
-    private void EnsurePool()
-    {
-        if (pool != null)
-            return;
+        if (pools.TryGetValue(prefab, out var pool))
+            return pool;
 
         pool = new ObjectPool<EnemyProjectile>(
-            CreateProjectile,
-            OnGetProjectile,
-            OnReleaseProjectile,
-            OnDestroyProjectile,
-            false,
-            defaultCapacity,
-            maxSize
+            createFunc: () =>
+            {
+                EnemyProjectile inst = Object.Instantiate(prefab).GetComponent<EnemyProjectile>();
+                if (parent != null) inst.transform.SetParent(parent, false);
+                instanceToPrefab[inst] = prefab;
+                inst.AssignPool(this);
+                inst.gameObject.SetActive(false);
+                return inst;
+            },
+            actionOnGet: null, // 활성화는 위치 확정 후 Get()에서 직접 처리
+            actionOnRelease: inst =>
+            {
+                inst.ResetForPool();
+                inst.gameObject.SetActive(false);
+            },
+            actionOnDestroy: inst => Object.Destroy(inst.gameObject),
+            collectionCheck: false,
+            defaultCapacity: defaultCapacity,
+            maxSize: maxSize
         );
+        pools[prefab] = pool;
+        return pool;
     }
 }

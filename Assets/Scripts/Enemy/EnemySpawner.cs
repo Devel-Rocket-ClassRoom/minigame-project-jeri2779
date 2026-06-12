@@ -8,7 +8,6 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private WaveData waveData;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private Transform player;
-    [SerializeField] private ProjectilePool projectilePool;
 
     [Header("스폰 설정")]
     [SerializeField] private int maxAliveEnemies = 15;
@@ -29,6 +28,7 @@ public class EnemySpawner : MonoBehaviour
     private bool isSpawning = false;
     private int currentRound = 1;
     private readonly EnemyPool pool = new EnemyPool();
+    private readonly ProjectilePool projectilePool = new ProjectilePool();
 
     private void Update()
     {
@@ -91,6 +91,7 @@ public class EnemySpawner : MonoBehaviour
             // 풀 재사용 시 Start가 안 돌므로 스포너가 직접 ResetForSpawn 호출.
             var ctrl = enemy.GetComponent<EnemyController>();
             ctrl.Initialize(player);
+            ctrl.AssignProjectilePool(projectilePool); // 스포너가 소유한 풀을 주입 (적은 자기 EnemyData.projectilePrefab을 풀에 넘김)
             ctrl.SetDamageMultiplier(damageMult);
             ctrl.ResetForSpawn();
             var health = enemy.GetComponent<EnemyHealth>();

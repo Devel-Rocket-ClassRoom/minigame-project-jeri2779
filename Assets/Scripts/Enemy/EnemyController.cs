@@ -8,7 +8,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private EnemyData enemyData;
     [SerializeField] private Transform character;
     [SerializeField] private Animator animator;
-    [SerializeField] private ProjectilePool projectilePool;
+    private ProjectilePool projectilePool; // 스포너가 AssignProjectilePool로 주입 (순수 클래스라 직렬화 안 함)
 
     [Header("추적 간격")]
     [SerializeField] private float repathInterval = 0.2f; // 추격 시 길찾기 재계산 간격(초). 낮을수록 정밀·무거움, 높을수록 가벼움
@@ -37,6 +37,9 @@ public class EnemyController : MonoBehaviour
     // 라운드별 공격력 배율 (스폰 시 EnemySpawner가 주입)
     private float damageMultiplier = 1f;
     public void SetDamageMultiplier(float multiplier) => damageMultiplier = multiplier;
+
+    // 스포너가 런타임 씬 풀을 주입 — 프리팹은 씬 인스턴스를 참조 못 하므로 직렬화 필드만으론 null이 됨
+    public void AssignProjectilePool(ProjectilePool pool) => projectilePool = pool;
 
     public void Initialize(Transform player)
     {
@@ -258,8 +261,11 @@ public class EnemyController : MonoBehaviour
 
     private EnemyProjectile SpawnProjectile(Vector3 position, Quaternion rotation)
     {
+        if (enemyData.projectilePrefab == null)
+            return null;
+
         if (projectilePool != null)
-            return projectilePool.Spawn(position, rotation);
+            return projectilePool.Get(enemyData.projectilePrefab, position, rotation);
 
         GameObject go = Instantiate(enemyData.projectilePrefab, position, rotation);
         return go.GetComponent<EnemyProjectile>();
