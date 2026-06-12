@@ -1,4 +1,5 @@
-using System.Collections;
+using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -49,10 +50,10 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnStartClicked()
     {
-        StartCoroutine(IntroSequence());
+        IntroSequence().Forget();
     }
 
-    private IEnumerator IntroSequence()
+    private async UniTaskVoid IntroSequence()
     {
         mainMenuPanel.SetActive(false);
         UIManager.EnsureInstance().PopEscape();
@@ -62,7 +63,10 @@ public class MainMenuUI : MonoBehaviour
         playingHUD.SetActive(true);
         gameStartText.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(introDelay);
+        await UniTask.Delay(
+            TimeSpan.FromSeconds(introDelay),
+            cancellationToken: this.GetCancellationTokenOnDestroy()
+        );
 
         gameStartText.gameObject.SetActive(false);
         gameManager.StartGame();
