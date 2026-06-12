@@ -60,6 +60,6 @@ public class PausePanel : MonoBehaviour
             UIManager.EnsureInstance().HideOverlay(panelRoot, this);
         }
 
-        SceneManager.LoadScene(0);
+        SceneManager.LoadSceneAsync(0);
     }
 }

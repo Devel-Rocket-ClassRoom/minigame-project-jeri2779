@@ -68,6 +68,6 @@ public class GameClearUI : MonoBehaviour
 
     private void OnMainMenuClicked()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
     }
 }

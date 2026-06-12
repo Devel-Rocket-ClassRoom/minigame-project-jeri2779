@@ -11,7 +11,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
 
     private float currentHealth;
     private bool isDead;
-    private Collider bodyCollider;
+    private Collider[] colliders;
     private EnemyPool pool;
 
     // 스폰 시 EnemySpawner가 주입. 수동 배치 적은 null로 남아 SetActive(false) 폴백.
@@ -29,7 +29,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     private void Awake()
     {
         renderers = GetComponentsInChildren<Renderer>();
-        bodyCollider = GetComponent<Collider>();
+        colliders = GetComponentsInChildren<Collider>(true); // 자식 히트박스 포함 — 사망 시 전부 꺼 시체 피격 차단
         ApplyColor(normalColor);
     }
 
@@ -44,7 +44,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     {
         currentHealth = EffectiveMaxHealth;
         isDead = false;
-        if (bodyCollider != null) bodyCollider.enabled = true;
+        SetCollidersEnabled(true);
+    }
+
+    private void SetCollidersEnabled(bool enabled)
+    {
+        foreach (var c in colliders)
+            if (c != null) c.enabled = enabled;
     }
 
     // 모든 몸통 렌더러에 타입 식별색 적용
@@ -79,7 +85,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
         if (currentHealth <= 0)
         {
             isDead = true;
-            if (bodyCollider != null) bodyCollider.enabled = false;
+            SetCollidersEnabled(false);
             Die();
         }
     }
