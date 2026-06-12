@@ -1,5 +1,6 @@
 using System;
-using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 // 실제 적 스폰은 EnemySpawner에 명령한다. (RoundManager → EnemySpawner 단방향)
@@ -35,6 +36,7 @@ public class RoundManager : MonoBehaviour
     private bool isRoundActive = false;
     private bool isShopPhase = false;
     private float runTime;
+    private CancellationTokenSource roundCts; // 라운드 루프 취소원 (HaltRounds/파괴 시 취소)
 
     private void Awake()
     {
@@ -77,19 +79,28 @@ public class RoundManager : MonoBehaviour
     //첫 라운드 루프 시작
     public void BeginFirstRound()
     {
-        StartCoroutine(FirstRoundRoutine());
+        roundCts = CancellationTokenSource.CreateLinkedTokenSource(
+            this.GetCancellationTokenOnDestroy()
+        );
+        FirstRoundRoutine(roundCts.Token).Forget();
     }
 
-    //진행 중인 라운드/코루틴/스폰 정지
+    //진행 중인 라운드/태스크/스폰 정지
     public void HaltRounds()
     {
         isRoundActive = false;
         isShopPhase = false;
-        StopAllCoroutines();
+        roundCts?.Cancel();
         if (enemySpawner != null) enemySpawner.StopSpawning();
     }
 
-    private IEnumerator FirstRoundRoutine()
+    private void OnDestroy()
+    {
+        roundCts?.Cancel();
+        roundCts?.Dispose();
+    }
+
+    private async UniTaskVoid FirstRoundRoutine(CancellationToken token)
     {
         playerSpawner.ResetForRound();
         isShopPhase = true;
@@ -99,7 +110,7 @@ public class RoundManager : MonoBehaviour
         while (shopTimer > 0f)
         {
             shopTimer -= Time.deltaTime;
-            yield return null;
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
         StartRound();
     }
@@ -125,27 +136,27 @@ public class RoundManager : MonoBehaviour
 
         if (currentRound >= totalRounds)
         {
-            StartCoroutine(FinalClearSequence());
+            FinalClearSequence(roundCts.Token).Forget();
             return;
         }
 
         OnRoundCleared?.Invoke(false);
-        StartCoroutine(NextRoundRoutine());
+        NextRoundRoutine(roundCts.Token).Forget();
     }
 
-    private IEnumerator FinalClearSequence()
+    private async UniTaskVoid FinalClearSequence(CancellationToken token)
     {
         OnRoundCleared?.Invoke(true);
-        yield return new WaitForSeconds(roundEndDelay);
+        await UniTask.Delay(TimeSpan.FromSeconds(roundEndDelay), cancellationToken: token);
         rewardController.AddRoundClearReward();
         OnRoundClearHidden?.Invoke();
         playerSpawner.Freeze();
         OnAllRoundsCleared?.Invoke();
     }
 
-    private IEnumerator NextRoundRoutine()
+    private async UniTaskVoid NextRoundRoutine(CancellationToken token)
     {
-        yield return new WaitForSeconds(roundEndDelay);
+        await UniTask.Delay(TimeSpan.FromSeconds(roundEndDelay), cancellationToken: token);
         OnRoundClearHidden?.Invoke();
         rewardController.AddRoundClearReward();
         playerSpawner.ResetForRound();
@@ -156,7 +167,7 @@ public class RoundManager : MonoBehaviour
         while (shopTimer > 0f)
         {
             shopTimer -= Time.deltaTime;
-            yield return null;
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
         StartRound();
     }
