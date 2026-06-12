@@ -109,10 +109,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         {
             currentAmmo++;
             reserveAmmo--;
-            int shellBonus = (stats != null && stats.BonusAmmoPercent > 0f)
-                ? Mathf.RoundToInt(data.magazineSize * stats.BonusAmmoPercent)
-                : 0;
-            if (currentAmmo >= data.magazineSize + shellBonus || reserveAmmo <= 0)
+            if (currentAmmo >= EffectiveMagazineSize || reserveAmmo <= 0)
             {
                 isReloading = false;
                 return;
@@ -123,12 +120,11 @@ public class RangedWeapon : MonoBehaviour, IWeapon
         }
 
         isReloading = false;
-        int needed = data.magazineSize - currentAmmo;
+        int needed = EffectiveMagazineSize - currentAmmo;
+        if (needed <= 0) return; // 이미 (보너스 포함) 가득 — 예비탄 변동 없음
         int taken = Mathf.Min(needed, reserveAmmo);
         currentAmmo += taken;
         reserveAmmo -= taken;
-        if (stats != null && stats.BonusAmmoPercent > 0f)
-            currentAmmo += Mathf.RoundToInt(data.magazineSize * stats.BonusAmmoPercent);
     }
 
     public void Init(CharacterStats stats)
@@ -237,7 +233,7 @@ public class RangedWeapon : MonoBehaviour, IWeapon
     public void TryReload()
     {
         if (isReloading) return;
-        if (currentAmmo == data.magazineSize) return;
+        if (currentAmmo >= EffectiveMagazineSize) return;
         if (reserveAmmo <= 0) return;
 
         isReloading = true;
@@ -293,6 +289,13 @@ public class RangedWeapon : MonoBehaviour, IWeapon
             weaponAnimator.Play(FireState, 0, 0f);
         }
     }
+
+    // 보너스 탄창 포함 실제 탄창 용량 (보너스 0이면 기본 탄창). 장전 목표·만탄 판정의 단일 기준.
+    private int EffectiveMagazineSize =>
+        data.magazineSize
+        + (stats != null && stats.BonusAmmoPercent > 0f
+            ? Mathf.RoundToInt(data.magazineSize * stats.BonusAmmoPercent)
+            : 0);
 
     // 1발씩 순차 장전 여부 — 데이터 플래그로 결정 (펠릿 수와 분리)
     private bool IsShellReload => data.shellReload;
