@@ -81,7 +81,8 @@ public class EnemySpawner : MonoBehaviour
         float healthMult = 1f + (currentRound - 1) * healthGrowthPerRound;
         float damageMult = 1f + (currentRound - 1) * damageGrowthPerRound;
 
-        for (int i = pendingSpawns.Count - 1; i >= 0 && count > 0; i--)
+        int i = pendingSpawns.Count - 1;
+        while (count > 0 && i >= 0)
         {
             Transform sp = spawnPoints[Random.Range(0, spawnPoints.Length)];
             GameObject enemy = pool.Get(pendingSpawns[i].prefab, sp.position, sp.rotation);
@@ -102,8 +103,13 @@ public class EnemySpawner : MonoBehaviour
             aliveEnemies.Add(enemy);
 
             pendingSpawns[i].count--;
+            // 현재 타입이 소진될 때만 이전 인덱스로 이동 — 소진 전엔 같은 타입에서 계속 뽑아
+            // 배치 예산(count)을 채운다. (타입 1종일 때 주기당 1마리만 나오던 버그 수정)
             if (pendingSpawns[i].count <= 0)
+            {
                 pendingSpawns.RemoveAt(i);
+                i--;
+            }
 
             count--;
         }
