@@ -12,12 +12,14 @@ public class ProjectilePool
     private readonly Transform parent;
     private readonly int defaultCapacity;
     private readonly int maxSize;
+    private readonly VfxPool vfxPool; // 투사체가 폭발 VFX 재사용에 쓰도록 풀이 소유·주입
 
     public ProjectilePool(Transform parent = null, int defaultCapacity = 16, int maxSize = 64)
     {
         this.parent = parent;
         this.defaultCapacity = defaultCapacity;
         this.maxSize = maxSize;
+        vfxPool = new VfxPool(parent);
     }
 
     // 해당 프리팹 풀에서 투사체를 대여. 위치 확정 후 활성화 (직전 폭발 위치에서 튀어나오는 현상 방지).
@@ -57,6 +59,7 @@ public class ProjectilePool
                 if (parent != null) inst.transform.SetParent(parent, false);
                 instanceToPrefab[inst] = prefab;
                 inst.AssignPool(this);
+                inst.AssignVfxPool(vfxPool);
                 inst.gameObject.SetActive(false);
                 return inst;
             },

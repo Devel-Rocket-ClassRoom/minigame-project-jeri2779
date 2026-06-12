@@ -6,6 +6,7 @@ public class EnemyProjectile : MonoBehaviour
     [SerializeField] private GameObject explosionVFX;
 
     private ProjectilePool pool;
+    private VfxPool vfxPool;
     private float damage;
     private float fuseTime;
     private float explosionRadius;
@@ -24,6 +25,11 @@ public class EnemyProjectile : MonoBehaviour
     public void AssignPool(ProjectilePool pool)
     {
         this.pool = pool;
+    }
+
+    public void AssignVfxPool(VfxPool vfxPool)
+    {
+        this.vfxPool = vfxPool;
     }
 
     public void Init(float damage, float fuseTime, float explosionRadius, Collider[] ignoreColliders)
@@ -67,7 +73,12 @@ public class EnemyProjectile : MonoBehaviour
         hasExploded = true;
 
         if (explosionVFX != null)
-            Destroy(Instantiate(explosionVFX, transform.position, Quaternion.identity), 5f);
+        {
+            if (vfxPool != null)
+                vfxPool.Get(explosionVFX, transform.position, Quaternion.identity);
+            else
+                Destroy(Instantiate(explosionVFX, transform.position, Quaternion.identity), 5f);
+        }
 
         var hits = Physics.OverlapSphere(transform.position, explosionRadius);
         var damaged = new HashSet<IDamageable>();
