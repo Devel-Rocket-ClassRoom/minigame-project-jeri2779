@@ -262,3 +262,6 @@ $RECYCLE.BIN/
 # macOS
 .DS_Store
 Assets/Imported
+
+# Claude 작업 메모 (로컬 전용)
+memory/
