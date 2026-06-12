@@ -1,6 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -16,24 +17,39 @@ public static class StatRollup
     }
 
     // 항목을 순서대로 하나씩 롤업. 한 개가 끝나야 다음이 시작된다.
-    public static IEnumerator Cascade(IList<Item> items, float rollDuration, float gap)
+    public static async UniTask Cascade(
+        IList<Item> items,
+        float rollDuration,
+        float gap,
+        CancellationToken token
+    )
     {
         foreach (var item in items)
         {
             if (item.text == null) continue;
-            yield return RollUp(item.text, item.target, rollDuration, item.fmt);
-            yield return new WaitForSecondsRealtime(gap);
+            await RollUp(item.text, item.target, rollDuration, item.fmt, token);
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(gap),
+                DelayType.Realtime,
+                cancellationToken: token
+            );
         }
     }
 
-    public static IEnumerator RollUp(TextMeshProUGUI text, int target, float duration, Func<int, string> fmt)
+    public static async UniTask RollUp(
+        TextMeshProUGUI text,
+        int target,
+        float duration,
+        Func<int, string> fmt,
+        CancellationToken token
+    )
     {
         float t = 0f;
         while (t < 1f)
         {
             t += Time.unscaledDeltaTime / duration;
             text.text = fmt(Mathf.FloorToInt(Mathf.Lerp(0f, target, t)));
-            yield return null;
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
         text.text = fmt(target);
     }

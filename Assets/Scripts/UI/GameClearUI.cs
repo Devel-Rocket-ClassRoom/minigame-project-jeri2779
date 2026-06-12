@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Cysharp.Threading.Tasks;
 
 public class GameClearUI : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class GameClearUI : MonoBehaviour
             new StatRollup.Item { text = moneyResultText,    target = rewardController.TotalEarned,     fmt = n => n.ToString() },
             new StatRollup.Item { text = timeResultText,     target = (int)roundManager.RunTime,        fmt = n => FormatTime(n) },
         };
-        StartCoroutine(StatRollup.Cascade(items, rollDuration, gap));
+        StatRollup.Cascade(items, rollDuration, gap, this.GetCancellationTokenOnDestroy()).Forget();
     }
 
     private string FormatTime(int sec)
