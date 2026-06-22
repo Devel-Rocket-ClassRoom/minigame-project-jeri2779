@@ -89840,7 +89840,7 @@ PrefabInstance:
     - target: {fileID: 7654224161300412615, guid: 1fe2357b6ad6cdb4eb76f94e48e45832,
         type: 3}
       propertyPath: totalRounds
-      value: 1
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7654224161300412615, guid: 1fe2357b6ad6cdb4eb76f94e48e45832,
         type: 3}
@@ -89860,7 +89860,7 @@ PrefabInstance:
     - target: {fileID: 7654224161300412615, guid: 1fe2357b6ad6cdb4eb76f94e48e45832,
         type: 3}
       propertyPath: roundDuration
-      value: 10
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 7654224161300412615, guid: 1fe2357b6ad6cdb4eb76f94e48e45832,
         type: 3}

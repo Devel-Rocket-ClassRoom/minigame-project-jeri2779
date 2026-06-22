@@ -1,5 +1,7 @@
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-using System.Collections;
 
 public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
 {
@@ -13,6 +15,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     private bool isDead;
     private Collider[] colliders;
     private EnemyPool pool;
+
+    // 사망 딜레이 취소원. 풀 반환(OnDisable)/파괴 시 취소돼 재사용된 적에서 이전 딜레이가 뒤늦게 발화하는 것을 막는다.
+    private CancellationTokenSource deathCts;
 
     // 스폰 시 EnemySpawner가 주입. 수동 배치 적은 null로 남아 SetActive(false) 폴백.
     public void AssignPool(EnemyPool pool) => this.pool = pool;
@@ -68,6 +73,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
     private void OnDisable()
     {
         EnemyRegistry.Unregister(this);
+        // 코루틴은 비활성화 시 자동 정지됐지만 UniTask는 그렇지 않으므로 여기서 명시적으로 취소한다.
+        deathCts?.Cancel();
+        deathCts?.Dispose();
+        deathCts = null;
     }
 
     // 무기가 명중 지점(hit.point)을 주면 그 자리에 출혈 스폰. 데미지 경로와 완전 별개.
@@ -97,12 +106,15 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IHealthInfo
         if (controller != null)
             controller.SetDead();
 
-        StartCoroutine(DeactivateAfterDelay(enemyData.deathDelay));
+        deathCts = CancellationTokenSource.CreateLinkedTokenSource(
+            this.GetCancellationTokenOnDestroy()
+        );
+        DeactivateAfterDelay(enemyData.deathDelay, deathCts.Token).Forget();
     }
 
-    private IEnumerator DeactivateAfterDelay(float delay)
+    private async UniTaskVoid DeactivateAfterDelay(float delay, CancellationToken token)
     {
-        yield return new WaitForSeconds(delay);
+        await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: token);
         // 풀 반환: Release()로 ObjectPool 스택에 되돌린다.
         // (수동 배치 적은 pool==null → SetActive(false) 폴백, 동작엔 무영향)
         if (pool != null)
