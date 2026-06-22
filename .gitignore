@@ -265,3 +265,18 @@ Assets/Imported
 
 # Claude 작업 메모 (로컬 전용)
 memory/
+
+# Firebase SDK — 대용량 서드파티(238MB). git/클라우드에 올리지 않고 제외.
+# 다른 PC에서는 공식 SDK(버전 13.12.0)를 직접 받아 임포트 (공유 불필요):
+#   https://firebase.google.com/download/unity → FirebaseAuth/FirebaseDatabase.unitypackage
+# 연결 설정(google-services.json / StreamingAssets)은 SDK가 아니므로 커밋 유지.
+Assets/Firebase
+Assets/Firebase.meta
+Assets/ExternalDependencyManager
+Assets/ExternalDependencyManager.meta
+Assets/Plugins/iOS/Firebase
+Assets/Plugins/iOS/Firebase.meta
+Assets/Plugins/tvOS/Firebase
+Assets/Plugins/tvOS/Firebase.meta
+Assets/Editor Default Resources/Firebase
+Assets/Editor Default Resources/Firebase.meta

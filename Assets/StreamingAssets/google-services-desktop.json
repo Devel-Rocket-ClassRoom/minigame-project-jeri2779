@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "25322605406",
+    "firebase_url": "https://minigameprojectfirebase-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "minigameprojectfirebase",
+    "storage_bucket": "minigameprojectfirebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25322605406:android:bef388a7ec85d8f5e59dcf",
+        "android_client_info": {
+          "package_name": "com.DevelRocket0.LastCity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeY7Ozj-x0DcMa9a8BhhSC_m7qgXlKro4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
