@@ -68,9 +68,9 @@ public class ScoreManager : MonoBehaviour
     }
 
     // 게임 종료 시 진입점. fire-and-forget(.Forget()) 또는 await 둘 다 가능하도록 UniTask 반환.
-    public UniTask SubmitRun(int score, int round)
+    public UniTask SubmitRun(int score, int round, float playTimeSec)
     {
-        return SaveAndUpdateBestAsync(score, round);
+        return SaveAndUpdateBestAsync(score, round, playTimeSec);
     }
 
     private void OnLoginStatusChanged(bool signIn)
@@ -105,9 +105,9 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    private async UniTask SaveAndUpdateBestAsync(int score, int round)
+    private async UniTask SaveAndUpdateBestAsync(int score, int round, float playTimeSec)
     {
-        var (success, error) = await SaveScoreAsync(score, round);
+        var (success, error) = await SaveScoreAsync(score, round, playTimeSec);
         if (!success)
         {
             FirebaseLog.Warn("Score", $"점수 저장 실패: {error}");
@@ -131,7 +131,7 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    public async UniTask<(bool success, string error)> SaveScoreAsync(int score, int round)
+    public async UniTask<(bool success, string error)> SaveScoreAsync(int score, int round, float playTimeSec)
     {
         if (!AuthManager.Instance.IsLoggedIn)
         {
@@ -150,6 +150,7 @@ public class ScoreManager : MonoBehaviour
                 { "score", score },
                 { "round", round },
                 { "timestamp", ServerValue.Timestamp },
+                { "playTimeSec", playTimeSec },
             };
             await newHistoryRef.UpdateChildrenAsync(scoreData);
 

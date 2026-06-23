@@ -63,6 +63,10 @@ public class GameOverUI : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+
+        // 게임 종료(사망) 시점 점수 자동 제출. 로그인 상태일 때만 ScoreManager 내부에서 기록됨.
+        ScoreManager.Instance?.SubmitRun(rewardController.Score, roundManager.CurrentRound, roundManager.RunTime).Forget();
+
         currentTime = restartTimer;
         isActive = true;
         if (backgroundImage != null) bgStartColor = backgroundImage.color;

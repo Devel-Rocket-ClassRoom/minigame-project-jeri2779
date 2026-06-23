@@ -43,10 +43,61 @@ public class ProfileManager : MonoBehaviour
         databaseRef = FirebaseInitializer.Instance.Database.RootReference;
         usersRef = databaseRef.Child("users");
 
-        await LoadProfileAsync();
+        AuthManager.Instance.LoginStateChanged += OnLoginStateChanged;
+
+        // 시작 시 이미 로그인돼 있으면 프로필 보장
+        await EnsureProfileAsync();
 
         isInitialized = true;
         FirebaseLog.Log("Profile", "초기화 완료");
+    }
+
+    private void OnDestroy()
+    {
+        if (AuthManager.Instance != null)
+        {
+            AuthManager.Instance.LoginStateChanged -= OnLoginStateChanged;
+        }
+    }
+
+    private void OnLoginStateChanged(bool signedIn)
+    {
+        if (signedIn)
+        {
+            EnsureProfileAsync().Forget();
+        }
+    }
+
+    // 로그인한 모든 유저가 users/{uid}에 프로필을 갖도록 보장.
+    // (이메일 유저=이메일 앞부분, 익명=게스트+uid 앞 4자리)
+    public async UniTask EnsureProfileAsync()
+    {
+        if (AuthManager.Instance == null || !AuthManager.Instance.IsLoggedIn)
+        {
+            return;
+        }
+
+        var (profile, _) = await LoadProfileAsync();
+        if (profile != null)
+        {
+            return; // 이미 존재
+        }
+
+        string email = AuthManager.Instance.CurrentUser?.Email;
+        string defaultNick;
+        if (!string.IsNullOrEmpty(email))
+        {
+            int at = email.IndexOf('@');
+            defaultNick = at > 0 ? email.Substring(0, at) : email;
+        }
+        else
+        {
+            string uid = AuthManager.Instance.UserId;
+            defaultNick = "게스트" + (uid.Length >= 4 ? uid.Substring(0, 4) : uid);
+        }
+
+        await SaveProfileAsync(defaultNick);
+        FirebaseLog.Log("Profile", $"프로필 자동 생성: {defaultNick}");
     }
 
     public async UniTask<(bool success, string error)> SaveProfileAsync(string nickname)

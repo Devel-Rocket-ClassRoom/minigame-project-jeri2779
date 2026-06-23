@@ -39,6 +39,9 @@ public class GameClearUI : MonoBehaviour
     {
         gameObject.SetActive(true);
 
+        // 전 라운드 클리어 점수 자동 제출. 전부 돌파했으니 round = TotalRounds.
+        ScoreManager.Instance?.SubmitRun(rewardController.Score, roundManager.TotalRounds, roundManager.RunTime).Forget();
+
         UIManager.EnsureInstance().RegisterOverlayOpened(this);
 
         if (playingHUD != null) playingHUD.SetActive(false);
