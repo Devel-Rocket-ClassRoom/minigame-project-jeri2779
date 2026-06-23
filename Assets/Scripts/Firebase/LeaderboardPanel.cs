@@ -20,6 +20,9 @@ public class LeaderboardPanel : MonoBehaviour
     private Button refreshButton;
 
     [SerializeField]
+    private Toggle realtimeToggle;
+
+    [SerializeField]
     private Button closeButton;
 
     [SerializeField]
@@ -34,6 +37,8 @@ public class LeaderboardPanel : MonoBehaviour
             refreshButton.onClick.AddListener(() => Load().Forget());
         if (closeButton != null)
             closeButton.onClick.AddListener(Close);
+        if (realtimeToggle != null)
+            realtimeToggle.onValueChanged.AddListener(OnRealtimeToggled);
     }
 
     private void OnEnable()
@@ -45,16 +50,51 @@ public class LeaderboardPanel : MonoBehaviour
             pushed = true;
         }
         Load().Forget();
+
+        // 토글이 켜진 채 다시 열면 실시간 구독 재개
+        if (realtimeToggle != null && realtimeToggle.isOn)
+            StartRealtime();
     }
 
     private void OnDisable()
     {
+        // 패널이 닫히면 실시간 구독/리스너 정리
+        StopRealtime();
+
         if (!pushed) return;
         pushed = false;
         UIManager.Instance?.PopEscape();
     }
 
     public void Close() => gameObject.SetActive(false);
+
+    // 토글 ON: 실시간 구독, OFF: 새로고침 버튼으로만 갱신
+    private void OnRealtimeToggled(bool isOn)
+    {
+        if (isOn)
+            StartRealtime();
+        else
+            StopRealtime();
+    }
+
+    private void StartRealtime()
+    {
+        var mgr = LeaderBoardManager.Instance;
+        if (mgr == null) return;
+
+        mgr.OnLeaderboardUpdated -= Render; // 중복 구독 방지
+        mgr.OnLeaderboardUpdated += Render;
+        mgr.StartRealtimeListener(topN);
+    }
+
+    private void StopRealtime()
+    {
+        var mgr = LeaderBoardManager.Instance;
+        if (mgr == null) return;
+
+        mgr.OnLeaderboardUpdated -= Render;
+        mgr.StopRealtimeListener();
+    }
 
     private async UniTaskVoid Load()
     {
