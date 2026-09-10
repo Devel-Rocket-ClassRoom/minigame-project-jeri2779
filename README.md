@@ -1,190 +1,238 @@
 # Last City — 1인칭 라운드제 서바이벌 슈팅
 
-> 제한된 시간 동안 적을 상대하고, 획득한 재화로 무기와 능력을 강화하며 다음 라운드에 도전하는 게임입니다.
-> 개인 프로젝트 · 게임 로직 및 시스템 구현
+<!-- 대표 이미지 준비 후 아래 주석을 제거합니다.
+<p align="center">
+  <img src="Docs/Images/cover.png" width="100%" alt="Last City 대표 전투 화면">
+</p>
+-->
+
+> 제한 시간 동안 적의 공격에서 생존하고, 획득한 재화로 무기와 능력을 강화해 다음 라운드에 도전하는 게임입니다.
+> 개인 프로젝트
 
 ## 게임 소개
 
 | 항목 | 내용 |
-| --- | --- |
+|---|---|
 | 장르 | 1인칭 라운드제 서바이벌 슈팅 |
-| 목표 | 적의 공격에서 생존하며 모든 라운드를 완료합니다. |
-| 핵심 재미 | 전투로 재화를 얻고 무기와 능력을 강화해 다음 라운드에 대응합니다. |
+| 목표 | 라운드 제한 시간 동안 생존하고 모든 라운드를 완료 |
+| 핵심 흐름 | 전투 → 보상 획득 → 상점 강화 → 다음 라운드 |
+| 플레이 방식 | 총기·근접 무기·투척 무기를 교체하며 적 대응 |
+
+플레이어는 라운드마다 등장하는 적을 상대합니다. 전투 중 얻은 재화로 상점에서 무기와 능력을 강화하며 다음 라운드를 준비합니다.
+
+## 프로젝트 소개
+
+| 항목 | 내용 |
+|---|---|
+| 제작 형태 | 개인 프로젝트 |
+| 엔진 | Unity 6.3 (6000.3.15f1) |
+| 렌더링 | Universal Render Pipeline 17.3.0 |
+| 입력 | Unity Input System 1.19.0 |
+| 이동 경로 | AI Navigation 2.0.12 |
+| 구현 범위 | 플레이어 전투, 무기, 적 행동, 웨이브, 라운드, 상점, 강화, UI, 저장 연동 |
+| 외부 에셋 | `Assets/Imported` 폴더에 분리 |
+| 실행 씬 | `Assets/Scenes/MainScene.unity` |
 
 ## 게임 플로우
 
-`메인 메뉴 → 인트로 → 상점 준비 → 라운드 전투 → 보상 획득 → 상점 성장 → 다음 라운드 또는 게임 종료`
-
 ```mermaid
 flowchart LR
-    Menu[메인 메뉴] --> Intro[인트로]
-    Intro --> Shop[상점 준비]
-    Shop --> Battle[라운드 전투]
-    Battle --> End{라운드 종료}
-    End --> Last{마지막 라운드인가?}
-    Last -->|아니요| Reward[보상 획득]
-    Reward --> Shop
-    Last -->|예| FinalReward[최종 보상 획득]
-    FinalReward --> Clear[게임 클리어]
-    Battle -->|플레이어 사망| Over[게임오버]
+    A[메인 메뉴] --> B[게임 시작]
+    B --> C[라운드 시작]
+    C --> D[적 생성과 전투]
+    D --> E{라운드 종료 조건}
+    E -->|제한 시간 종료| F[남은 적 정리]
+    E -->|생성 완료 및 적 전멸| G[라운드 보상]
+    F --> G
+    G --> H{마지막 라운드인가?}
+    H -->|아니요| I[상점과 다음 라운드 준비]
+    I --> C
+    H -->|예| J[게임 클리어]
+    J --> K[플레이 결과 확인]
 ```
-
-| 단계 | 동작 |
-| --- | --- |
-| 메인 메뉴 | 게임 시작 또는 설정 변경 |
-| 인트로 | 플레이어를 시작 위치에 배치하고 게임 시작을 안내 |
-| 상점 준비 | 전투 전 무기 구매와 능력 강화 |
-| 라운드 전투 | 웨이브 데이터에 따라 생성된 적과 전투 |
-| 라운드 종료 | 제한 시간 종료 또는 생성 완료 후 생존 적이 없으면 종료 |
-| 보상·성장 | 라운드 보상을 받고 다음 전투 준비 |
-| 게임 종료 | 플레이어 사망 시 게임오버, 마지막 라운드 완료 시 클리어 |
 
 ## 플레이 미리보기
 
-<!-- 핵심 전투와 상점 성장 흐름이 함께 보이는 GIF 또는 대표 이미지 삽입 예정 -->
+이미지가 준비되면 아래 경로에 파일을 넣어 화면을 바로 표시할 수 있습니다.
 
-## 프로젝트 정보
+| 전투 화면 | 상점 화면 |
+|---|---|
+| 이미지 준비 중<br>`Docs/Images/battle.gif` | 이미지 준비 중<br>`Docs/Images/shop.gif` |
 
-| 항목 | 내용 |
-| --- | --- |
-| 인원 | 1인 |
-| 개발 범위 | 게임 흐름, 전투, 적, 라운드, 상점, 성장, 저장, UI 로직 |
-| 환경 | Unity 6000.3.15f1 · C# · URP · New Input System · UniTask · AI Navigation |
-| 저장소 | [GitHub 저장소](https://github.com/Devel-Rocket-ClassRoom/minigame-project-jeri2779) |
+| 기본형 적 | 돌진형 적 | 투척형 적 |
+|---|---|---|
+| 이미지 준비 중<br>`Docs/Images/enemy-default.png` | 이미지 준비 중<br>`Docs/Images/enemy-charger.png` | 이미지 준비 중<br>`Docs/Images/enemy-thrower.png` |
 
-## 핵심 개발
+<!-- 하나의 긴 플레이 GIF를 사용할 경우 아래 주석을 제거합니다.
+![플레이 미리보기](Docs/Images/gameplay.gif)
+-->
 
-- 게임 상태, 라운드 진행, 적 생성을 각각 분리하고 순서대로 명령을 전달하도록 구성했습니다.
-- 총기·근접·투척 무기를 `IWeapon`으로 다루고, 무기 데이터와 실행 로직을 분리했습니다.
-- 적 행동을 상태 흐름으로 구분하고 NavMesh 추적, 웨이브 구성, 적·투사체·VFX 재사용을 연결했습니다.
+## 주요 특징
 
-```mermaid
-flowchart TD
-    Menu[MainMenuUI] --> Game[GameManager]
-    Game --> Round[RoundManager]
-    Round --> Spawn[EnemySpawner]
-    Spawn --> Enemy[EnemyController]
-    Spawn --> EnemyPool[EnemyPool]
+| 특징 | 설명 |
+|---|---|
+| 라운드 생존 | 제한 시간 또는 적 전멸 조건에 따라 라운드가 진행됩니다. |
+| 무기 전투 | 총기·근접·투척 무기를 슬롯으로 전환해 사용합니다. |
+| 적 종류별 행동 | 기본형·돌진형·투척형 적이 서로 다른 행동 구성을 사용합니다. |
+| 상점과 능력 강화 | 전투 보상으로 무기와 플레이어 능력을 강화합니다. |
 
-    Shooter[PlayerShooter] --> Inventory[WeaponInventory]
-    Inventory --> Weapon[IWeapon]
-    Weapon --> Ranged[RangedWeapon]
-    Weapon --> Melee[MeleeWeapon]
-    Weapon --> Throw[ThrowableWeapon]
+## 조작 방법
 
-    Health[EnemyHealth] --> Registry[EnemyRegistry]
-    Registry --> Reward[RewardController]
-    Registry --> Lifesteal[PlayerLifesteal]
-```
+| 입력 | 동작 |
+|---|---|
+| W / A / S / D | 이동 |
+| 마우스 이동 | 시점 조작 |
+| 마우스 왼쪽 | 공격 |
+| 마우스 오른쪽 | 조준 또는 근접 무기 보조 동작 |
+| Space | 점프 |
+| Left Shift | 달리기 |
+| R | 재장전 |
+| 숫자 1–4 | 무기 슬롯 전환 |
+| B | 상점 열기 |
+| Tab | 가이드 열기 |
+| Esc | 메뉴 또는 일시 정지 |
 
-## 구현 확인표
+## 주요 구현
 
-| 구현 | 대표 코드 | 영상 |
-| --- | --- | --- |
-| 게임·라운드 흐름 | [`GameManager.cs`](Assets/Scripts/Manager/GameManager.cs), [`RoundManager.cs`](Assets/Scripts/Manager/RoundManager.cs) | 추가 예정 |
-| 무기 공통 구조 | [`IWeapon.cs`](Assets/Scripts/Weapons/IWeapon.cs), [`PlayerShooter.cs`](Assets/Scripts/Weapons/PlayerShooter.cs) | 추가 예정 |
-| 피해 계산 | [`PlayerDamageCalculator.cs`](Assets/Scripts/Weapons/PlayerDamageCalculator.cs) | 추가 예정 |
-| 적 행동·웨이브 | [`EnemyController.cs`](Assets/Scripts/Enemy/EnemyController.cs), [`WaveData.cs`](Assets/Scripts/SOD/WaveData.cs) | 추가 예정 |
-| 적·투사체·VFX 재사용 | [`EnemyPool.cs`](Assets/Scripts/Enemy/EnemyPool.cs), [`ProjectilePool.cs`](Assets/Scripts/Enemy/ProjectilePool.cs), [`VfxPool.cs`](Assets/Scripts/Enemy/VfxPool.cs) | 추가 예정 |
-| 상점·성장 | [`ShopController.cs`](Assets/Scripts/Manager/ShopController.cs), [`UpgradeManager.cs`](Assets/Scripts/Manager/UpgradeManager.cs) | 추가 예정 |
-
-## 핵심 구현
-
-### 게임·라운드 흐름
+### 게임·라운드 진행
 
 | 구성 | 역할 |
-| --- | --- |
-| `GameManager` | 메인 메뉴, 인트로, 플레이, 게임오버, 클리어 상태 전환 |
-| `RoundManager` | 라운드 시간, 상점 시간, 보상, 다음 라운드 진행 |
-| `EnemySpawner` | 라운드에 맞는 적 구성과 생성 처리 |
-| `RoundUIPresenter` | 라운드 이벤트를 받아 진행 정보 표시 |
+|---|---|
+| `GameManager` | 게임 시작과 종료 상태를 관리합니다. |
+| `RoundManager` | 라운드 시간, 종료 조건, 보상, 다음 라운드 전환을 관리합니다. |
+| `EnemySpawner` | 웨이브 데이터에 따라 적을 순서대로 생성합니다. |
+| `EnemyRegistry` | 현재 살아 있는 적 수와 처치 수를 집계합니다. |
 
-- **책임 분리** = 게임 전체 상태와 라운드 내부 진행, 적 생성을 서로 다른 클래스가 담당합니다.
-- **종료 판정** = 제한 시간이 끝나거나, 적 생성이 끝난 뒤 생존 적이 없을 때 라운드를 종료합니다.
-- **이벤트 전달** = 라운드 변경과 클리어 결과를 이벤트로 전달하여 진행 로직이 UI를 직접 변경하지 않도록 구성했습니다.
-
-### 무기와 피해 계산
+### 무기와 피해 보정
 
 | 구성 | 역할 |
-| --- | --- |
-| `PlayerShooter` | 발사·조준 입력과 현재 무기 사용 조율 |
-| `WeaponInventory` | 주무기·보조무기·근접·투척 슬롯 관리 |
-| `IWeapon` | 무기가 제공할 사용·갱신·재장전·취소 동작 정의 |
-| 무기 구현체 | 총기, 근접, 투척 무기의 개별 행동 처리 |
-| `WeaponData` | 피해량, 사거리, 가격, 외형 등 설정값 보관 |
-| `PlayerDamageCalculator` | 공격 배율과 전투 조건을 반영한 피해 계산 |
-
-- **공통 호출** = `PlayerShooter`는 현재 장착된 무기를 `IWeapon`으로 받아 같은 방법으로 사용합니다.
-- **데이터 분리** = 무기 설정은 ScriptableObject에 보관하고, 탄약과 공격 행동은 무기 구현체가 처리합니다.
-- **계산 집약** = 헤드샷, 치명타, 근접 배율과 플레이어·대상의 상태에 따른 피해 계산을 한곳에서 처리합니다.
-- **종류별 효과** = 해금 상태에 따라 권총 처형, 샷건 거리 보너스, 돌격소총 관통, 기관단총 탄약 사용 방식이 달라집니다.
+|---|---|
+| `IWeapon` | 총기·근접·투척 무기의 공통 사용 규격을 정의합니다. |
+| `WeaponInventory` | 무기 슬롯과 현재 장착 무기를 관리합니다. |
+| `PlayerShooter` | 입력에 따라 현재 무기의 공격을 실행합니다. |
+| `PlayerDamageCalculator` | 총기·근접 공격의 피해 보정과 해당 전투 통계를 집계합니다. |
 
 ### 적 행동과 웨이브
 
 | 구성 | 역할 |
-| --- | --- |
-| `EnemyController` | 추적·공격·준비·행동·회복 상태 진행 |
-| `EnemyData` | 적 체력, 이동, 공격, 행동 종류 설정 |
-| `WaveData` | 적 등장 시점과 라운드별 수량 설정 |
-| `EnemySpawner` | 동시 생존 수를 확인하며 적을 묶음 단위로 생성 |
-| `EnemyRegistry` | 생존 적과 처치 결과 관리 |
+|---|---|
+| `EnemyController` | 적 상태 전환과 행동 실행을 관리합니다. |
+| `EnemyData` | 적 능력치와 행동 종류를 데이터로 보관합니다. |
+| `WaveData` | 라운드별 적 종류, 수량, 생성 간격을 보관합니다. |
+| 행동 구성 | 기본 추적, 돌진, 투척 행동을 적 데이터에 따라 선택합니다. |
 
-- **행동 구분** = 적 행동을 `enum`과 `switch` 기반 상태 흐름으로 나누고 일반·돌진·투척 행동을 처리합니다.
-- **길찾기 갱신** = NavMesh 목적지를 매 프레임 지정하지 않고 설정된 간격마다 다시 계산합니다.
-- **라운드 구성** = 기본 증가 규칙과 특정 라운드 덮어쓰기 데이터를 이용해 등장 적과 수량을 정합니다.
-- **사망 전달** = 적 사망 결과를 `EnemyRegistry`에 전달하고 보상과 흡혈 기능이 해당 이벤트를 구독합니다.
+적은 대기·추적·공격 준비·공격·회복·사망 상태를 오가며 행동합니다. 이동 중에는 일정 간격으로 목적지를 다시 계산합니다.
 
 ### 반복 생성 대상 재사용
 
-| 대상 | 처리 클래스 | 반환 전 초기화 |
-| --- | --- | --- |
-| 적 | `EnemyPool` | 행동 상태, 타이머, Animator, NavMeshAgent, 체력 |
-| 적 투사체 | `ProjectilePool` | 투사체 진행 상태 |
-| 폭발 VFX | `VfxPool` | 재생 상태 |
+| 대상 | 재사용 방식 |
+|---|---|
+| 적 | `EnemyPool`에서 가져와 다시 사용합니다. |
+| 적 투사체 | `ProjectilePool`에서 가져와 다시 사용합니다. |
+| 적 투사체 폭발 효과 | `VfxPool`에서 가져와 다시 사용합니다. |
 
-- **재사용 구조** = 전투 중 반복해서 필요한 적·투사체·VFX를 보관했다가 다시 활성화합니다.
-- **스폰 초기화** = 재사용된 적이 이전 행동과 체력 상태를 이어받지 않도록 생성 시 상태를 초기화합니다.
+> 재사용 범위는 적, 적 투사체, 적 투사체 폭발 효과입니다. 플레이어 수류탄과 일부 효과는 별도의 생성·제거 방식을 사용합니다.
 
 ### 상점과 성장
 
 | 구성 | 역할 |
-| --- | --- |
-| `ShopController` | 구매 가능 여부 확인, 재화 차감, 구매 명령 처리 |
-| `UpgradeManager` | 강화 레벨 보관과 캐릭터 능력치 적용 |
-| `RewardController` | 적 처치와 라운드 완료에 따른 재화·점수 처리 |
-| `ShopUI` | 상점 정보 표시와 사용자 입력 전달 |
+|---|---|
+| `ShopController` | 상점 이용 가능 상태와 구매 흐름을 관리합니다. |
+| `UpgradeManager` | 구매한 강화 효과를 플레이어와 무기에 적용합니다. |
+| `RewardController` | 점수와 전투 중 획득 재화를 집계합니다. |
+| `ShopUI` | 구매 항목과 가격을 화면에 표시합니다. |
 
-- **구매 순서** = 구매 조건 확인 → 재화 차감 → 무기 장착 또는 능력 적용 순서로 처리합니다.
-- **성장 항목** = 공격·체력과 이동, 스태미너, 재장전, 치명타, 흡혈 등 전투 관련 능력을 강화할 수 있습니다.
-- **표시 분리** = 구매 판단은 `ShopController`, 화면 표시는 `ShopUI`가 담당합니다.
+### 한 판 결과 집계
 
-## 개발 범위
+| 결과 항목 | 집계 기준 |
+|---|---|
+| 처치 수 | 적 처치 시 증가 |
+| 획득 재화 | 해당 플레이 중 얻은 재화 합계 |
+| 점수 | 처치 보상에 따라 증가 |
+| 가한 피해 | 총기·근접 피해 보정 처리 시 누적 |
+| 헤드샷 | 총기 헤드샷 판정 시 증가 |
+| 플레이 시간 | 게임 진행 중 누적 |
 
-| 구분 | 내용 |
-| --- | --- |
-| 직접 개발 | `Assets/Scripts`의 게임 흐름·캐릭터·무기·적·상점·성장·저장·UI 코드 |
-| 제공 코드 | Unity 프로젝트 기본 안내용 `TutorialInfo` 코드 |
-| 외부 리소스 | 사용한 모델·애니메이션·UI·사운드는 출처 확인 후 별도 표기 예정 |
+> 위 결과는 한 번의 플레이가 끝날 때 보여 주는 휘발성 통계입니다. 게임을 다시 시작하면 새로 집계합니다.
 
-## 실행 및 영상
+### 환경설정 저장
 
-| 항목 | 내용 |
-| --- | --- |
-| 실행 환경 | Unity 6000.3.15f1 |
-| 실행 장면 | `Assets/Scenes/MainScene.unity` |
-| 실행 방법 | 프로젝트를 열고 `MainScene`을 실행 |
-| 플레이 영상 | 추가 예정 |
+| 저장 항목 | 방식 |
+|---|---|
+| 마우스 감도 | JSON 저장 |
+| 화면·그래픽 설정 | JSON 저장 |
+| 키 설정 | JSON 저장 |
+| 누적 플레이 시간 | JSON 저장 |
+| 저장 위치 | `Application.persistentDataPath/saveData.json` |
 
-### 조작 방법
+## 시스템 구조
 
-| 입력 | 동작 |
-| --- | --- |
-| `WASD` | 이동 |
-| 마우스 이동 | 시점 조작 |
-| 마우스 왼쪽 | 공격 |
-| 마우스 오른쪽 | 조준·근접 보조 공격 |
-| `Space` | 점프 |
-| `Left Shift` | 질주 |
-| `R` | 재장전 |
-| `1` `2` `3` `4` | 무기 슬롯 선택 |
-| `B` | 상점 열기 |
+```mermaid
+flowchart TD
+    UI[UI 입력] --> GM[GameManager]
+    GM --> RM[RoundManager]
+    RM --> ES[EnemySpawner]
+    ES --> WD[WaveData]
+    ES --> EP[EnemyPool]
+    EP --> EC[EnemyController]
+    EC --> ED[EnemyData]
+    EC --> ER[EnemyRegistry]
+    ER --> RM
+
+    UI --> PS[PlayerShooter]
+    PS --> WI[WeaponInventory]
+    WI --> IW[IWeapon 구현 무기]
+    IW --> DC[피해 처리]
+    DC --> ER
+
+    RM --> RC[RewardController]
+    RC --> SC[ShopController]
+    SC --> UM[UpgradeManager]
+    UM --> WI
+```
+
+## 프로젝트 폴더 구조
+
+```text
+Assets/
+├── Scenes/
+│   └── MainScene.unity           # 실행 씬
+├── Scripts/
+│   ├── Manager/                  # 게임·라운드·상점·저장 관리
+│   ├── Characters/               # 플레이어 이동과 상태
+│   ├── Weapons/                  # 무기 사용·슬롯·피해 처리
+│   ├── Enemy/                    # 적 행동·생성·재사용
+│   ├── SOD/                      # 적·무기·웨이브 데이터
+│   ├── UI/                       # HUD·상점·결과·설정 화면
+│   └── Systems/                  # 입력과 공용 시스템
+├── Data/                         # 게임 데이터 에셋
+├── Prefabs/                      # 게임 오브젝트 프리팹
+└── Imported/                     # 외부 임포트 에셋
+```
+
+## 구현 근거
+
+아래 파일에서 README에 적은 구현 내용을 확인할 수 있습니다.
+
+| 확인 항목 | 관련 코드 |
+|---|---|
+| 게임 시작·종료 | [`GameManager.cs`](Assets/Scripts/Manager/GameManager.cs) |
+| 라운드 진행·종료 조건 | [`RoundManager.cs`](Assets/Scripts/Manager/RoundManager.cs) |
+| 웨이브 적 생성 | [`EnemySpawner.cs`](Assets/Scripts/Enemy/EnemySpawner.cs) |
+| 생존 적·처치 집계 | [`EnemyRegistry.cs`](Assets/Scripts/Enemy/EnemyRegistry.cs) |
+| 무기 공통 규격 | [`IWeapon.cs`](Assets/Scripts/Weapons/IWeapon.cs) |
+| 무기 슬롯 | [`WeaponInventory.cs`](Assets/Scripts/Weapons/WeaponInventory.cs) |
+| 공격 입력 | [`PlayerShooter.cs`](Assets/Scripts/Weapons/PlayerShooter.cs) |
+| 피해 보정·전투 통계 | [`PlayerDamageCalculator.cs`](Assets/Scripts/Weapons/PlayerDamageCalculator.cs) |
+| 적 상태와 행동 | [`EnemyController.cs`](Assets/Scripts/Enemy/EnemyController.cs) |
+| 적·투사체·효과 재사용 | [`EnemyPool.cs`](Assets/Scripts/Enemy/EnemyPool.cs), [`ProjectilePool.cs`](Assets/Scripts/Enemy/ProjectilePool.cs), [`VfxPool.cs`](Assets/Scripts/Enemy/VfxPool.cs) |
+| 상점·강화 | [`ShopController.cs`](Assets/Scripts/Manager/ShopController.cs), [`UpgradeManager.cs`](Assets/Scripts/Manager/UpgradeManager.cs) |
+| 재화·점수 | [`RewardController.cs`](Assets/Scripts/UI/RewardController.cs) |
+| 설정 저장 | [`SaveManager.cs`](Assets/Scripts/Manager/SaveManager.cs), [`SettingsController.cs`](Assets/Scripts/UI/SettingsController.cs) |
+
+## 실행 방법
+
+1. Unity Hub에서 프로젝트를 엽니다.
+2. Unity Editor 버전 `6000.3.15f1`을 사용합니다.
+3. `Assets/Scenes/MainScene.unity`를 엽니다.
+4. Play 버튼을 눌러 실행합니다.
