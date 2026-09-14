@@ -12,7 +12,7 @@ public class FpsDisplay : MonoBehaviour
     {
         var go = new GameObject("FpsDisplay");
         DontDestroyOnLoad(go);
-        go.AddComponent<FpsDisplay>();
+        //go.AddComponent<FpsDisplay>();
     }
 
     private void Update()
