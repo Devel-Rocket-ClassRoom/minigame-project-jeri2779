@@ -200,18 +200,74 @@ flowchart TD
 ```text
 Assets/
 ├── Scenes/
-│   └── MainScene.unity           # 실행 씬
-├── Scripts/
-│   ├── Manager/                  # 게임·라운드·상점·저장 관리
-│   ├── Characters/               # 플레이어 이동과 상태
-│   ├── Weapons/                  # 무기 사용·슬롯·피해 처리
-│   ├── Enemy/                    # 적 행동·생성·재사용
-│   ├── SOD/                      # 적·무기·웨이브 데이터
-│   ├── UI/                       # HUD·상점·결과·설정 화면
-│   └── Systems/                  # 입력과 공용 시스템
-├── Data/                         # 게임 데이터 에셋
-├── Prefabs/                      # 게임 오브젝트 프리팹
-└── Imported/                     # 외부 임포트 에셋
+│   └── MainScene.unity               # 게임 실행 씬
+│
+├── Scripts/                           # 직접 구현한 게임 로직
+│   ├── Manager/
+│   │   ├── GameManager.cs            # 게임 상태와 플레이 진행 관리
+│   │   ├── RoundManager.cs           # 라운드 시작·종료·보상 처리
+│   │   ├── ShopController.cs         # 상점 이용 상태 관리
+│   │   ├── UpgradeManager.cs         # 강화 선택과 적용 관리
+│   │   ├── SaveManager.cs            # 설정 데이터 저장·불러오기
+│   │   └── UIManager.cs              # 주요 UI 표시 관리
+│   │
+│   ├── Characters/
+│   │   ├── PlayerControl.cs          # 플레이어 이동과 입력 처리
+│   │   ├── CharacterHealth.cs        # 체력과 피해 처리
+│   │   ├── CharacterStats.cs         # 플레이 중 능력치 관리
+│   │   ├── PlayerSpawner.cs          # 플레이어 생성과 재배치
+│   │   └── PlayerCombatEvents.cs     # 전투 결과 이벤트 전달
+│   │
+│   ├── Weapons/
+│   │   ├── IWeapon.cs                # 무기 사용 공통 규약
+│   │   ├── RangedWeapon.cs           # 원거리 무기 동작
+│   │   ├── MeleeWeapon.cs            # 근접 무기 동작
+│   │   ├── ThrowableWeapon.cs        # 투척 무기 동작
+│   │   ├── WeaponInventory.cs        # 무기 슬롯과 교체 관리
+│   │   └── PlayerDamageCalculator.cs # 플레이어 공격 피해 계산
+│   │
+│   ├── Enemy/
+│   │   ├── EnemyController.cs        # 적 이동과 공격 행동
+│   │   ├── EnemyHealth.cs            # 적 체력과 처치 처리
+│   │   ├── EnemySpawner.cs           # 라운드 설정에 따른 적 생성
+│   │   ├── EnemyRegistry.cs          # 현재 활성 적 추적
+│   │   ├── EnemyPool.cs              # 적 오브젝트 재사용
+│   │   └── ProjectilePool.cs         # 적 투사체 재사용
+│   │
+│   ├── SOD/                          # 게임 설정용 데이터 정의
+│   │   ├── WaveData.cs               # 웨이브와 적 생성 설정
+│   │   ├── Weapons/EnemyData.cs      # 적 능력치 설정
+│   │   ├── WeaponData.cs             # 무기 공통 설정
+│   │   └── UpgradeData.cs            # 강화 항목 공통 설정
+│   │
+│   ├── UI/
+│   │   ├── MainMenuUI.cs             # 메인 메뉴
+│   │   ├── RoundUIPresenter.cs       # 라운드 정보 표시
+│   │   ├── CharacterHUD.cs           # 플레이어 상태 표시
+│   │   ├── ShopUI.cs                 # 상점 화면
+│   │   ├── UpgradeBoardUI.cs         # 강화 선택 화면
+│   │   ├── GameClearUI.cs            # 게임 클리어 결과
+│   │   ├── GameOverUI.cs             # 게임오버 결과
+│   │   └── SettingsPanel.cs          # 환경설정 화면
+│   │
+│   ├── Systems/
+│   │   ├── IDamageable.cs            # 피해를 받는 대상의 공통 규약
+│   │   ├── IHealthInfo.cs            # 체력 정보 조회 규약
+│   │   └── IImpactReceiver.cs        # 충격을 받는 대상의 공통 규약
+│   │
+│   └── FpsDisplay.cs                 # 현재 프레임 표시
+│
+├── Data/
+│   └── Upgrades/                     # 강화 데이터 에셋
+│
+├── Prefabs/
+│   ├── Enemies/                      # 적 프리팹
+│   ├── Player/                       # 플레이어 프리팹
+│   ├── Weapons/                      # 무기 프리팹
+│   ├── Managers/                     # 관리자 오브젝트
+│   └── UI/                           # UI 프리팹
+│
+└── Imported/                         # 외부 에셋 원본 — 공개 저장소 제외
 ```
 
 ## 파일 출처
